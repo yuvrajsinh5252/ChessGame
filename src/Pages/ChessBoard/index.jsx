@@ -1,46 +1,88 @@
-import pieces from "../../Pieces";
 import "./index.css";
+import { useState } from "react";
+import pieces from "../../Pieces";
+import { useEffect } from "react";
 
-// dragging process
-const draged_piece = document.querySelectorAll('.drag');
-const squares = document.querySelectorAll('.white,.black');
+function ChessBoard({ board, setBoard }) {
+  // const [board, setBoard] = useState([]);
+  const [over, setOver] = useState([-1, -1]);
+  const [currentDrag, setCurrentDrag] = useState([-1, -1]);
 
-draged_piece.forEach(piece => {
-    piece.addEventListener('dragstart', () => piece.classList.add('hold'))
-    piece.addEventListener('dragend', () => piece.classList.remove('hold'))
-});
-squares.forEach(square => {
-    square.addEventListener('dragover', e => {
-        e.preventDefault();
-        const draggable = document.querySelector('.hold');
-        if (!square.hasChildNodes()) square.appendChild(draggable);
-    })
-});
-// dragging ends
-
-function ChessBoard() {
-    const n = 8; // size of the chess board
-    let board = []; // 2d array to store the chess board
-
-    for (let i = 0; i < n; i++) {
+  useEffect(() => {
+    var temp = localStorage.getItem("board");
+    if (!temp) {
+      var temp_board = [];
+      for (let i = 0; i < 8; i++) {
         let temp = [];
+        for (let j = 0; j < 8; j++) temp.push(pieces[i][j]);
+        temp_board.push(temp);
+      }
+      setBoard(temp_board);
+    } else setBoard(JSON.parse(temp));
+  }, []);
 
-        for (let j = 0; j < n; j++) {
-            if ((i + j) % 2 === 0) temp.push(<div key={j} className="black">{pieces[i][j]?<img className="drag" src={pieces[i][j]} alt="asdasdas" />:<></> }</div>);
-            else temp.push(<div key={j} className="white">{pieces[i][j]?<img className="drag" src={pieces[i][j]} alt="asdasds" /> : <></>}</div>);
-        }
-        board.push(<div key={i} className="rows">{temp}</div>);
-    }
+  return (
+    <>
+      <div className="chessboard">
+        <div className="border">
+          {board.map((row, idx) => {
+            return (
+              <div className="rows" key={idx}>
+                {row.map((el, idx2) => {
+                  return (
+                    <div
+                      onDragStart={(e) => {
+                        setCurrentDrag([idx, idx2]);
+                      }}
+                      onDragEnd={() => {
+                        let i = currentDrag[0];
+                        let j = currentDrag[1];
+                        let a = over[0];
+                        let b = over[1];
 
-    return (
-        <>
-            <div className="chessboard">
-                <div className="border">
-                    {board}
-                </div>
-            </div>
-        </>
-    )
+                        if (a == -1 || b == -1 || i == -1 || j == -1) return;
+
+                        var temp = JSON.parse(JSON.stringify(board));
+
+                        if (true) {
+                          temp[i][j] = board[a][b];
+                          temp[a][b] = board[i][j];
+                        }
+
+                        localStorage.setItem("board", JSON.stringify(temp));
+                        setBoard(temp);
+                        setCurrentDrag([-1, -1]);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setOver([idx, idx2]);
+                      }}
+                      key={idx2}
+                      className={(idx + idx2) % 2 == 0 ? "white" : "black"}
+                    >
+                      {board[idx][idx2] ? (
+                        <img src={board[idx][idx2]} className="drag" />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+        <button
+          className="reset"
+          onClick={() => {
+            setBoard(pieces);
+          }}
+        >
+          New Game
+        </button>
+      </div>
+    </>
+  );
 }
 
 export default ChessBoard;

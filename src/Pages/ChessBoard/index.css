@@ -40,3 +40,12 @@ img {
 	border: 17px solid rgb(127, 129, 129);
 	border-radius: 10px;	
 }
+.reset {
+	margin: 20px;
+	border-radius: 10px;
+	border: 2px solid black;
+	background: rgb(238,238,210);
+	width: 130px;
+	height: 40px;
+	margin-right: 720px;
+}

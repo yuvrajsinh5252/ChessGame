@@ -18,22 +18,20 @@ for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
         if (i === 0) {
             if (j === 0 || j === 7) temp.push(rook_b)
-            if (j === 4) temp.push(king_b)
-            if (j === 3) temp.push(queen_b)
             if (j === 1 || j === 6) temp.push(knight_b)  
             if (j === 2 || j === 5) temp.push(bishop_b)
-        } 
-        else if (i === 1) temp.push(pawn_b)
-        else if (i === 6) temp.push(pawn_w)
-        else if (i === 7) {
+            if (j === 4) temp.push(king_b)
+            if (j === 3) temp.push(queen_b)
+        } else if (i === 7) {
             if (j === 0 || j === 7) temp.push(rook_w)
-            if (j === 4) temp.push(knig_w)
-            if (j === 3) temp.push(queen_w)
             if (j === 1 || j === 6) temp.push(knight_w)
             if (j === 2 || j === 5) temp.push(bishop_w)
-        } else {
-            temp.push(null);
-        }
+            if (j === 4) temp.push(knig_w)
+            if (j === 3) temp.push(queen_w)
+        } 
+        else if (i === 1) temp.push(pawn_b)
+        else if (i === 6) temp.push(pawn_w) 
+        else temp.push(null);
     }
     pieces.push(temp);
 }
