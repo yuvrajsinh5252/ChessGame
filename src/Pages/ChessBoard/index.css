@@ -20,6 +20,10 @@ img {
 .black {
 	background: rgb(238,238,210);
 }
+.green {
+	/* background: rgb(186,203,43); */
+	background: radial-gradient(rgba(43, 209, 201, 1)10%, rgba(235, 235, 235, 0.1) 20%);
+}
 .hold {
 	opacity: 0;
 }
