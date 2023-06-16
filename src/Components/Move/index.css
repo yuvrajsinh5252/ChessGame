@@ -1,0 +1,28 @@
+* {
+    font-family: sans-serifs;
+}
+.player1, .player2,.moves {
+    border-radius: 10px;
+    background: rgb(64, 63, 63);
+    margin-bottom: 10px;
+    color: white;
+}
+.showMove{
+    background: black;
+    height: 710px;
+    width: 420px;
+    position: absolute;
+    left: 20px;
+    top: 65px;
+    border-radius: 20px;
+    padding: 10px;  
+}
+.player1 {
+    height: 110px;
+}
+.moves {
+    height: 450px;
+}
+.player2 {
+    height: 110px;
+}

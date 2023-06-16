@@ -1,25 +1,42 @@
 import "./index.css";
 import { useState } from "react";
-import x from "../../Pieces/index.jsx";
+import x from "../../Utilities/Pieces/index.jsx";
 import { useEffect } from "react";
-import isPossible from "../../Pieces/IsPossible";
+import isPossible from "../../Utilities/Pieces/IsPossible";
+import PawnPromote from "../../Components/PawnPromote";
+import DragComplete from "../../Utilities/DragComplete";
 
-function IsEqual(x , y) {
+if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
+
+let alpha = [];
+for (let i = 0; i < 8; i++) {
+    alpha.push(String.fromCharCode(97 + i))
+}
+
+export function IsEqual(x , y) {
   if (x.length != y.length) return false;
   for (let i in x) if (x[i] != y[i]) return false;
   return true;
 }
 
 function ChessBoard({ board, setBoard }) {
+  const { pieces, currElement } = x;
   const [over, setOver] = useState([-1, -1]);
   const [currentDrag, setCurrentDrag] = useState([-1, -1]);
   const [availableSpc, setAvailableSpc] = useState(new Set());
   const [show, setShow] = useState(false);
-  const { pieces } = x;
-  const { currElement } = x;
+  const [kill, setKill] = useState(new Set());
+  const [pawnPromote, setPawnPromote] = useState([false,"white"]); 
+  const [kingTouched, setKingTouched] = useState(new Array(8).fill(false));
+  const [rookTouched, setRookTouched] = useState(new Array(8).fill(new Array(8).fill(false)));
+  const [turn, setTurn] = useState("w");
 
   useEffect(() => {
     var temp = localStorage.getItem("board");
+    var kingTouched = localStorage.getItem("kingTouched");
+    var rookTouched = localStorage.getItem("rookTouched");
+    var turns = localStorage.getItem("turn");
+
     if (!temp) {
       var temp_board = [];
       for (let i = 0; i < 8; i++) {
@@ -27,8 +44,13 @@ function ChessBoard({ board, setBoard }) {
         for (let j = 0; j < 8; j++) temp.push(pieces[i][j]);
         temp_board.push(temp);
       }
-      setBoard(temp_board);
+      setBoard(temp_board)
+    
     } else setBoard(JSON.parse(temp));
+
+    if (kingTouched) setKingTouched(JSON.parse(kingTouched));
+    if (rookTouched) setRookTouched(JSON.parse(rookTouched));
+    if (turns) setTurn(JSON.parse(turns));
   }, []);
 
   useEffect(() => {
@@ -38,77 +60,63 @@ function ChessBoard({ board, setBoard }) {
     let drag1 = currentDrag[0];
 
     if (drag1 == -1 || drag2 == -1) return;
+    if (!currElement.get(board[drag1][drag2]).endsWith(turn)) return;
+
     let temp = new Set();
+    let temp2 = new Set();
 
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-        if (
-          isPossible(
-            board,
-            currElement,
-            currElement.get(board[drag1][drag2]),
-            drag1,
-            drag2,
-            i,
-            j
-          )
-        ) {
+      let pos = [drag1, drag2, i, j]
+        if (isPossible(board,currElement,pos,kingTouched,rookTouched)) {
           temp.add([i, j]);
-        }
+          if (currElement.get(board[i][j]) !== "null") {
+            temp2.add([i, j]);
+          } 
+        } 
+
+        var EnPassantMove = JSON.parse(localStorage.getItem("EpMove"));
+        if (IsEqual(EnPassantMove, pos)) temp2.add([pos[2], pos[3]])
       }
     }
+    setKill(temp2);
     setAvailableSpc(temp);
   }, [currentDrag]);
 
   return (
     <>
+      <PawnPromote openIt={pawnPromote} setPawnPromote={setPawnPromote} board={board} setBoard={setBoard} index={over} />
       <div className="chessboard">
+      <div className="col1">{alpha.map((el, id) => <div key={id} className="alpha-border">{el}</div>)}</div>
+      <div className="col2">{alpha.map((el, id) => <div key={id} className="alpha-border">{el}</div>)}</div>
         <div className="border">
           {board.map((row, idx) => {
             return (
+              <div key={idx}>
+              <div className="idx">{idx}</div>
+              <div className="idx1">{idx}</div>
               <div className="rows" key={idx}>
                 {row.map((el, idx2) => {
                   return (
                     <div
                       onClick={() => {
-                        setShow(!show);
                         setCurrentDrag([idx, idx2]);
+                        if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                        setTimeout(() => {setShow(true)}, 50)
                       }}
                       onDragStart={(e) => {
-                        setShow(true);
-                        setCurrentDrag([idx, idx2]);
+                        setCurrentDrag([idx,idx2]);
+                        if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                        setTimeout(() => {setShow(true)}, 50)
                       }}
                       onDragEnd={() => {
-                        setShow(false);
-
-                        let i = currentDrag[0];
-                        let j = currentDrag[1];
-                        let a = over[0];
-                        let b = over[1];
-
-                        if (a == -1 || b == -1 || i == -1 || j == -1) return;
-
-                        var temp = JSON.parse(JSON.stringify(board));
-
-                        if (
-                          isPossible(
-                            board,
-                            currElement,
-                            currElement.get(board[i][j]),
-                            i,
-                            j,
-                            a,
-                            b
+                        if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                        DragComplete(
+                          board, setBoard, currentDrag, setCurrentDrag, over, setShow, currElement,
+                          kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
+                          turn, setTurn, availableSpc, pawnPromote
                           )
-                        ) {
-                          temp[i][j] = null;
-                          temp[a][b] = board[i][j];
-                        }
-
-                        localStorage.setItem("board", JSON.stringify(temp));
-                        setBoard(temp);
-                        setCurrentDrag([-1, -1]);
-                      }}
+                        }}
                       onDragOver={(e) => {
                         e.preventDefault();
                         setOver([idx, idx2]);
@@ -117,7 +125,9 @@ function ChessBoard({ board, setBoard }) {
                       className={
                         ((idx + idx2) % 2 == 0 ? "white" : "black") + " " +
                         ([...availableSpc].some((item) => IsEqual(item, [idx,idx2])) && show
-                          ? "green" : "")
+                          ? "green" : "") + " " +
+                        ([...kill].some((item) => IsEqual(item, [idx,idx2])) && show
+                          ? "red" : "")
                       }
                     >
                       {board[idx][idx2] ? (
@@ -127,7 +137,8 @@ function ChessBoard({ board, setBoard }) {
                       )}
                     </div>
                   );
-                })}
+                })} 
+              </div>
               </div>
             );
           })}
@@ -135,12 +146,13 @@ function ChessBoard({ board, setBoard }) {
         <button
           className="reset"
           onClick={() => {
-            setBoard(pieces);
-            localStorage.setItem("board", JSON.stringify(pieces));
+          setBoard(pieces);
+          setShow(false);
+          setKingTouched(new Array(10).fill(false));
+          setRookTouched(new Array(10).fill(new Array(10).fill(false)));
+          localStorage.setItem("board", JSON.stringify(pieces));
           }}
-        >
-          New Game
-        </button>
+        >Restart</button>
       </div>
     </>
   );

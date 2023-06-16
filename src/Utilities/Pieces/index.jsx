@@ -14,6 +14,8 @@ import pawn_w from "..\\public\\images\\pawn_w.png";
 let pieces = []; // 2d array to store the pieces
 let currElement = new Map();
 
+let NmaeToImg = new Map();
+
 for (let i = 0; i < 8; i++) {
     let temp = [];
     for (let j = 0; j < 8; j++) {
@@ -37,4 +39,8 @@ for (let i = 0; i < 8; i++) {
     pieces.push(temp);
 }
 
-export default {pieces, currElement};
+for (let [key , value] of currElement) {
+    NmaeToImg.set(value, key);
+}
+
+export default {pieces, currElement, NmaeToImg};

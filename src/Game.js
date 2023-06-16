@@ -1,18 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import ChessBoard from './Pages/ChessBoard';
-import { useState } from 'react';
+import Home from './Pages/Home';
 
-function Game() {
-  const [board, setBoard] = useState([]);
+function Game() { 
   return (
       <>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<ChessBoard board={board} setBoard={setBoard} />} />
+            <Route path="/" element={<Home />} />
           </Routes>
         </BrowserRouter>
       </>
-    );
+    ); 
 }
 
-export default Game;
+export default Game;   

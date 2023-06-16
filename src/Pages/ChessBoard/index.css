@@ -2,6 +2,10 @@
 	margin : 0;
 	padding: 0;
 	box-sizing: border-box;
+	font-family: sans-serif;
+}
+body {
+	overflow: hidden;
 }
 img {
 	height: 100px;
@@ -21,8 +25,10 @@ img {
 	background: rgb(238,238,210);
 }
 .green {
-	/* background: rgb(186,203,43); */
-	background: radial-gradient(rgba(43, 209, 201, 1)10%, rgba(235, 235, 235, 0.1) 20%);
+	background: radial-gradient(rgba(43, 209, 201, 1)10%, rgba(232, 226, 226, 0.891) 20%);
+}
+.red {
+	background: rgb(255, 0, 0);
 }
 .hold {
 	opacity: 0;
@@ -38,18 +44,56 @@ img {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background: rgb(191, 198, 192);
 }
 .border {
 	border: 17px solid rgb(127, 129, 129);
 	border-radius: 10px;	
+	position: relative;
+}
+.idx, .idx1 {
+	height: 100px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.col1, .col2 {
+	color: white;
+}
+.idx {
+	position: absolute;
+	right: 100.5%;
+}
+.idx1 {
+	position: absolute;
+	left: 100.5%;
+}
+.alpha-border {
+	width: 100px;
+	text-align: center;
+}
+.col1 {
+	display: flex;
+	position: absolute;
+	top: 6.6%;
+	z-index: 1;
+}
+.col2 {
+	display: flex;
+	position: absolute;
+	bottom: 6.6%;
+	z-index: 1;
 }
 .reset {
-	margin: 20px;
+	right: 5%;
+	position: absolute;
+    margin-top: 80px;
 	border-radius: 10px;
 	border: 2px solid black;
 	background: rgb(238,238,210);
-	width: 130px;
-	height: 40px;
-	margin-right: 720px;
+	width: 405px;
+	height: 50px;
+    font-size: 25px;
+    font-weight: 600;
+	font-family: sans-serif;
 }
