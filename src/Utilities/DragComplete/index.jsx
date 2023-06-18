@@ -1,7 +1,8 @@
 import isPossible from "../Pieces/IsPossible";
-import { IsEqual } from "../../Pages/ChessBoard";
+import { IsEqual } from "../../Components/ChessBoard";
+import { defendCheck } from "../CheckMate";
 
-function DragComplete(board, setBoard, currentDrag, setCurrentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote) {
+function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote) {
   setShow(false);
 
   let i = currentDrag[0];
@@ -10,12 +11,20 @@ function DragComplete(board, setBoard, currentDrag, setCurrentDrag, over, setSho
   let b = over[1];
   let pos = [i,j,a,b];
 
-  if (a == -1 || b == -1 || i == -1 || j == -1) return <></>;
+  if (i == a && j == b) return [[-1, -1],[-1,-1]];
+  
+  let possibleMoves = defendCheck(board, currElement, turn, pos[0], pos[1]);
+  let possible = false;
+  for (const move of possibleMoves) {
+    if (IsEqual(move, [pos[2],pos[3]])) {
+      possible = true;
+      break;
+    }
+  }
 
   if (
     currElement.get(board[i][j]).startsWith("pawn") &&
-    (a == 0 || a == 7) &&
-    isPossible(board,currElement,pos,kingTouched,rookTouched)
+    (a == 0 || a == 7) && possible
   ) {
     let color = currElement.get(board[i][j]).endsWith("b") ? "black" : "white";
     setPawnPromote([true, color]);
@@ -28,13 +37,10 @@ function DragComplete(board, setBoard, currentDrag, setCurrentDrag, over, setSho
     let x = (turn == "w" ? 1 : -1);
     temp[pos[2] + x][pos[3]] = null;
   }  
-
-  if (
-    isPossible(board,currElement,pos,kingTouched,rookTouched)
-  ) {
+  
+  if (possible) {
     temp[i][j] = null;
     temp[a][b] = board[i][j];
-
 
     if (currElement.get(board[i][j]).startsWith("king")) {
       if (!kingTouched[i]) {
@@ -60,16 +66,13 @@ function DragComplete(board, setBoard, currentDrag, setCurrentDrag, over, setSho
       setTurn(turn == "w" ? "b" : "w");
       localStorage.setItem("turn", JSON.stringify(turn == "w" ? "b" : "w"))
     } 
-
   }
-
   localStorage.setItem("board", JSON.stringify(temp));
   localStorage.setItem("kingTouched", JSON.stringify(kingTouched));
   localStorage.setItem("rookTouched", JSON.stringify(rookTouched));
   setBoard(temp);
-  setCurrentDrag([-1, -1]);
 
-  return <></>
+  return temp;
 }
 
 export default DragComplete;

@@ -1,28 +1,54 @@
-* {
-    font-family: sans-serifs;
-}
 .player1, .player2,.moves {
     border-radius: 10px;
     background: rgb(64, 63, 63);
     margin-bottom: 10px;
     color: white;
 }
+.cont {
+    display: flex;
+    flex-direction: column;
+}
 .showMove{
     background: black;
     height: 710px;
-    width: 420px;
-    position: absolute;
-    left: 20px;
-    top: 65px;
+    min-width: 420px;
     border-radius: 20px;
     padding: 10px;  
+    margin-left: 10;
 }
 .player1 {
     height: 110px;
 }
 .moves {
     height: 450px;
+    overflow-y: scroll;
 }
 .player2 {
     height: 110px;
+}
+.reset {
+    margin-top: 65px;
+	border-radius: 10px;
+	border: 2px solid black;
+	background: rgb(238,238,210);
+	width: 200px;
+	height: 50px;
+    font-size: 25px;
+    font-weight: 600;
+}
+.reset:hover {
+    background: rgb(118,150,86);
+    cursor: pointer;
+    transition: 0.2s;
+}
+::-webkit-scrollbar {
+    width: 10px;
+} 
+::-webkit-scrollbar-track {
+    background: rgb(135, 126, 126);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #fef4f4; 
+    border-radius: 10px;
 }

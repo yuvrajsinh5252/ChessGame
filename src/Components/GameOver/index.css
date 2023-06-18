@@ -1,0 +1,38 @@
+.gameover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 39%;
+    left: 17.6%;
+    position: absolute;
+    background: white;
+    width: 400px;
+    height: 220px;
+    border-radius: 10px;
+}
+.text {
+    font-size: 50px;
+    font-weight: 700;
+}
+.checkmate {
+    font-size: 23px;
+}
+.won {
+    font-weight: 600;
+    margin-top: 30px;
+    font-size: 30px;
+}
+.again {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(43, 91, 28);
+    width: 290px;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+}

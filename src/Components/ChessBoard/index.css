@@ -2,14 +2,23 @@
 	margin : 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: sans-serif;
 }
 body {
 	overflow: hidden;
+	font-family: sans-serif;
+	background: rgb(119, 121, 119);
 }
 img {
 	height: 100px;
 	width: 100px;
+	cursor: pointer;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: white;
 }
 .white, .black {
 	height: 100px;
@@ -25,13 +34,19 @@ img {
 	background: rgb(238,238,210);
 }
 .green {
-	background: radial-gradient(rgba(43, 209, 201, 1)10%, rgba(232, 226, 226, 0.891) 20%);
+	height: 100px;
+	width: 100px;
+	background: radial-gradient(rgb(12, 13, 13)15%, transparent 0%);
+	opacity: 0.3;
 }
 .red {
-	background: rgb(255, 0, 0);
+	height: 100px;
+	width: 100px;
+	background: rgb(221, 102, 38);
+	opacity: 1;
 }
-.hold {
-	opacity: 0;
+.check {
+	background: red;
 }
 .rows {
 	display: flex;
@@ -41,12 +56,12 @@ img {
 .chessboard {
 	height: 100vh;
 	display: flex;
-	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	margin-right: 400px;
 }
 .border {
-	border: 17px solid rgb(127, 129, 129);
+	border: 17px solid rgb(62, 62, 62);
 	border-radius: 10px;	
 	position: relative;
 }
@@ -57,9 +72,6 @@ img {
 	justify-content: center;
 	align-items: center;
 }
-.col1, .col2 {
-	color: white;
-}
 .idx {
 	position: absolute;
 	right: 100.5%;
@@ -68,32 +80,11 @@ img {
 	position: absolute;
 	left: 100.5%;
 }
-.alpha-border {
-	width: 100px;
-	text-align: center;
-}
-.col1 {
-	display: flex;
+.alpha1 {
 	position: absolute;
-	top: 6.6%;
-	z-index: 1;
+	top: -2.2%;
 }
-.col2 {
-	display: flex;
+.alpha2 {
 	position: absolute;
-	bottom: 6.6%;
-	z-index: 1;
-}
-.reset {
-	right: 5%;
-	position: absolute;
-    margin-top: 80px;
-	border-radius: 10px;
-	border: 2px solid black;
-	background: rgb(238,238,210);
-	width: 405px;
-	height: 50px;
-    font-size: 25px;
-    font-weight: 600;
-	font-family: sans-serif;
+	bottom: -2%;
 }
