@@ -2,7 +2,8 @@ import "./index.css";
 import x from "../../Utilities/Pieces/index.jsx";
 import { useEffect } from "react";
 import DragComplete from "../../Utilities/DragComplete";
-import { IsCheck, defendCheck } from "../../Utilities/CheckMate";
+import { defendCheck } from "../../Utilities/CheckMate";
+import { useState } from "react";
 
 if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
 
@@ -15,12 +16,17 @@ export function IsEqual(x , y) {
 function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver }) {
 
   const { pieces, currElement } = x;
+  const [ prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
 
   useEffect(() => { // Setting up the board
     var temp = localStorage.getItem("board");
     var kingTouched = localStorage.getItem("kingTouched");
     var rookTouched = localStorage.getItem("rookTouched");
     var turns = localStorage.getItem("turn");
+    var move = localStorage.getItem("HistMove");
+
+    if (move) setPrevMove(JSON.parse(move));
+    else localStorage.setItem("HistMove", JSON.stringify(prevMove));
 
     if (!temp) {
       var temp_board = [];
@@ -55,12 +61,11 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
       }
     }
 
+    var EnPassantMove = JSON.parse(localStorage.getItem("EpMove"));
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-      let pos = [drag1, drag2, i, j]
-
-      var EnPassantMove = JSON.parse(localStorage.getItem("EpMove"));
-      if (IsEqual(EnPassantMove, pos)) temp2.add([pos[2], pos[3]])
+        let pos = [drag1, drag2, i, j]
+        if (IsEqual(EnPassantMove, pos)) temp2.add([pos[2], pos[3]]);
       }
     }
     setKill(temp2);
@@ -75,18 +80,33 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
             return (
               <div key={idx}>
               <div className="idx">{idx}</div>
-              <div className="idx1">{idx}</div>
               <div className="rows">
                 {row.map((el, idx2) => {
                   return (
                     <div key={idx2}>
-                    <div className="container" key={JSON.stringify(el)}>
-                      {idx == 0 ? <div className="alpha1">{String.fromCharCode(97 + idx2)}</div> : <></>}
+                    <div className="cont" key={JSON.stringify(el)}>
                     <div
                       onClick={() => {
-                        setCurrentDrag([idx, idx2]);
-                        if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
-                        setTimeout(() => {setShow(true)}, 50)
+                        if ([...availableSpc].some((e) => {return IsEqual(e, [idx,idx2])})) {
+                          setOver([idx,idx2])
+                          if (!DragComplete(
+                            board, setBoard, currentDrag, [idx,idx2], setShow, currElement,
+                            kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
+                            turn, setTurn, pawnPromote, setCheck, check, setGameOver
+                          )) {
+                            currentDrag = [-1,-1];
+                            setCurrentDrag([-1,-1]); 
+                          } else {
+                            setPrevMove([...currentDrag, idx,idx2]);
+                            localStorage.setItem("HistMove", JSON.stringify([...currentDrag, idx,idx2]));
+                          }
+                          setAvailableSpc(new Set());
+                        } else {
+                          if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                          currentDrag = [idx, idx2]
+                          setCurrentDrag([idx, idx2]);
+                          setTimeout(() => {setShow(true)}, 50)
+                        }
                       }}
                       onDragStart={(e) => {
                         setCurrentDrag([idx,idx2]);
@@ -95,38 +115,17 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                       }}
                       onDragEnd={() => {
                         if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
-                        let temp = DragComplete(
+                        if (DragComplete(
                           board, setBoard, currentDrag, over, setShow, currElement,
                           kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
-                          turn, setTurn, availableSpc, pawnPromote
-                          )
-
-                          if (temp[0][0] == -1) return;
-                          let kingPos = IsCheck(temp, currElement, turn);
-                          let kingPos2 = IsCheck(temp, currElement, turn == "w" ? "b" : "w");
-                          let king = (kingPos[0] != -1 ? kingPos : kingPos2)
-
-                          if (king[0] != -1) setCheck([true, king]);
-                          else setCheck([false,[-1,-1]]);
-
-                          let IsGameOver = new Set();
-                          for (let i = 0; i < 8; i++) {
-                            for (let j = 0; j < 8; j++) {
-                              if (currElement.get(board[i][j]) != "null") {
-                                let temp1 = defendCheck(temp, currElement, (turn == 'w' ? 'b' : 'w'), i, j);
-                                if (temp1.size != 0) IsGameOver.add([i,j])
-                              }
-                            }
-                          }
-
-                          if (IsGameOver.size == 0) {
-                            if (check[0]) {
-                              setGameOver([true, "CheckMate", turn]);
-                            } else {
-                              setGameOver([true, "Draw", turn]);
-                            }
-                          }
-                          setCurrentDrag([-1, -1]);                          
+                          turn, setTurn, pawnPromote, setCheck, check, setGameOver
+                        )) {
+                          setPrevMove([...currentDrag, ...over]);
+                          localStorage.setItem("HistMove", JSON.stringify(prevMove));
+                          console.log(prevMove)
+                        }
+                          setAvailableSpc(new Set());
+                          setCurrentDrag([-1,-1]);
                         }}
                       onDragOver={(e) => {
                         e.preventDefault();
@@ -137,7 +136,9 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                         ((idx + idx2) % 2 == 0 ? "white" : "black") + " " +
                         ([...kill].some((item) => IsEqual(item, [idx,idx2])) && show
                           ? "red" : "") + " " +
-                        (IsEqual(check[1], [idx,idx2]) ? "check" : "")
+                        (IsEqual(check[1], [idx,idx2]) ? "check" : "") + " " +
+                        (IsEqual([prevMove[0],prevMove[1]], [idx,idx2]) ? "over" : "") + " " +
+                        (IsEqual([prevMove[2], prevMove[3]], [idx,idx2]) ? "select" : "") 
                       }
                     >
                       {board[idx][idx2] ? (

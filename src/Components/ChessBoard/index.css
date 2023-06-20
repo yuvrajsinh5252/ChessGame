@@ -7,18 +7,23 @@ body {
 	overflow: hidden;
 	font-family: sans-serif;
 	background: rgb(119, 121, 119);
+	transition: all 0.5s;
 }
 img {
 	height: 100px;
 	width: 100px;
 	cursor: pointer;
 }
+img:hover {
+	scale: 1.07;
+}
 .container {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	align-items: end;
 	color: white;
+	margin-right: 5px;
+	font-weight: 600;
 }
 .white, .black {
 	height: 100px;
@@ -36,22 +41,25 @@ img {
 .green {
 	height: 100px;
 	width: 100px;
-	background: radial-gradient(rgb(12, 13, 13)15%, transparent 0%);
+	background: radial-gradient(rgb(12, 13, 13) 25%, transparent 0%);
 	opacity: 0.3;
 }
 .red {
 	height: 100px;
 	width: 100px;
-	background: rgb(221, 102, 38);
+	background: rgb(221, 102, 38) !important;
 	opacity: 1;
 }
 .check {
-	background: red;
+	background: rgb(207, 62, 62);
 }
 .rows {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+}
+.over, .select {
+	background-color: rgb(186,202,43);
 }
 .chessboard {
 	height: 100vh;
@@ -61,30 +69,19 @@ img {
 	margin-right: 400px;
 }
 .border {
-	border: 17px solid rgb(62, 62, 62);
+	border: 15px solid rgb(62, 62, 62);
 	border-radius: 10px;	
 	position: relative;
 }
-.idx, .idx1 {
-	height: 100px;
-	color: white;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
 .idx {
+	height: 100px;
 	position: absolute;
-	right: 100.5%;
-}
-.idx1 {
-	position: absolute;
-	left: 100.5%;
-}
-.alpha1 {
-	position: absolute;
-	top: -2.2%;
+	right: 98.5%;
+	font-weight: 600;
+	color: black;
 }
 .alpha2 {
 	position: absolute;
-	bottom: -2%;
+	top: 97.8%;
+	color: black;
 }

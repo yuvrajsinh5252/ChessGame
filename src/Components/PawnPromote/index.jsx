@@ -1,16 +1,31 @@
 import './index.css'
 import x from "../../Utilities/Pieces/index.jsx";
+import { IsCheck } from '../../Utilities/CheckMate';
 
-function PromoteThis(setPawnPromote, target,curr ,board, setBoard) {
+const {currElement} = x;
+
+function PromoteThis(setPawnPromote, target,curr ,board, setBoard, setCheck, pieceColor) {
+    console.log("here",target, curr)
     board = JSON.parse(JSON.stringify(board));
     let i = curr[0];
     let j = curr[1];
     board[i][j] = target;
     setBoard(board);
     setPawnPromote([false, "white"])
+
+    let turn = (pieceColor === "white" ? "w" : "b");
+
+    let kingPos = IsCheck(board, currElement, turn);
+    let kingPos2 = IsCheck(board, currElement, turn == "w" ? "b" : "w");
+    let king = (kingPos[0] != -1 ? kingPos : kingPos2);
+
+    if (king[0] != -1) {
+        setCheck([true, king]);
+    }
+    else setCheck([false, [-1, -1]]);
 }
 
-function PawnPromote({openIt,setPawnPromote, board, setBoard, index}) {
+function PawnPromote({openIt,setPawnPromote, board, setBoard, index, setCheck}) {
     const { NmaeToImg } = x;
     let toPieces = {
         "white": {
@@ -38,16 +53,16 @@ function PawnPromote({openIt,setPawnPromote, board, setBoard, index}) {
                 style={{ top: (side ? "4%" : "76.5%") }} 
                 className={side ? "up" : "down"}
             >
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].queen , index, board, setBoard)}}>
+                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].queen , index, board, setBoard, setCheck, pieceColor)}}>
                     <img src={toPieces[pieceColor].queen} alt="queen" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].rook , index, board, setBoard)}}>
+                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].rook , index, board, setBoard, setCheck, pieceColor)}}>
                     <img src={toPieces[pieceColor].rook} alt="rook" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].bishop , index, board, setBoard)}}>
+                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].bishop , index, board,setBoard, setCheck, pieceColor)}}>
                     <img src={toPieces[pieceColor].bishop} alt="bishop" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].knight , index, board, setBoard)}}>
+                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].knight , index, board, setBoard, setCheck, pieceColor)}}>
                     <img src={toPieces[pieceColor].knight} alt="knight" />
                 </span>
             </dialog>

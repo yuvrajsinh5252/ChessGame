@@ -1,7 +1,7 @@
 import './index.css'
 import x from '../../Utilities/Pieces/index.jsx'
 
-function ShowMoves({ setBoard, setShow,setCheck, setKingTouched, setRookTouched}) {
+function ShowMoves({ setBoard }) {
     const pieces = x.pieces;
 
     return (
@@ -16,11 +16,9 @@ function ShowMoves({ setBoard, setShow,setCheck, setKingTouched, setRookTouched}
                 className="reset"
                 onClick={() => {
                     setBoard(pieces);
-                    setShow(false);
-                    setCheck([false,[-1,-1]]);
-                    setKingTouched(new Array(10).fill(false));
-                    setRookTouched(new Array(10).fill(new Array(10).fill(false)));
                     localStorage.setItem("board", JSON.stringify(pieces)); 
+                    localStorage.setItem("HistMove", JSON.stringify([-1,-1,-1,-1]));
+                    window.location.reload();
                 }}
             >
                 Restart

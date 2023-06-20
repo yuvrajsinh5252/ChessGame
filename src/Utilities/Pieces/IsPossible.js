@@ -1,5 +1,5 @@
 import { IsEqual } from "../../Components/ChessBoard";
-import { IsCheck, defendCheck } from "../CheckMate";
+import { IsCheck } from "../CheckMate";
 
 export function EnPassant( board, currElement, pos) {
   let color = (currElement.get(board[pos[0]][pos[1]]) === "pawn_w" ? "pawn_b" : "pawn_w");
@@ -12,7 +12,7 @@ export function EnPassant( board, currElement, pos) {
 
 function sameColor(board, currElement, currentDrag, pos) {
   const drop = currElement.get(board[pos[2]][pos[3]]);
-  if (drop === null) return false;
+  if (drop === null || currentDrag.length == 0) return false;
   if (drop[drop.length - 1] === currentDrag[currentDrag.length - 1])
     return true;
   return false;
@@ -42,7 +42,7 @@ function castle(currElement, board, pos, kingTouched, rookTouched) {
   }
 }
 
-function PawnMove(board, currElement, pos) {
+function PawnMove(board, currElement, pos, checkEnpassant) {
   let EnPassantPawn = JSON.parse(localStorage.getItem("EpMove"));
 
   let temp = (currElement.get(board[pos[0]][pos[1]]) === "pawn_w" ? 1 : -1);
@@ -58,9 +58,10 @@ function PawnMove(board, currElement, pos) {
     currElement.get(board[pos[0] - temp][pos[1]]) === "null") {
       if (pos[1] == pos[3] && pos[0] == pos[2] + (temp * 2)) { // two step forward
         EnPassantPawn = EnPassant(board, currElement, pos);
+        if (checkEnpassant)
         localStorage.setItem("EpMove", JSON.stringify(EnPassantPawn))
         return true;
-      };
+      }
     } else if (IsEqual(EnPassantPawn, pos)) {
       localStorage.setItem("EpMove", JSON.stringify(EnPassantPawn));
       return true;
@@ -99,7 +100,7 @@ function BishopMove(board,currElement,pos) {
 }
 
 // Game logic for checking if a move is possible
-function isPossible(board,currElement,pos,kingTouched, rookTouched) {
+function isPossible(board,currElement,pos,kingTouched, rookTouched, checkEnpassant) {
   let drag = currElement.get(board[pos[0]][pos[1]])
   if (sameColor(board, currElement, drag, pos)) return false;
 
@@ -135,7 +136,7 @@ function isPossible(board,currElement,pos,kingTouched, rookTouched) {
     }
   } 
   else if (currElement.get(board[pos[0]][pos[1]]).startsWith("pawn")) { // Pawn movement check
-    return PawnMove(board, currElement, pos);
+    return PawnMove(board, currElement, pos, checkEnpassant);
   } 
 }
 

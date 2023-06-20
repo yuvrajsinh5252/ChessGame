@@ -22,19 +22,14 @@ function Home() {
 
   return (
     <div className="home">
-      <ShowMoves
-        setBoard={setBoard}
-        setShow={setShow}
-        setCheck={setCheck}
-        setKingTouched={setKingTouched}
-        setRookTouched={setRookTouched}
-      />
+      <ShowMoves setBoard={setBoard}/>
       <PawnPromote
         openIt={pawnPromote}
         setPawnPromote={setPawnPromote}
         board={board}
         setBoard={setBoard}
         index={over}
+        setCheck={setCheck}
       />
       <div className="chess">
         <Chessboard

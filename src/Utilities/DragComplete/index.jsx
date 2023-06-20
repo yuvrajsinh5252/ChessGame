@@ -1,22 +1,24 @@
-import isPossible from "../Pieces/IsPossible";
 import { IsEqual } from "../../Components/ChessBoard";
-import { defendCheck } from "../CheckMate";
+import { defendCheck, IsCheck } from "../CheckMate";
 
-function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote) {
+function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote, setCheck, check, setGameOver) {
   setShow(false);
 
   let i = currentDrag[0];
   let j = currentDrag[1];
   let a = over[0];
   let b = over[1];
-  let pos = [i,j,a,b];
+  let pos = [i, j, a, b];
 
-  if (i == a && j == b) return [[-1, -1],[-1,-1]];
-  
-  let possibleMoves = defendCheck(board, currElement, turn, pos[0], pos[1]);
+  let temp = JSON.parse(JSON.stringify(board));
+  let EnPassantMove = JSON.parse(localStorage.getItem("EpMove"))
+
+  if (i == a && j == b) return false;
+
+  let possibleMoves = defendCheck(board, currElement, turn, pos[0], pos[1], true);  
   let possible = false;
   for (const move of possibleMoves) {
-    if (IsEqual(move, [pos[2],pos[3]])) {
+    if (IsEqual(move, [pos[2], pos[3]])) {
       possible = true;
       break;
     }
@@ -30,14 +32,11 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
     setPawnPromote([true, color]);
   }
 
-  var temp = JSON.parse(JSON.stringify(board));
-  var EnPassantMove = JSON.parse(localStorage.getItem("EpMove"))
-
   if (IsEqual(pos, EnPassantMove)) {
     let x = (turn == "w" ? 1 : -1);
     temp[pos[2] + x][pos[3]] = null;
-  }  
-  
+  }
+
   if (possible) {
     temp[i][j] = null;
     temp[a][b] = board[i][j];
@@ -65,14 +64,42 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
     if (!pawnPromote[0]) {
       setTurn(turn == "w" ? "b" : "w");
       localStorage.setItem("turn", JSON.stringify(turn == "w" ? "b" : "w"))
-    } 
+    }
   }
   localStorage.setItem("board", JSON.stringify(temp));
   localStorage.setItem("kingTouched", JSON.stringify(kingTouched));
   localStorage.setItem("rookTouched", JSON.stringify(rookTouched));
+  localStorage.setItem("HistMove", JSON.stringify(pos));
   setBoard(temp);
 
-  return temp;
+  let kingPos = IsCheck(temp, currElement, turn);
+  let kingPos2 = IsCheck(temp, currElement, turn == "w" ? "b" : "w");
+  let king = (kingPos[0] != -1 ? kingPos : kingPos2);
+
+  if (king[0] != -1) {
+    check = [true, king];
+    setCheck([true, king]);
+  }
+  else setCheck([false, [-1, -1]]);
+
+  let IsGameOver = new Set();
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      if (currElement.get(board[i][j]) != "null") {
+        let temp1 = defendCheck(temp, currElement, (turn == 'w' ? 'b' : 'w'), i, j);
+        if (temp1.size != 0) IsGameOver.add([i, j])
+      }
+    }
+  }
+
+  if (IsGameOver.size == 0) {
+    if (check[0]) {
+      setGameOver([true, "CheckMate", turn]);
+    } else {
+      setGameOver([true, "Draw", turn]);
+    }
+  }
+  return possible;
 }
 
 export default DragComplete;
