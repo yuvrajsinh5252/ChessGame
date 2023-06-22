@@ -1,54 +1,82 @@
-.player1, .player2,.moves {
-    border-radius: 10px;
-    background: rgb(64, 63, 63);
-    margin-bottom: 10px;
+.player1, .player2,.moves_container {
     color: white;
+}
+.turn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 140px;
+    font-size: 25px;
+    font-weight: 700;
+    position: fixed;
+    background: black;
+    height: 50px;
+    width: 370px;
+}
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.player1, .player2 {
+    margin-left: 10px;
 }
 .cont {
     display: flex;
     flex-direction: column;
 }
+.move {
+    display: flex;
+    gap: 10px;
+}
 .showMove{
     background: black;
-    height: 710px;
-    min-width: 420px;
-    border-radius: 20px;
-    padding: 10px;  
-    margin-left: 10;
+    height: 100vh;
+    width: 470px;
 }
-.player1 {
-    height: 110px;
+.moveName1 {
+    width: 100px;
 }
-.moves {
-    height: 450px;
+.moveName1,.moveName2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+.moveNumber {
+    margin-left: 10px;
+    font-size: 20px;
+    margin-top: 20px;
+    color: gray;
+    width: 40px;
+}
+.notation {
+    margin-top: 35px;
+}
+.move_gap {
+    display: flex;
+    gap: 120px;
+}
+.moves_container {
+    height: 74vh;
     overflow-y: scroll;
 }
-.player2 {
-    height: 110px;
+.player1, .player2 {
+    height: 13vh;
+    display: flex;
+    align-items: center;
 }
-.reset {
-    margin-top: 65px;
-	border-radius: 10px;
-	border: 2px solid black;
-	background: rgb(238,238,210);
-	width: 200px;
-	height: 50px;
-    font-size: 25px;
-    font-weight: 600;
-}
-.reset:hover {
-    background: rgb(118,150,86);
-    cursor: pointer;
-    transition: 0.2s;
+.profile1, .profile2 {
+    width: 10vh;
+    height: 10vh;
+    border-radius: 100px;
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%, rgba(255,255,255,0) 100%);
 }
 ::-webkit-scrollbar {
     width: 10px;
 } 
 ::-webkit-scrollbar-track {
     background: rgb(135, 126, 126);
-    border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
     background: #fef4f4; 
-    border-radius: 10px;
 }

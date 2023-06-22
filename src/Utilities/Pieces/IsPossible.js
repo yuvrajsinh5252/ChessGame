@@ -1,5 +1,4 @@
 import { IsEqual } from "../../Components/ChessBoard";
-import { IsCheck } from "../CheckMate";
 
 export function EnPassant( board, currElement, pos) {
   let color = (currElement.get(board[pos[0]][pos[1]]) === "pawn_w" ? "pawn_b" : "pawn_w");
@@ -38,7 +37,7 @@ function castle(currElement, board, pos, kingTouched, rookTouched) {
       !rookTouched[index][7] &&
       pos[2] == index && pos[3] == 6
       ) return true;
-    return false;
+  return false;
   }
 }
 
@@ -127,13 +126,7 @@ function isPossible(board,currElement,pos,kingTouched, rookTouched, checkEnpassa
       (Math.abs(pos[0] - pos[2]) <= 1 &&
       Math.abs(pos[1] - pos[3]) <= 1 ) ||
       castle(currElement, board, pos,kingTouched, rookTouched)
-    ) {
-      let tempBoard = JSON.parse(JSON.stringify(board));
-      tempBoard[pos[2]][pos[3]] = board[pos[0]][pos[1]];
-      tempBoard[pos[0]][pos[1]] = null;
-      if (IsCheck(tempBoard, currElement, (drag.at(-1) == 'w' ? 'b' : 'w'))[0] != -1) return false;
-      return true;
-    }
+    ) return true;
   } 
   else if (currElement.get(board[pos[0]][pos[1]]).startsWith("pawn")) { // Pawn movement check
     return PawnMove(board, currElement, pos, checkEnpassant);

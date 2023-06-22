@@ -6,6 +6,7 @@ import { defendCheck } from "../../Utilities/CheckMate";
 import { useState } from "react";
 
 if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
+if (!localStorage.getItem("Notation")) localStorage.setItem("Notation", JSON.stringify({Moves: []}));
 
 export function IsEqual(x , y) {
   if (x.length != y.length) return false;
@@ -13,7 +14,7 @@ export function IsEqual(x , y) {
   return true;
 }
 
-function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver }) {
+function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, children }) {
 
   const { pieces, currElement } = x;
   const [ prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
@@ -79,7 +80,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
           {board.map((row, idx) => {
             return (
               <div key={idx}>
-              <div className="idx">{idx}</div>
+              <div className="idx">{8 - idx}</div>
               <div className="rows">
                 {row.map((el, idx2) => {
                   return (
@@ -122,7 +123,6 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                         )) {
                           setPrevMove([...currentDrag, ...over]);
                           localStorage.setItem("HistMove", JSON.stringify(prevMove));
-                          console.log(prevMove)
                         }
                           setAvailableSpc(new Set());
                           setCurrentDrag([-1,-1]);
@@ -133,12 +133,17 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                       }}
                       key={idx2}
                       className={
-                        ((idx + idx2) % 2 == 0 ? "white" : "black") + " " +
-                        ([...kill].some((item) => IsEqual(item, [idx,idx2])) && show
-                          ? "red" : "") + " " +
-                        (IsEqual(check[1], [idx,idx2]) ? "check" : "") + " " +
-                        (IsEqual([prevMove[0],prevMove[1]], [idx,idx2]) ? "over" : "") + " " +
-                        (IsEqual([prevMove[2], prevMove[3]], [idx,idx2]) ? "select" : "") 
+                        ((idx + idx2) % 2 == 0 ? "white" : "black")
+                        + " " +
+                        ([...kill].some((item) => IsEqual(item, [idx,idx2])) && show ? "red" : "")
+                        + " " +
+                        (IsEqual(check[1], [idx,idx2]) ? "check" : "")
+                        + " " +
+                        (IsEqual([prevMove[0],prevMove[1]], [idx,idx2]) ? 
+                        ((idx%2 != 0 && idx2%2==0) || (idx%2 == 0 && idx2%2!=0) ? "selWhite" : "over") : "")
+                        + " " +
+                        (IsEqual([prevMove[2], prevMove[3]], [idx,idx2]) ? 
+                        ((idx%2 != 0 && idx2%2==0) || (idx%2 == 0 && idx2%2!=0) ? "selWhite" : "select") : "") 
                       }
                     >
                       {board[idx][idx2] ? (
@@ -160,6 +165,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
             );
           })}
         </div>
+      {children}
       </div>
     </>
   );

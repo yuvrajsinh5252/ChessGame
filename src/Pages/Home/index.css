@@ -1,8 +1,8 @@
 .home {
+    height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    gap: 100px;
+    gap: 80px;
 }
 .chess {
     display: flex;

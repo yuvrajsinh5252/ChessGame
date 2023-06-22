@@ -6,8 +6,8 @@
 body {
 	overflow: hidden;
 	font-family: sans-serif;
-	background: rgb(119, 121, 119);
-	transition: all 0.5s;
+	background: rgb(84, 84, 83);
+	position: fixed;
 }
 img {
 	height: 100px;
@@ -16,6 +16,21 @@ img {
 }
 img:hover {
 	scale: 1.07;
+}
+.reset {
+    margin-top: 5px;
+	border-radius: 10px;
+	border: 2px solid black;
+	background: rgb(238,238,210);
+	width: 200px;
+	height: 50px;
+    font-size: 25px;
+    font-weight: 600;
+}
+.reset:hover {
+    background: rgb(118,150,86);
+    cursor: pointer;
+    transition: 0.2s;
 }
 .container {
 	display: flex;
@@ -48,7 +63,6 @@ img:hover {
 	height: 100px;
 	width: 100px;
 	background: rgb(221, 102, 38) !important;
-	opacity: 1;
 }
 .check {
 	background: rgb(207, 62, 62);
@@ -58,18 +72,20 @@ img:hover {
 	flex-direction: row;
 	align-items: center;
 }
-.over, .select {
+.select,.over {
 	background-color: rgb(186,202,43);
+}
+.selWhite {
+	background: rgb(246,246,104);
 }
 .chessboard {
 	height: 100vh;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
-	align-items: center;
-	margin-right: 400px;
 }
 .border {
-	border: 15px solid rgb(62, 62, 62);
+	border: 12px solid black;
 	border-radius: 10px;	
 	position: relative;
 }

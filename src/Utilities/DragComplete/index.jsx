@@ -2,6 +2,7 @@ import { IsEqual } from "../../Components/ChessBoard";
 import { defendCheck, IsCheck } from "../CheckMate";
 
 function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote, setCheck, check, setGameOver) {
+  let noatation = JSON.parse(localStorage.getItem("Notation"))
   setShow(false);
 
   let i = currentDrag[0];
@@ -9,8 +10,12 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   let a = over[0];
   let b = over[1];
   let pos = [i, j, a, b];
-
+  let killNote = "";
+  let noting = false;
+  
   let temp = JSON.parse(JSON.stringify(board));
+  
+  let obj = (currElement.get(temp[pos[0]][pos[1]]).startsWith("pawn") ? '' : currElement.get(temp[pos[0]][pos[1]])[0].toUpperCase())
   let EnPassantMove = JSON.parse(localStorage.getItem("EpMove"))
 
   if (i == a && j == b) return false;
@@ -35,20 +40,27 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   if (IsEqual(pos, EnPassantMove)) {
     let x = (turn == "w" ? 1 : -1);
     temp[pos[2] + x][pos[3]] = null;
+    noatation.Moves.push(`${String.fromCharCode(j + 97)}x${String.fromCharCode(b + 97)}${8-a}`);
+    noting = true;
   }
 
   if (possible) {
-    temp[i][j] = null;
+    if (temp[a][b] != null) killNote = 'x';
     temp[a][b] = board[i][j];
+    temp[i][j] = null;
 
     if (currElement.get(board[i][j]).startsWith("king")) {
       if (!kingTouched[i]) {
         if (b == 6) {
           temp[i][5] = temp[i][7];
           temp[i][7] = null;
+          noatation.Moves.push("O-O");
+          noting = true;
         } else if (b == 2) {
           temp[i][3] = temp[i][0];
           temp[i][0] = null;
+          noatation.Moves.push("O-O-O");
+          noting = true;
         }
         kingTouched[i] = true;
         setKingTouched(kingTouched);
@@ -82,6 +94,9 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   }
   else setCheck([false, [-1, -1]]);
 
+  if (!noting && possible) noatation.Moves.push(`${obj+killNote+String.fromCharCode(j + 97)+(8-i)+(check[0] ? '+' : '')}`);
+  localStorage.setItem("Notation", JSON.stringify(noatation))
+  
   let IsGameOver = new Set();
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {

@@ -1,31 +1,68 @@
-import './index.css'
-import x from '../../Utilities/Pieces/index.jsx'
+import "./index.css";
+import React, { useEffect, useRef } from "react";
 
-function ShowMoves({ setBoard }) {
-    const pieces = x.pieces;
+function ShowMoves() {
+  const Moves = JSON.parse(localStorage.getItem("Notation") || "[]");
+  const lastElem = useRef();
 
-    return (
-        <>
-        <div className='cont'>
-            <div className="showMove">
-                <div className='player1'></div>
-                <div className="moves"></div>
-                <div className="player2"></div>
+  useEffect(() => {
+    if (lastElem.current)
+    lastElem.current.scrollIntoView({behavior: "smooth"});
+  });
+
+  return (
+    <>
+      <div className="player">
+        <div className="showMove">
+          <div className="player1">
+            <div className="profile1">
+              <div className="time"></div>
             </div>
-            <button
-                className="reset"
-                onClick={() => {
-                    setBoard(pieces);
-                    localStorage.setItem("board", JSON.stringify(pieces)); 
-                    localStorage.setItem("HistMove", JSON.stringify([-1,-1,-1,-1]));
-                    window.location.reload();
-                }}
-            >
-                Restart
-            </button>
+          </div><hr />
+          <div className="moves_container">
+            <div className="turn">
+              <div className="bturn">White</div>
+              <div className="wturn">Black</div>
+            </div>
+            <div className="notation">
+            {Moves.Moves.map((move, index) => {
+              return [index, move];
+            })
+              .map((x) => {
+                const e = (
+                  <>
+                    <div className="moveNumber">{x[0] + 1}</div>
+                    <div className="move_gap">
+                      <div className="moveName1">{x[1]}</div>
+                      <div className="moveName2">{x[1]}</div>
+                    </div>
+                  </>
+                );
+                if (x[0] === Moves.Moves.length - 1) {
+                  return (
+                    <div ref={lastElem} key={x[0]} className="move">
+                      {e}
+                    </div>
+                  );
+                }
+                return (
+                  <div key={x[0]} className="move">
+                    {e}
+                  </div>
+                );
+              })}
+          </div>
+          </div>
+          <hr />
+          <div className="player2">
+            <div className="profile2">
+              <div className="time"></div>
+            </div>
+          </div>
         </div>
-        </>
-    )   
+      </div>
+    </>
+  );
 }
 
-export default ShowMoves
+export default ShowMoves;
