@@ -3,6 +3,7 @@ import { defendCheck, IsCheck } from "../CheckMate";
 
 function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote, setCheck, check, setGameOver) {
   let noatation = JSON.parse(localStorage.getItem("Notation"))
+  let kill = JSON.parse(localStorage.getItem("PieceKilled"));
   setShow(false);
 
   let i = currentDrag[0];
@@ -14,6 +15,7 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   let noting = false;
   
   let temp = JSON.parse(JSON.stringify(board));
+  localStorage.setItem("Undo", JSON.stringify(temp));
   
   let obj = (currElement.get(temp[pos[0]][pos[1]]).startsWith("pawn") ? '' : currElement.get(temp[pos[0]][pos[1]])[0].toUpperCase())
   let EnPassantMove = JSON.parse(localStorage.getItem("EpMove"))
@@ -39,13 +41,20 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
 
   if (IsEqual(pos, EnPassantMove)) {
     let x = (turn == "w" ? 1 : -1);
+    kill.push(board[pos[2] + x][pos[3]]);
     temp[pos[2] + x][pos[3]] = null;
-    noatation.Moves.push(`${String.fromCharCode(j + 97)}x${String.fromCharCode(b + 97)}${8-a}`);
+    killNote = 'x';
+    noatation.Moves.push(`${String.fromCharCode(j + 97)}${8-a}x${String.fromCharCode(b + 97)}${8-a+x}`);
+    localStorage.setItem("EpMove", JSON.stringify([-1,-1,-1,-1]))
+    // noatation.Moves.push(`${String.fromCharCode(j + 97)}x${String.fromCharCode(b + 97)}${8-a}`);
     noting = true;
   }
 
   if (possible) {
-    if (temp[a][b] != null) killNote = 'x';
+    if (temp[a][b] != null) {
+      killNote = 'x';
+      kill.push(temp[a][b]);
+    }
     temp[a][b] = board[i][j];
     temp[i][j] = null;
 
@@ -78,10 +87,13 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
       localStorage.setItem("turn", JSON.stringify(turn == "w" ? "b" : "w"))
     }
   }
+
   localStorage.setItem("board", JSON.stringify(temp));
   localStorage.setItem("kingTouched", JSON.stringify(kingTouched));
   localStorage.setItem("rookTouched", JSON.stringify(rookTouched));
-  localStorage.setItem("HistMove", JSON.stringify(pos));
+  localStorage.setItem("PieceKilled", JSON.stringify(kill));
+  if (possible)
+    localStorage.setItem("HistMove", JSON.stringify(pos));
   setBoard(temp);
 
   let kingPos = IsCheck(temp, currElement, turn);
@@ -92,10 +104,16 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
     check = [true, king];
     setCheck([true, king]);
   }
-  else setCheck([false, [-1, -1]]);
+  else {
+    check = [false, [-1, -1]];
+    setCheck([false, [-1, -1]]);
+  }
 
-  if (!noting && possible) noatation.Moves.push(`${obj+killNote+String.fromCharCode(j + 97)+(8-i)+(check[0] ? '+' : '')}`);
+  if (!noting && possible) {
+    noatation.Moves.push(`${obj+killNote+String.fromCharCode(j + 97)+(8-i)+(check[0] ? '+' : '')}`);
+  }
   localStorage.setItem("Notation", JSON.stringify(noatation))
+  localStorage.setItem("check", JSON.stringify(check));
   
   let IsGameOver = new Set();
   for (let i = 0; i < 8; i++) {
@@ -110,8 +128,10 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   if (IsGameOver.size == 0) {
     if (check[0]) {
       setGameOver([true, "CheckMate", turn]);
+      noatation.Moves.push('#');
     } else {
       setGameOver([true, "Draw", turn]);
+      noatation.Moves.push('1/2-1/2');
     }
   }
   return possible;

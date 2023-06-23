@@ -1,11 +1,12 @@
+import "./index.css";
 import React from "react";
 import { useState } from "react";
-import "./index.css";
 import Chessboard from "../../Components/ChessBoard";
 import ShowMoves from "../../Components/Move";
 import PawnPromote from "../../Components/PawnPromote";
 import GameoOver from "../../Components/GameOver";
-import x from "../../Utilities/Pieces"
+import Hamburger from "../../Components/Hamburger";
+import KilledPiece from "../../Components/KilledPiece";
 
 function Home() {
   const [board, setBoard] = useState([]);
@@ -21,31 +22,19 @@ function Home() {
   const [check, setCheck] = useState([false,[-1,-1]]);
   const [gameOver, setGameOver] = useState([false, "", ""]);
 
-  const{pieces} = x;
-
   return (
     <div className="home">
-      <ShowMoves {...setBoard}/>
+      <Hamburger setBoard={setBoard} />
+      <ShowMoves {...setBoard} />
       <PawnPromote
         {...{pawnPromote, setPawnPromote, board, setBoard, over, setCheck}}
       />
       <div className="chess">
         <Chessboard
-            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver}}
-        >
-          <button
-                className="reset"
-                onClick={() => {
-                    setBoard(pieces);
-                    localStorage.setItem("board", JSON.stringify(pieces)); 
-                    localStorage.setItem("HistMove", JSON.stringify([-1,-1,-1,-1]));
-                    localStorage.setItem("Notation", JSON.stringify({Moves: []}));
-                    window.location.reload();
-                }}
-          >Restart</button>
-        </Chessboard>
+            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver}}/>
         <GameoOver {...{gameOver}}/>
       </div>
+      <KilledPiece />
     </div>
   );
 }

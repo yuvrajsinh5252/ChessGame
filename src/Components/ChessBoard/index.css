@@ -3,34 +3,21 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+:root {
+	--cell-size: 100px;
+}
 body {
 	overflow: hidden;
 	font-family: sans-serif;
-	background: rgb(84, 84, 83);
 	position: fixed;
 }
-img {
-	height: 100px;
-	width: 100px;
+.drag {
+	height: var(--cell-size);
+	width: var(--cell-size);
 	cursor: pointer;
 }
 img:hover {
 	scale: 1.07;
-}
-.reset {
-    margin-top: 5px;
-	border-radius: 10px;
-	border: 2px solid black;
-	background: rgb(238,238,210);
-	width: 200px;
-	height: 50px;
-    font-size: 25px;
-    font-weight: 600;
-}
-.reset:hover {
-    background: rgb(118,150,86);
-    cursor: pointer;
-    transition: 0.2s;
 }
 .container {
 	display: flex;
@@ -41,8 +28,8 @@ img:hover {
 	font-weight: 600;
 }
 .white, .black {
-	height: 100px;
-	width: 100px;
+	height: var(--cell-size);
+	width: var(--cell-size);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -54,14 +41,14 @@ img:hover {
 	background: rgb(238,238,210);
 }
 .green {
-	height: 100px;
-	width: 100px;
+	height: var(--cell-size);
+	width: var(--cell-size);
 	background: radial-gradient(rgb(12, 13, 13) 25%, transparent 0%);
 	opacity: 0.3;
 }
 .red {
-	height: 100px;
-	width: 100px;
+	height: var(--cell-size);
+	width: var(--cell-size);
 	background: rgb(221, 102, 38) !important;
 }
 .check {
@@ -85,19 +72,38 @@ img:hover {
 	justify-content: center;
 }
 .border {
-	border: 12px solid black;
+	padding: 7px;
+	border: 12px solid rgb(182, 194, 190);
 	border-radius: 10px;	
 	position: relative;
 }
 .idx {
-	height: 100px;
+	height: var(--cell-size);
 	position: absolute;
-	right: 98.5%;
+	right: 97.5%;
 	font-weight: 600;
 	color: black;
 }
 .alpha2 {
 	position: absolute;
-	top: 97.8%;
+	top: 96.8%;
 	color: black;
+}
+@media screen and (max-width: 600px) {
+	:root {
+		--cell-size: 45px;
+	}
+	.border {
+		padding: 3px;
+		border: 6px solid rgb(182, 194, 190);
+		border-radius: 5px;
+	}
+	.idx, .alpha2 {
+		font-size: 8px;
+	}
+	.reset {
+		width: 100px;
+		height: 30px;
+		font-size: 15px;
+	}
 }

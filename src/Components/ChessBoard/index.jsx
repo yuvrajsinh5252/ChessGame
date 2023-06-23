@@ -7,6 +7,9 @@ import { useState } from "react";
 
 if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
 if (!localStorage.getItem("Notation")) localStorage.setItem("Notation", JSON.stringify({Moves: []}));
+if (!localStorage.getItem("PieceKilled")) localStorage.setItem("PieceKilled", JSON.stringify([]));
+if (!localStorage.getItem("Redo")) localStorage.setItem("Redo", JSON.stringify([]));
+if (!localStorage.getItem("Undo")) localStorage.setItem("Undo", JSON.stringify([]));
 
 export function IsEqual(x , y) {
   if (x.length != y.length) return false;
@@ -17,7 +20,7 @@ export function IsEqual(x , y) {
 function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, children }) {
 
   const { pieces, currElement } = x;
-  const [ prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
+  let [ prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
 
   useEffect(() => { // Setting up the board
     var temp = localStorage.getItem("board");
@@ -25,9 +28,13 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
     var rookTouched = localStorage.getItem("rookTouched");
     var turns = localStorage.getItem("turn");
     var move = localStorage.getItem("HistMove");
+    var check = localStorage.getItem("check");
 
     if (move) setPrevMove(JSON.parse(move));
     else localStorage.setItem("HistMove", JSON.stringify(prevMove));
+
+    if (check) setCheck(JSON.parse(check));
+    else localStorage.setItem("check", JSON.stringify([false,[-1,-1]]));
 
     if (!temp) {
       var temp_board = [];
@@ -122,7 +129,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                           turn, setTurn, pawnPromote, setCheck, check, setGameOver
                         )) {
                           setPrevMove([...currentDrag, ...over]);
-                          localStorage.setItem("HistMove", JSON.stringify(prevMove));
+                          localStorage.setItem("HistMove", JSON.stringify([...currentDrag, ...over]));
                         }
                           setAvailableSpc(new Set());
                           setCurrentDrag([-1,-1]);

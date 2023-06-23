@@ -1,8 +1,10 @@
 .home {
     height: 100vh;
+    width: 100vw;   
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 80px;
+	background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112));
 }
 .chess {
     display: flex;

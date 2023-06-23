@@ -22,6 +22,7 @@ function PromoteThis(setPawnPromote, target,curr ,board, setBoard, setCheck, pie
         setCheck([true, king]);
     }
     else setCheck([false, [-1, -1]]);
+    localStorage.setItem("board", JSON.stringify(board));
 }
 
 function PawnPromote({ pawnPromote,setPawnPromote, board, setBoard, over, setCheck}) {

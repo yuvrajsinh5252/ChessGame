@@ -18,12 +18,16 @@ function ShowMoves() {
             <div className="profile1">
               <div className="time"></div>
             </div>
-          </div><hr />
+          </div>
+          <hr />
+          
+          <div className="turn">
+            <div className="bturn">White</div>
+            <div className="wturn">Black</div>
+          </div>
+          <div className="gap"></div>
+          
           <div className="moves_container">
-            <div className="turn">
-              <div className="bturn">White</div>
-              <div className="wturn">Black</div>
-            </div>
             <div className="notation">
             {Moves.Moves.map((move, index) => {
               return [index, move];
