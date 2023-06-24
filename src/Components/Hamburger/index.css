@@ -129,3 +129,11 @@ body {
 #menuToggle input:checked ~ ul {
   transform: none;
 }
+.NightMode, .LightMode {
+  height: 55px;
+  width: 55px;
+  position: absolute;
+  top: 1.5%;
+  right: 5%;
+  cursor: pointer;
+}

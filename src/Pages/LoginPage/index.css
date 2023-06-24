@@ -1,0 +1,56 @@
+.Login {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.Login input {
+    width: 320px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 0 10px;
+}
+.user {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.JoinRoom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.JoinRoom input {
+    width: 230px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 0 10px;
+}
+.JoinRoom button {
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    background-color: #fff;
+    cursor: pointer;
+}
+.search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-left: 12px;
+}
+.search img {
+    width: 30px;
+    height: 30px;
+}

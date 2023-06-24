@@ -1,5 +1,7 @@
 import './index.css'
 import x from "../../Utilities/Pieces"
+import Dark from "..\\public\\Assets\\DarkMode.png";
+import Light from "..\\public\\Assets\\LightMode.png";
 
 export default function Hamburger({ setBoard }) {
     const { pieces } = x;
@@ -7,6 +9,16 @@ export default function Hamburger({ setBoard }) {
 
     return (
         <nav role="navigation">
+            <img className="NightMode" src={Dark} onClick={(e) => {
+                let mode = (e.target.className == "NightMode" ? Light : Dark)
+
+                e.target.className = (e.target.className == "NightMode" ? "LightMode" : "NightMode")
+                document.getElementsByClassName(e.target.className)[0].src = mode;
+
+                let background = document.getElementsByClassName("home")[0]
+                if (e.target.className == "NightMode") background.style = "background: rgb(35,35,35)"
+                else background.style = "background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112))"
+            }} />
             <div id="menuToggle">
                 <input type="checkbox" />
                 <span></span>

@@ -4,7 +4,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-	background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112));
+    /* background: rgb(35,35,35);
+	background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112)); */
 }
 .chess {
     display: flex;
