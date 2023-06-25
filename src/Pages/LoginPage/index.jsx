@@ -7,7 +7,7 @@ export default function LoginPage() {
     <div className="Login">
       <div className="user">
         <h1>Enter your username</h1>
-        <input type="text" placeholder="Enter Username"/>
+        <input type="text" placeholder="Username"/>
       </div>
       <div className="JoinRoom">
         <button>Join Room</button>

@@ -5,11 +5,10 @@ import LoginPage from './Pages/LoginPage';
 function Game() { 
   return (
       <>
-        {/* <LoginPage /> */}
+        {/* (IsloggedIn ? <LoginPage/> : <></>) */}
         <BrowserRouter>
             <Routes>
               <Route path='/' element={<Home />} />
-              {/* <Route path='/LoginPage'element={<LoginPage />} /> */}
             </Routes>
         </BrowserRouter>
       </>

@@ -3,13 +3,13 @@ import x from "../../Utilities/Pieces/index.jsx";
 import { useEffect } from "react";
 import DragComplete from "../../Utilities/DragComplete";
 import { defendCheck } from "../../Utilities/CheckMate";
-import { useState } from "react";
+
+const { pieces, currElement } = x;
 
 if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
 if (!localStorage.getItem("Notation")) localStorage.setItem("Notation", JSON.stringify({Moves: []}));
 if (!localStorage.getItem("PieceKilled")) localStorage.setItem("PieceKilled", JSON.stringify([]));
-if (!localStorage.getItem("Redo")) localStorage.setItem("Redo", JSON.stringify([]));
-if (!localStorage.getItem("Undo")) localStorage.setItem("Undo", JSON.stringify([]));
+if (!localStorage.getItem("Undo")) localStorage.setItem("Undo", JSON.stringify(pieces));
 
 export function IsEqual(x , y) {
   if (x.length != y.length) return false;
@@ -17,10 +17,7 @@ export function IsEqual(x , y) {
   return true;
 }
 
-function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, children }) {
-
-  const { pieces, currElement } = x;
-  let [ prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
+function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, children, prevMove, setPrevMove }) {
 
   useEffect(() => { // Setting up the board
     var temp = localStorage.getItem("board");

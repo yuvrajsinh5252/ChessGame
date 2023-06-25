@@ -2,6 +2,7 @@ import { IsEqual } from "../../Components/ChessBoard";
 import { defendCheck, IsCheck } from "../CheckMate";
 
 function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote, turn, setTurn, pawnPromote, setCheck, check, setGameOver) {
+  
   let noatation = JSON.parse(localStorage.getItem("Notation"))
   let kill = JSON.parse(localStorage.getItem("PieceKilled"));
   setShow(false);

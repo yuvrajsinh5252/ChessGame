@@ -11,6 +11,7 @@
     position: fixed;
     height: 50px;
     width: 410px;
+    color: #cdcdcd;
 }
 .player {
     display: flex;
