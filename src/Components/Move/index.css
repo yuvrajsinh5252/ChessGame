@@ -5,6 +5,12 @@
     display: flex;
     flex-wrap: wrap;
 }
+.rating1 span  {
+    font-size: 15px;
+}
+.rating2 span {
+    font-size: 15px;
+}
 .time, .time1{
     display: flex;
     flex-direction: row;
@@ -12,12 +18,24 @@
     align-items: center;
     color: #cdcdcd;
 }
+.piecesPoints1 {
+    position: absolute;
+    top: 10%;
+    left: 26%;
+    width: inherit
+}
+.piecesPoints2 {
+    position: absolute;
+    bottom: 0%;
+    left: 26%;
+}
 .colon {
     margin-bottom: 9px;
 }
 .time, .time1 {
     font-weight: 700;
     font-size: 50px;
+    margin-bottom: 25px;
 }
 .rating1, .rating2 {
     font-size: 20px;
@@ -31,6 +49,7 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
+    margin-bottom: 25px;
 }
 .turn {
     display: flex;
@@ -70,6 +89,13 @@
     height: 100vh;
     width: 470px;
 }
+.points {
+    width: 24px;
+    height: 25px;
+}
+.changeTurn {
+    opacity: 0.5;
+}
 .moveName1 {
     width: 100px;
 }
@@ -102,7 +128,7 @@
     align-items: center;
     margin-left: 10px;
     display: flex;
-    gap: 20px;
+    gap: 23px;
 }
 .profile1, .profile2 {
     width: 10vh;

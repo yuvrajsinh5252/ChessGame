@@ -1,9 +1,12 @@
 import "./index.css";
 import React, { useEffect, useRef } from "react";
+import x from "../../Utilities/Pieces";
 
 function ShowMoves({timer, setTimer, turn, setGameOver}) {
   const Moves = JSON.parse(localStorage.getItem("Notation") || "[]");
   const lastElem = useRef();
+  let chessPiece = JSON.parse(localStorage.getItem("PieceKilled"));
+  let currElement = x.currElement;
 
   useEffect(() => {
     if (lastElem.current)
@@ -34,11 +37,11 @@ function ShowMoves({timer, setTimer, turn, setGameOver}) {
     <>
       <div className="player">
         <div className="showMove">
-          <div className="player1">
+          <div className={(turn == "w" ? "changeTurn" : "") + " " + "player1"}>
             <img src="https://rb.gy/8p6c4" className="profile1" />
             <div className="nameTag">
               <div className="name2">Yuvrajsinh</div>
-              <div className="rating1">1400</div>
+              <div className="rating1">1400<span>+(43)</span></div>
             </div>
             <div className="time">
               {timer[0][0] < 10 ? <>0</> : <></>}
@@ -46,6 +49,11 @@ function ShowMoves({timer, setTimer, turn, setGameOver}) {
               {timer[0][1] < 10 ? <>0</> : <></>}
               {timer[0][1]}
             </div>
+          </div>
+          <div className="piecesPoints1">
+            {chessPiece.map((piece, index) => {
+              return currElement.get(piece).endsWith("w") ? (<img className="points" key={index} src={piece} />) : ("");
+            })}
           </div>
           <hr />
           
@@ -79,11 +87,11 @@ function ShowMoves({timer, setTimer, turn, setGameOver}) {
           </div>
           </div>
           <hr />
-          <div className="player2">
+          <div className={(turn == "b" ? "changeTurn" : "") + " " + "player2"}>
             <img src="https://rb.gy/qk8n0" className="profile2" />
               <div className="nameTag">
                 <div className="name2">Yuvrajsinh</div>
-                <div className="rating2">1400</div>
+                <div className="rating2">1400<span>+(43)</span></div>
               </div>
               <div className="time1">
                 {timer[1][0] < 10 ? <>0</> : <></>}
@@ -91,6 +99,11 @@ function ShowMoves({timer, setTimer, turn, setGameOver}) {
                 {timer[1][1] < 10 ? <>0</> : <></>}
                 {timer[1][1]}
               </div>
+          </div>
+          <div className="piecesPoints2">
+            {chessPiece.map((piece, index) => {
+              return currElement.get(piece).endsWith("b") ? (<img className="points" key={index} src={piece} />) : ("");
+            })}
           </div>
         </div>
       </div>
