@@ -66,7 +66,6 @@ img:hover {
 	background: rgb(246,246,104);
 }
 .chessboard {
-	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

@@ -25,14 +25,17 @@ export function defendCheck(board, currElement, turn, drag1, drag2, checkEnpassa
 
 export function IsCheck(board, currElement, turn) {
     let kingPos = []
-    let temp = (turn === 'w' ? 'b' : 'w');
 
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            if (currElement.get(board[i][j]) == ("king_" + temp)) {
-                kingPos = [i,j];
-            }   
+    for (let k = 0; k < 2; k++) {
+        let temp = (turn === 'w' ? 'b' : 'w');
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (currElement.get(board[i][j]) == ("king_" + temp)) {
+                    kingPos = [i,j];
+                }   
+            }
         }
+        if (kingPos.length != 0) break;
     }
     
 

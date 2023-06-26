@@ -2,9 +2,11 @@ import './index.css'
 import x from "../../Utilities/Pieces"
 import Dark from "..\\public\\Assets\\DarkMode.png";
 import Light from "..\\public\\Assets\\LightMode.png";
+import { IsCheck } from '../../Utilities/CheckMate';
 
 export default function Hamburger({ setBoard, setGameOver, setTurn, setCheck, turn, setPrevMove }) {
     const { pieces } = x;
+    const { currElement } = x;
     let undo = JSON.parse(localStorage.getItem("Undo"))
     let chessPiece = JSON.parse(localStorage.getItem("PieceKilled"));
     let board = JSON.parse(localStorage.getItem("board"));
@@ -54,7 +56,11 @@ export default function Hamburger({ setBoard, setGameOver, setTurn, setCheck, tu
                                 if (JSON.stringify(board) == JSON.stringify(undo)) return;
                                 setBoard(undo);
                                 setTurn(turn == "w" ? "b" : "w");
-                                setCheck([false, [-1,-1]]);
+
+                                let kingPos = IsCheck(undo, currElement, turn);
+                                if (kingPos[0] != -1) setCheck([true, kingPos]);
+                                else setCheck([false, [-1, -1]]);
+                                
                                 setGameOver([false, "", ""]);
                                 if (board[prevMove[2]][prevMove[3]] != null) {
                                     chessPiece.pop();

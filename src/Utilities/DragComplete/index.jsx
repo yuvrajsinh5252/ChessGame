@@ -16,7 +16,6 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   let noting = false;
   
   let temp = JSON.parse(JSON.stringify(board));
-  localStorage.setItem("Undo", JSON.stringify(temp));
   
   let obj = (currElement.get(temp[pos[0]][pos[1]]).startsWith("pawn") ? '' : currElement.get(temp[pos[0]][pos[1]])[0].toUpperCase())
   let EnPassantMove = JSON.parse(localStorage.getItem("EpMove"))
@@ -32,6 +31,9 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
     }
   }
 
+  if (possible) localStorage.setItem("Undo", JSON.stringify(temp));
+  else return false; 
+
   if (
     currElement.get(board[i][j]).startsWith("pawn") &&
     (a == 0 || a == 7) && possible
@@ -45,9 +47,8 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
     kill.push(board[pos[2] + x][pos[3]]);
     temp[pos[2] + x][pos[3]] = null;
     killNote = 'x';
-    noatation.Moves.push(`${String.fromCharCode(j + 97)}${8-a}x${String.fromCharCode(b + 97)}${8-a+x}`);
+    noatation.Moves.push(`${String.fromCharCode(j + 97)}${7-a}x${String.fromCharCode(b + 97)}${8-a}`);
     localStorage.setItem("EpMove", JSON.stringify([-1,-1,-1,-1]))
-    // noatation.Moves.push(`${String.fromCharCode(j + 97)}x${String.fromCharCode(b + 97)}${8-a}`);
     noting = true;
   }
 
@@ -98,17 +99,9 @@ function DragComplete(board, setBoard, currentDrag, over, setShow, currElement, 
   setBoard(temp);
 
   let kingPos = IsCheck(temp, currElement, turn);
-  let kingPos2 = IsCheck(temp, currElement, turn == "w" ? "b" : "w");
-  let king = (kingPos[0] != -1 ? kingPos : kingPos2);
 
-  if (king[0] != -1) {
-    check = [true, king];
-    setCheck([true, king]);
-  }
-  else {
-    check = [false, [-1, -1]];
-    setCheck([false, [-1, -1]]);
-  }
+  if (kingPos[0] != -1) setCheck([true, kingPos]);
+  else setCheck([false, [-1, -1]]);
 
   if (!noting && possible) {
     noatation.Moves.push(`${obj+killNote+String.fromCharCode(j + 97)+(8-i)+(check[0] ? '+' : '')}`);

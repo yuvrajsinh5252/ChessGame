@@ -14,13 +14,8 @@ function PromoteThis(setPawnPromote, target,curr ,board, setBoard, setCheck, pie
 
     let turn = (pieceColor === "white" ? "w" : "b");
 
-    let kingPos = IsCheck(board, currElement, turn);
-    let kingPos2 = IsCheck(board, currElement, turn == "w" ? "b" : "w");
-    let king = (kingPos[0] != -1 ? kingPos : kingPos2);
-
-    if (king[0] != -1) {
-        setCheck([true, king]);
-    }
+    let king = IsCheck(board, currElement, turn);
+    if (king[0] != -1) setCheck([true, king]);
     else setCheck([false, [-1, -1]]);
     localStorage.setItem("board", JSON.stringify(board));
 }

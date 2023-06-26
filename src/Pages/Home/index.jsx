@@ -22,18 +22,20 @@ function Home() {
   const [check, setCheck] = useState([false,[-1,-1]]);
   const [gameOver, setGameOver] = useState([false, "", ""]);
   const [prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
+  const [timer, setTimer] = useState([[10,0],[10,0]]);
 
   return (
     <div className="home">
       <Hamburger {...{setBoard, setGameOver, setTurn, setCheck, turn, setPrevMove }} />
-      <ShowMoves {...setBoard} />
+      <ShowMoves {...{timer, setTimer, turn, setGameOver}} />
       <PawnPromote
         {...{pawnPromote, setPawnPromote, board, setBoard, over, setCheck}}
       />
       <div className="chess">
         <Chessboard
-            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, prevMove, setPrevMove, prevMove}}/>
-        <GameoOver {...{gameOver}}/>
+            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, prevMove, setPrevMove, prevMove}}>
+        <GameoOver {...{gameOver}} />
+        </Chessboard>
       </div>
       <KilledPiece />
     </div>
