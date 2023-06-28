@@ -1,6 +1,5 @@
 import "./index.css";
-import React from "react";
-import { useState } from "react";
+import {React, useState} from "react";
 import Chessboard from "../../Components/ChessBoard";
 import ShowMoves from "../../Components/Move";
 import PawnPromote from "../../Components/PawnPromote";
@@ -22,12 +21,11 @@ function Home() {
   const [check, setCheck] = useState([false,[-1,-1]]);
   const [gameOver, setGameOver] = useState([false, "", ""]);
   const [prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
-  const [timer, setTimer] = useState([[10,0],[10,0]]);
 
   return (
-    <div className="home">
+    <div id="home">
       <Hamburger {...{setBoard, setGameOver, setTurn, setCheck, turn, setPrevMove }} />
-      <ShowMoves {...{timer, setTimer, turn, setGameOver}} />
+      <ShowMoves {...{ turn, setGameOver}} />
       <PawnPromote
         {...{pawnPromote, setPawnPromote, board, setBoard, over, setCheck}}
       />

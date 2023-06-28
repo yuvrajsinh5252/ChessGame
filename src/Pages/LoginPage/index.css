@@ -58,8 +58,13 @@
     gap: 10px;
     margin-left: 3px;
     color: #cdcdcd;
+    visibility: hidden;
 }
 .search img {
     width: 30px;
     height: 30px;
+}
+
+button:disabled {
+    cursor: not-allowed;
 }
