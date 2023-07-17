@@ -21,7 +21,7 @@ export default function Hamburger({ setBoard, setGameOver, setTurn, setCheck, tu
                 e.target.className = (e.target.className == "NightMode" ? "LightMode" : "NightMode")
                 e.target.src = mode;
 
-                let background = document.getElementsByClassName("home")[0]
+                let background = document.getElementById("home")
                 if (e.target.className == "NightMode") background.style = "background: rgb(35,35,35)"
                 else background.style = "background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112))"
             }} />

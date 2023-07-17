@@ -2,21 +2,19 @@ import React, { useEffect } from "react";
 import "./index.css";
 import { useState } from "react";
 import loading from "..\\public\\Assets\\loading.gif";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage({ socket }) {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    socket.on("start", (data) => {
-      let players = data.game.users;
-      console.log(players)
-
-      window.location.href = `/ChessGame?room=${data.room}`
-      document.getElementById("player1").innerHTML = players[0];
-      document.getElementById("player2").innerHTML = players[1];
+    socket.on("joined", (data) => {
+        navigate(`/ChessGame?room=${data.room}`);
+        socket.emit('start', data);
     });
-  },[])
+  }, []);
 
   return (
     <div className="Login">

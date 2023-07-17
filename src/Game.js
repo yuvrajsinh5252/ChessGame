@@ -6,16 +6,12 @@ import { io } from 'socket.io-client';
 function Game() { 
   const socket = io('http://localhost:3001');
   
-  socket.on('connect', () => {
-    console.log('connected');
-  });
-
   return (
       <>
         <BrowserRouter>
             <Routes>
               <Route path='/' element={<LoginPage socket={socket} />} />
-              <Route path='/ChessGame' element={<Home />} />
+              <Route path='/ChessGame' element={<Home socket={socket} />} />
             </Routes>
         </BrowserRouter>
       </>

@@ -3,13 +3,20 @@ import React, { useEffect, useRef } from "react";
 import x from "../../Utilities/Pieces";
 import { useState } from "react";
 
-function ShowMoves({ turn, setGameOver}) {
+function ShowMoves({ turn, setGameOver, socket}) {
   const Moves = JSON.parse(localStorage.getItem("Notation") || "[]");
   const lastElem = useRef();
   let chessPiece = JSON.parse(localStorage.getItem("PieceKilled"));
   let currElement = x.currElement;
-    
+  const [players, setPlayers] = useState("");
+  
   const [timer, setTimer] = useState([[10,0],[10,0]]);
+
+  useEffect(() => {
+    socket.on('started', (data) => {
+        setPlayers(data.game.users);
+    })
+  }, [])
 
   useEffect(() => {
     if (lastElem.current)
@@ -43,7 +50,7 @@ function ShowMoves({ turn, setGameOver}) {
           <div className={(turn == "w" ? "changeTurn" : "") + " " + "player1"}>
             <img src="https://rb.gy/8p6c4" className="profile1" />
             <div className="nameTag">
-              <div className="name2" id="player1">Yuvrajsinh</div>
+              <div className="name2">{players[0]}</div>
               <div className="rating1">1400<span>+(43)</span></div>
             </div>
             <div className="time">
@@ -93,7 +100,7 @@ function ShowMoves({ turn, setGameOver}) {
           <div className={(turn == "b" ? "changeTurn" : "") + " " + "player2"}>
             <img src="https://rb.gy/qk8n0" className="profile2" />
               <div className="nameTag">
-                <div className="name2" id="player2">Yuvrajsinh</div>
+                <div className="name2">{players[1]}</div>
                 <div className="rating2">1400<span>+(43)</span></div>
               </div>
               <div className="time1">

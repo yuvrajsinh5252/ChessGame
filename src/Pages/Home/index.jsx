@@ -7,7 +7,7 @@ import GameoOver from "../../Components/GameOver";
 import Hamburger from "../../Components/Hamburger";
 import KilledPiece from "../../Components/KilledPiece";
 
-function Home() {
+function Home( {socket} ) {
   const [board, setBoard] = useState([]);
   const [over, setOver] = useState([-1, -1]);
   const [currentDrag, setCurrentDrag] = useState([-1, -1]);
@@ -25,7 +25,7 @@ function Home() {
   return (
     <div id="home">
       <Hamburger {...{setBoard, setGameOver, setTurn, setCheck, turn, setPrevMove }} />
-      <ShowMoves {...{ turn, setGameOver}} />
+      <ShowMoves {...{ turn, setGameOver, socket}} />
       <PawnPromote
         {...{pawnPromote, setPawnPromote, board, setBoard, over, setCheck}}
       />
