@@ -31,7 +31,7 @@ function Home( {socket} ) {
       />
       <div className="chess">
         <Chessboard
-            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, prevMove, setPrevMove, prevMove}}>
+            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, prevMove, setPrevMove, prevMove, socket}}>
         <GameoOver {...{gameOver}} />
         </Chessboard>
       </div>
