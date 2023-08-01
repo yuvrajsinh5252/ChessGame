@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function LoginPage({ socket }) {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const [waiting, setWaiting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,26 +19,45 @@ export default function LoginPage({ socket }) {
 
   return (
     <div className="Login">
-      <div className="user">
-        <h1>Enter your username</h1>
-        <input onChange={(e) => setName(e.target.value)} id="user1" type="text" placeholder="Username"/>
-      </div>
-      <div className="JoinRoom">
-        <button 
-          disabled={name !== "" && room !== "" ? false : true}
-          onClick={()=> {
-            if (name[0] !== null) {
-              socket.emit("join", {name, room});
-              document.getElementsByClassName("search")[0].style.visibility = "visible";
-            }            
-          }}
-        >Join Room</button>
-        <input onChange={(e) => setRoom(e.target.value)} id="room" type="text" placeholder="room code..."/>
-      </div>
-      <div className="search">
-        <h2>Waiting for other user to join</h2>
-        <img src={loading} />
-      </div>
+      <form action="#" onSubmit={
+        (e) => {
+          e.preventDefault();
+        }
+      }>
+        <div className="user">
+          <h1>Enter your username</h1>
+          <input 
+            onChange={
+              (e) => setName(e.target.value)
+            }
+            maxLength = "12"
+            id="user1" type="text" placeholder="Username"/>
+        </div>
+        <div className="JoinRoom">
+          <input type="submit" 
+            disabled={(name !== "" && room !== "" ? false : true) || waiting}
+            onClick={()=> {
+              if (name[0] !== null) {
+                socket.emit("join", {name, room});
+                document.getElementsByClassName("search")[0].style.visibility = "visible";
+                setWaiting(true)
+              }            
+            }}
+            id="button"
+            value="Join Room"
+           />
+          <input 
+            onChange={
+              (e) => setRoom(e.target.value)
+            }
+            maxLength = "12"
+            id="room" type="text" placeholder="room code..."/>
+        </div>
+        <div className="search">
+          <h2>Waiting for other user to join</h2>
+          <img src={loading} />
+        </div>
+      </form>
     </div>
   );
 }
