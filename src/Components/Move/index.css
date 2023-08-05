@@ -131,8 +131,13 @@
     gap: 23px;
 }
 .profile1, .profile2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
     width: 10vh;
     height: 10vh;
+    background: red;
     object-fit: cover;
     border-radius: 100px;
 }

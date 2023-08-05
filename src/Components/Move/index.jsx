@@ -3,13 +3,10 @@ import React, { useEffect, useRef } from "react";
 import x from "../../Utilities/Pieces";
 import { useState } from "react";
 
-function ShowMoves({ turn, setGameOver, socket}) {
-  const Moves = JSON.parse(localStorage.getItem("Notation") || "[]");
-  const lastElem = useRef();
-  let chessPiece = JSON.parse(localStorage.getItem("PieceKilled"));
+function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
   let currElement = x.currElement;
+  const lastElem = useRef();
   const [players, setPlayers] = useState("");
-  
   const [timer, setTimer] = useState([[10,0],[10,0]]);
 
   useEffect(() => {
@@ -61,9 +58,9 @@ function ShowMoves({ turn, setGameOver, socket}) {
             </div>
           </div>
           <div className="piecesPoints1">
-            {chessPiece.map((piece, index) => {
+            {piecesKilled.map((piece, index) => {
               return currElement.get(piece).endsWith("w") ? (<img className="points" key={index} src={piece} />) : ("");
-            })}
+          })}
           </div>
           <hr />
           
@@ -75,7 +72,7 @@ function ShowMoves({ turn, setGameOver, socket}) {
           
           <div className="moves_container">
             <div className="notation">
-            {Moves.Moves.map((move, index) => {
+            {notation.Moves.map((move, index) => {
               return [index, move];
             })
               .map((x) => {
@@ -85,7 +82,7 @@ function ShowMoves({ turn, setGameOver, socket}) {
                     <div className="moveName1">{x[1]}</div>
                   </>
                 );
-                if (x[0] === Moves.Moves.length - 1) {
+                if (x[0] === notation.Moves.length - 1) {
                   return (
                     <div ref={lastElem} key={x[0]} className="move">{e}</div>
                   );
@@ -98,7 +95,7 @@ function ShowMoves({ turn, setGameOver, socket}) {
           </div>
           <hr />
           <div className={(turn == "b" ? "changeTurn" : "") + " " + "player2"}>
-            <img src="https://rb.gy/qk8n0" className="profile2" />
+              <img src="https://rb.gy/8p6c4" className="profile1" />
               <div className="nameTag">
                 <div className="name2">{players[1]}</div>
                 <div className="rating2">1400<span>+(43)</span></div>
@@ -111,7 +108,7 @@ function ShowMoves({ turn, setGameOver, socket}) {
               </div>
           </div>
           <div className="piecesPoints2">
-            {chessPiece.map((piece, index) => {
+            {piecesKilled.map((piece, index) => {
               return currElement.get(piece).endsWith("b") ? (<img className="points" key={index} src={piece} />) : ("");
             })}
           </div>

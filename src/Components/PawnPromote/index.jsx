@@ -1,26 +1,9 @@
 import './index.css'
 import x from "../../Utilities/Pieces/index.jsx";
-import { IsCheck } from '../../Utilities/CheckMate';
 
 const {currElement} = x;
 
-function PromoteThis(setPawnPromote, target,curr ,board, setBoard, setCheck, pieceColor) {
-    board = JSON.parse(JSON.stringify(board));
-    let i = curr[0];
-    let j = curr[1];
-    board[i][j] = target;
-    setBoard(board);
-    setPawnPromote([false, "white"])
-
-    let turn = (pieceColor === "white" ? "w" : "b");
-
-    let king = IsCheck(board, currElement, turn);
-    if (king[0] != -1) setCheck([true, king]);
-    else setCheck([false, [-1, -1]]);
-    localStorage.setItem("board", JSON.stringify(board));
-}
-
-function PawnPromote({ pawnPromote,setPawnPromote, board, setBoard, over, setCheck}) {
+function PawnPromote({ pawnPromote, over, socket, room}) {
     const { NmaeToImg } = x;
     let toPieces = {
         "white": {
@@ -48,16 +31,48 @@ function PawnPromote({ pawnPromote,setPawnPromote, board, setBoard, over, setChe
                 style={{ top: (side ? "4%" : "76.5%") }} 
                 className={side ? "up" : "down"}
             >
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].queen , over, board, setBoard, setCheck, pieceColor)}}>
+                <span onClick={(e) => {
+                    socket.emit("pawnPromote", { 
+                        room: room,
+                        target: toPieces[pieceColor].queen,
+                        curr: over,
+                        turn: pieceColor,
+                        currElement: JSON.stringify(Array.from(currElement)),
+                    });
+                }}>
                     <img src={toPieces[pieceColor].queen} alt="queen" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].rook , over, board, setBoard, setCheck, pieceColor)}}>
+                <span onClick={(e) => {
+                    socket.emit("pawnPromote", { 
+                        room: room,
+                        target: toPieces[pieceColor].rook,
+                        curr: over,
+                        turn: pieceColor,
+                        currElement: JSON.stringify(Array.from(currElement)),
+                    });
+                }}>
                     <img src={toPieces[pieceColor].rook} alt="rook" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].bishop , over, board,setBoard, setCheck, pieceColor)}}>
+                <span onClick={(e) => {
+                    socket.emit("pawnPromote", { 
+                        room: room,
+                        target: toPieces[pieceColor].bishop,
+                        curr: over,
+                        turn: pieceColor,
+                        currElement: JSON.stringify(Array.from(currElement)),
+                    });
+                }}>
                     <img src={toPieces[pieceColor].bishop} alt="bishop" />
                 </span>
-                <span onClick={(e) => {PromoteThis(setPawnPromote, toPieces[pieceColor].knight , over, board, setBoard, setCheck, pieceColor)}}>
+                <span onClick={(e) => {
+                    socket.emit("pawnPromote", { 
+                        room: room,
+                        target: toPieces[pieceColor].knight,
+                        curr: over,
+                        turn: pieceColor,
+                        currElement: JSON.stringify(Array.from(currElement)),
+                    });
+                }}>
                     <img src={toPieces[pieceColor].knight} alt="knight" />
                 </span>
             </dialog>

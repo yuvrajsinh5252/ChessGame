@@ -1,15 +1,8 @@
 import "./index.css";
 import x from "../../Utilities/Pieces/index.jsx";
-import { useEffect } from "react";
-import DragComplete from "../../Utilities/DragComplete";
-import { defendCheck } from "../../Utilities/CheckMate";
+import { useEffect, useState } from "react";
 
 const { pieces, currElement } = x;
-
-if (!localStorage.getItem("EpMove")) localStorage.setItem("EpMove", JSON.stringify(new Array(4).fill(-1)));
-if (!localStorage.getItem("Notation")) localStorage.setItem("Notation", JSON.stringify({Moves: []}));
-if (!localStorage.getItem("PieceKilled")) localStorage.setItem("PieceKilled", JSON.stringify([]));
-if (!localStorage.getItem("Undo")) localStorage.setItem("Undo", JSON.stringify(pieces));
 
 export function IsEqual(x , y) {
   if (x.length != y.length) return false;
@@ -17,65 +10,57 @@ export function IsEqual(x , y) {
   return true;
 }
 
-function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, pawnPromote, setPawnPromote, kingTouched, setKingTouched, rookTouched, setRookTouched, setGameOver, children, prevMove, setPrevMove }) {
+function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, children, prevMove, setPrevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom}) {
+
+  const [EnPassantMove, setEnPassantMove] = useState([-1,-1,-1,-1]); 
 
   useEffect(() => { // Setting up the board
-    var temp = localStorage.getItem("board");
-    var kingTouched = localStorage.getItem("kingTouched");
-    var rookTouched = localStorage.getItem("rookTouched");
-    var turns = localStorage.getItem("turn");
-    var move = localStorage.getItem("HistMove");
-    var check = localStorage.getItem("check");
-
-    if (move) setPrevMove(JSON.parse(move));
-    else localStorage.setItem("HistMove", JSON.stringify(prevMove));
-
-    if (check) setCheck(JSON.parse(check));
-    else localStorage.setItem("check", JSON.stringify([false,[-1,-1]]));
-
-    if (!temp) {
+    // if (!temp) {
       var temp_board = [];
       for (let i = 0; i < 8; i++) {
         let temp = [];
         for (let j = 0; j < 8; j++) temp.push(pieces[i][j]);
         temp_board.push(temp);
-      }
+      // }
       setBoard(temp_board)
-    
-    } else setBoard(JSON.parse(temp));
-
-    if (kingTouched) setKingTouched(JSON.parse(kingTouched));
-    if (rookTouched) setRookTouched(JSON.parse(rookTouched));
-    if (turns) setTurn(JSON.parse(turns));
+    }
   }, []);
 
-  useEffect(() => { // highLighting Moves
-    let n = 8;
-    let drag1 = currentDrag[0];
-    let drag2 = currentDrag[1];
-    let temp = new Set();
-    let temp2 = new Set();
-
-    if (drag1 == -1 || drag2 == -1) return;
-    if (!currElement.get(board[drag1][drag2]).endsWith(turn)) return; 
-
-    temp = defendCheck(board, currElement, turn, drag1, drag2);
-    for (const move of temp) {
-      if (currElement.get(board[move[0]][move[1]]) != "null") {
-        temp2.add(move);
+  // socket events
+  useEffect(() => {
+    // socket.on("getRoom", data => setRoom(data));
+    socket.on("pawnPromoted", (data) => {
+      setBoard(data.board);
+      setCheck(data.check);
+      setPawnPromote([false, "white"]);
+      setTurn(data.turn);
+    });
+    
+    socket.on("highlighted", (data) => {
+      if (Array.isArray(data.ThreatendSpc)) {
+        data.ThreatendSpc = new Set(data.ThreatendSpc);
       }
-    }
-
-    var EnPassantMove = JSON.parse(localStorage.getItem("EpMove"));
-    for (let i = 0; i < n; i++) {
-      for (let j = 0; j < n; j++) {
-        let pos = [drag1, drag2, i, j]
-        if (IsEqual(EnPassantMove, pos)) temp2.add([pos[2], pos[3]]);
+      if (Array.isArray(data.availableSpc)) {
+        data.availableSpc = new Set(data.availableSpc);
       }
-    }
-    setKill(temp2);
-    setAvailableSpc(temp);
-  }, [currentDrag]);
+      setAvailableSpc(data.availableSpc);
+      setKill(data.ThreatendSpc);
+    });
+
+    socket.on("moved", (data) => {
+      setBoard(data.board);
+      setTurn(data.turn);
+      setCheck(data.check);
+      setKill(data.kill);
+      setPrevMove(data.prevMove);
+      setEnPassantMove(data.EnPassantMove);
+      setGameOver(data.gameOver);
+      setPawnPromote(data.pawnPromote);
+      setNotation(data.notation);
+      setPiecesKilled(data.kill);
+    });
+  }, [socket]);
+  // socket events ends
 
   return (
     <>
@@ -92,45 +77,53 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                     <div className="cont" key={JSON.stringify(el)}>
                     <div
                       onClick={() => {
-                        if ([...availableSpc].some((e) => {return IsEqual(e, [idx,idx2])})) {
-                          setOver([idx,idx2])
-                          if (!DragComplete(
-                            board, setBoard, currentDrag, [idx,idx2], setShow, currElement,
-                            kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
-                            turn, setTurn, pawnPromote, setCheck, check, setGameOver
-                          )) {
-                            currentDrag = [-1,-1];
-                            setCurrentDrag([-1,-1]); 
-                          } else {
-                            setPrevMove([...currentDrag, idx,idx2]);
-                            localStorage.setItem("HistMove", JSON.stringify([...currentDrag, idx,idx2]));
-                          }
-                          setAvailableSpc(new Set());
-                        } else {
-                          if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
-                          currentDrag = [idx, idx2]
-                          setCurrentDrag([idx, idx2]);
-                          setTimeout(() => {setShow(true)}, 50)
-                        }
+                        // if ([...availableSpc].some((e) => {return IsEqual(e, [idx,idx2])})) {
+                        //   setOver([idx,idx2])
+                        //   if (!DragComplete(
+                        //     board, setBoard, currentDrag, [idx,idx2], setShow, currElement,
+                        //     kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
+                        //     turn, setTurn, pawnPromote, setCheck, check, setGameOver
+                        //   )) {
+                        //     currentDrag = [-1,-1];
+                        //     setCurrentDrag([-1,-1]); 
+                        //   } else {
+                        //     setPrevMove([...currentDrag, idx,idx2]);
+                        //     localStorage.setItem("HistMove", JSON.stringify([...currentDrag, idx,idx2]));
+                        //   }
+                        //   setAvailableSpc(new Set());
+                        // } else {
+                        //   if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                        //   currentDrag = [idx, idx2]
+                        //   setCurrentDrag([idx, idx2]);
+                        //   setTimeout(() => {setShow(true)}, 50)
+                        // }
                       }}
                       onDragStart={(e) => {
-                        setCurrentDrag([idx,idx2]);
+                        if (pawnPromote[0]) return;
+                        setCurrentDrag([idx,idx2]); 
+                        socket.emit("highlight", {
+                          show: show,
+                          room: room,
+                          currElement: JSON.stringify(Array.from(currElement)),
+                          board: JSON.stringify(board),
+                          currentDrag: [idx,idx2],
+                          turn: turn,
+                        });
                         if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
                         setTimeout(() => {setShow(true)}, 50)
                       }}
                       onDragEnd={() => {
+                        setShow(false);
                         if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
-                        if (DragComplete(
-                          board, setBoard, currentDrag, over, setShow, currElement,
-                          kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
-                          turn, setTurn, pawnPromote, setCheck, check, setGameOver
-                        )) {
-                          setPrevMove([...currentDrag, ...over]);
-                          localStorage.setItem("HistMove", JSON.stringify([...currentDrag, ...over]));
-                        }
-                          setAvailableSpc(new Set());
-                          setCurrentDrag([-1,-1]);
-                        }}
+                        let pos = [currentDrag[0], currentDrag[1], over[0], over[1]];
+                        
+                        socket.emit("move", {
+                          room: room,
+                          currElement: JSON.stringify(Array.from(currElement)),
+                          pos: pos,
+                          board: JSON.stringify(board),
+                        });
+                      }}
                       onDragOver={(e) => {
                         e.preventDefault();
                         setOver([idx, idx2]);

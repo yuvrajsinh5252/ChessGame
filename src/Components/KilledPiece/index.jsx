@@ -1,14 +1,13 @@
 import "./index.css";
 import x from "../../Utilities/Pieces";
 
-export default function KilledPiece() {
-    let chessPiece = JSON.parse(localStorage.getItem("PieceKilled"));
+export default function KilledPiece({ piecesKilled }) {
     let currElement = x.currElement;
 
   return (
     <div className="outPieces">
       <div className="blpiece">
-        {chessPiece.map((piece, index) => {
+        {piecesKilled.map((piece, index) => {
           return currElement.get(piece).endsWith("b") ? (
               <img className="blImg" key={index} src={piece} />
           ) : (
@@ -17,7 +16,7 @@ export default function KilledPiece() {
         })}
       </div>
       <div className="whpiece">
-        {chessPiece.map((piece, index) => {
+        {piecesKilled.map((piece, index) => {
           return currElement.get(piece).endsWith("w") ? (
               <img className="whImg" key={index} src={piece} />
           ) : (
