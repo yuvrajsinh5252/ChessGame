@@ -21,7 +21,7 @@ function Home( {socket} ) {
   const [prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
   const [notation, setNotation] = useState({Moves: []});
   const [piecesKilled, setPiecesKilled] = useState([]);
-  const [room, setRoom] = useState("1");
+  const [room, setRoom] = useState([]); // [room , id]
 
   return (
     <div id="home">

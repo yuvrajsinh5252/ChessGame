@@ -12,23 +12,21 @@ export function IsEqual(x , y) {
 
 function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, children, prevMove, setPrevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom}) {
 
-  const [EnPassantMove, setEnPassantMove] = useState([-1,-1,-1,-1]); 
-
   useEffect(() => { // Setting up the board
-    // if (!temp) {
-      var temp_board = [];
-      for (let i = 0; i < 8; i++) {
-        let temp = [];
-        for (let j = 0; j < 8; j++) temp.push(pieces[i][j]);
-        temp_board.push(temp);
-      // }
+    var temp_board = [];
+    for (let i = 0; i < 8; i++) {
+      let temp = [];
+      for (let j = 0; j < 8; j++) temp.push(pieces[i][j]);
+      temp_board.push(temp);
       setBoard(temp_board)
     }
   }, []);
 
   // socket events
   useEffect(() => {
-    // socket.on("getRoom", data => setRoom(data));
+    socket.on("getRoom", data => setRoom(data));
+    socket.on("pawnPromote", data => setPawnPromote(data));
+
     socket.on("pawnPromoted", (data) => {
       setBoard(data.board);
       setCheck(data.check);
@@ -53,9 +51,8 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
       setCheck(data.check);
       setKill(data.kill);
       setPrevMove(data.prevMove);
-      setEnPassantMove(data.EnPassantMove);
       setGameOver(data.gameOver);
-      setPawnPromote(data.pawnPromote);
+      if (turn == room[1]) setPawnPromote(data.pawnPromote);
       setNotation(data.notation);
       setPiecesKilled(data.kill);
     });
@@ -99,22 +96,20 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                         // }
                       }}
                       onDragStart={(e) => {
-                        if (pawnPromote[0]) return;
+                        if (pawnPromote[0] || room[1] != turn) return;
                         setCurrentDrag([idx,idx2]); 
                         socket.emit("highlight", {
-                          show: show,
                           room: room,
                           currElement: JSON.stringify(Array.from(currElement)),
                           board: JSON.stringify(board),
                           currentDrag: [idx,idx2],
-                          turn: turn,
                         });
                         if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
                         setTimeout(() => {setShow(true)}, 50)
                       }}
                       onDragEnd={() => {
                         setShow(false);
-                        if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                        if (!currElement.get(board[idx][idx2]).endsWith(turn) || room[1] != turn) return;
                         let pos = [currentDrag[0], currentDrag[1], over[0], over[1]];
                         
                         socket.emit("move", {

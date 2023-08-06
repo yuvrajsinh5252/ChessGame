@@ -11,7 +11,7 @@ function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
 
   useEffect(() => {
     socket.on('started', (data) => {
-        setPlayers(data.game.users);
+        setPlayers(data.game.username);
     })
   }, [])
 
