@@ -2,7 +2,7 @@ import './index.css'
 import Dark from "..\\public\\Assets\\DarkMode.png";
 import Light from "..\\public\\Assets\\LightMode.png";
 
-export default function Hamburger({ setGameOver, turn }) {
+export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked }) {
     return (
         <nav role="navigation">
             <img className="LightMode" src={Light} onClick={(e) => {
@@ -23,34 +23,22 @@ export default function Hamburger({ setGameOver, turn }) {
                 <ul id="menu">
                     <li>
                         <button
-                            className="reset"
-                            onClick={() => {
-                                window.location.reload();
-                        }}>Restart</button>
-                    </li>
-                    <li>
-                        <button
-                            className="reset"
-                            onClick={() => {
-
-                            }
-                        }>Undo</button>
-                    </li>
-                    <li>
-                        <button
+                            disabled={btnClicked}
                             className="reset"
                             onClick={(e) => {
-                                if (turn == "w")
-                                    setGameOver([true, "White Resign's", "b"]);
-                                else 
-                                    setGameOver([true, "Black Resign's", "w"]);    
+                                socket.emit("resign", { room: room, resign: (turn == "w" ? "White Resign's" : "Black Resign's"), win: (turn == "w" ? "black Win's" : "White Wins;") });
+                                setBtnClicked(true);
                             }
                         }>Resign</button>
                     </li>
                     <li>
                         <button
                             className="reset"
-                            onClick={() => {}
+                            disabled={btnClicked}
+                            onClick={() => { 
+                                socket.emit("draw", { room: room });
+                                setBtnClicked(true);
+                            }
                         }>Draw</button>
                     </li>
                 </ul>

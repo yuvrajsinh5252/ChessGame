@@ -30,7 +30,7 @@ export default function LoginPage({ socket }) {
             onChange={
               (e) => setName(e.target.value)
             }
-            maxLength = "12"
+            maxLength = "10"
             id="user1" type="text" placeholder="Username"/>
         </div>
         <div className="JoinRoom">

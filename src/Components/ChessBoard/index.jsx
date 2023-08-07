@@ -1,6 +1,6 @@
 import "./index.css";
 import x from "../../Utilities/Pieces/index.jsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const { pieces, currElement } = x;
 
@@ -10,7 +10,7 @@ export function IsEqual(x , y) {
   return true;
 }
 
-function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, children, prevMove, setPrevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom}) {
+function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, children, prevMove, setPrevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom, btnClicked, setBtnClicked}) {
 
   useEffect(() => { // Setting up the board
     var temp_board = [];
@@ -24,8 +24,21 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
 
   // socket events
   useEffect(() => {
-    socket.on("getRoom", data => setRoom(data));
+    socket.on("getRoom", data => {
+      setRoom(data);
+      room = data;
+    });
     socket.on("pawnPromote", data => setPawnPromote(data));
+    socket.on("draw", data => {
+      setBtnClicked(true);
+      if (data[1] != room[1]) {
+        setGameOver([true, "Draw", "1/2-1/2"]);
+      }
+    });
+    socket.on('resign' , data => {
+      setGameOver(data);
+      setBtnClicked(true);
+    })
 
     socket.on("pawnPromoted", (data) => {
       setBoard(data.board);
@@ -52,7 +65,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
       setKill(data.kill);
       setPrevMove(data.prevMove);
       setGameOver(data.gameOver);
-      if (turn == room[1]) setPawnPromote(data.pawnPromote);
+      if (room[1] == turn) setPawnPromote(data.pawnPromote);
       setNotation(data.notation);
       setPiecesKilled(data.kill);
     });
@@ -96,7 +109,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                         // }
                       }}
                       onDragStart={(e) => {
-                        if (pawnPromote[0] || room[1] != turn) return;
+                        if (pawnPromote[0] || room[1] != turn || btnClicked) return;
                         setCurrentDrag([idx,idx2]); 
                         socket.emit("highlight", {
                           room: room,

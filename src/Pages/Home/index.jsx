@@ -22,18 +22,19 @@ function Home( {socket} ) {
   const [notation, setNotation] = useState({Moves: []});
   const [piecesKilled, setPiecesKilled] = useState([]);
   const [room, setRoom] = useState([]); // [room , id]
+  const [btnClicked, setBtnClicked] = useState(false);
 
   return (
     <div id="home">
-      <Hamburger {...{setGameOver, turn}} />
+      <Hamburger {...{turn, socket, room, setBtnClicked, btnClicked}} />
       <ShowMoves {...{turn, setGameOver, socket, notation, piecesKilled}} />
       <PawnPromote
         {...{pawnPromote, over, socket, room}}
       />
       <div className="chess">
         <Chessboard
-            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, prevMove, setPrevMove, prevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom}}>
-        <GameoOver {...{gameOver}} />
+            {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, prevMove, setPrevMove, prevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom, btnClicked, setBtnClicked}}>
+        <GameoOver {...{gameOver, socket, room}} />
         </Chessboard>
       </div>
       <KilledPiece piecesKilled = {piecesKilled}/>
