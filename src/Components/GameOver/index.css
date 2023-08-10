@@ -15,6 +15,11 @@
     font-size: 50px;
     font-weight: 700;
 }
+.YesOrNo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 .checkmate {
     font-size: 23px;
 }

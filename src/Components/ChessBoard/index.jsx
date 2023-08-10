@@ -29,13 +29,20 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
       room = data;
     });
     socket.on("pawnPromote", data => setPawnPromote(data));
-    socket.on("draw", data => {
+    socket.on("MatchDraw", data => {
       setBtnClicked(true);
-      if (data[1] != room[1]) {
-        setGameOver([true, "Draw", "1/2-1/2"]);
+      if (data[0] == "ask") {
+        if ((data[1][1] != room[1])) {
+          setGameOver([true, "Draw", "1/2-1/2"]);
+        }
+      } else if (data[0] == "true") {
+        setGameOver([true, "MatchDraw", "1/2-1/2"]);
+      } else if(data[0] == "false") {
+        setGameOver([false, "Draw", "1/2-1/2"]);
+        setBtnClicked(false);
       }
     });
-    socket.on('resign' , data => {
+    socket.on('resigned' , data => {
       setGameOver(data);
       setBtnClicked(true);
     })
@@ -87,26 +94,31 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                     <div className="cont" key={JSON.stringify(el)}>
                     <div
                       onClick={() => {
-                        // if ([...availableSpc].some((e) => {return IsEqual(e, [idx,idx2])})) {
-                        //   setOver([idx,idx2])
-                        //   if (!DragComplete(
-                        //     board, setBoard, currentDrag, [idx,idx2], setShow, currElement,
-                        //     kingTouched, setKingTouched, rookTouched, setRookTouched, setPawnPromote,
-                        //     turn, setTurn, pawnPromote, setCheck, check, setGameOver
-                        //   )) {
-                        //     currentDrag = [-1,-1];
-                        //     setCurrentDrag([-1,-1]); 
-                        //   } else {
-                        //     setPrevMove([...currentDrag, idx,idx2]);
-                        //     localStorage.setItem("HistMove", JSON.stringify([...currentDrag, idx,idx2]));
-                        //   }
-                        //   setAvailableSpc(new Set());
-                        // } else {
-                        //   if (!currElement.get(board[idx][idx2]).endsWith(turn)) return;
-                        //   currentDrag = [idx, idx2]
-                        //   setCurrentDrag([idx, idx2]);
-                        //   setTimeout(() => {setShow(true)}, 50)
-                        // }
+                        if (pawnPromote[0] || room[1] != turn) return;
+                        if ([...availableSpc].some((e) => {return IsEqual(e, [idx,idx2])})) {
+                          setOver([idx,idx2]);
+                          if (currElement.get(board[idx][idx2]).endsWith(turn)) return;
+                          let pos = [currentDrag[0], currentDrag[1], idx, idx2];
+                          
+                          socket.emit("move", {
+                            room: room,
+                            currElement: JSON.stringify(Array.from(currElement)),
+                            pos: pos,
+                            board: JSON.stringify(board),
+                          });
+                          setAvailableSpc(new Set());
+                          setShow(false);
+                        } else {
+                          if (!currElement.get(board[idx][idx2]).endsWith(turn) || room[1] != turn || btnClicked) return;
+                          setCurrentDrag([idx, idx2]);
+                          socket.emit("highlight", {
+                            room: room,
+                            currElement: JSON.stringify(Array.from(currElement)),
+                            board: JSON.stringify(board),
+                            currentDrag: [idx,idx2],
+                          });
+                          setTimeout(() => {setShow(true)}, 50)
+                        }
                       }}
                       onDragStart={(e) => {
                         if (pawnPromote[0] || room[1] != turn || btnClicked) return;

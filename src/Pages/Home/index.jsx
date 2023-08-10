@@ -34,7 +34,7 @@ function Home( {socket} ) {
       <div className="chess">
         <Chessboard
             {...{board, setBoard, check, setCheck, over, setOver, currentDrag, setCurrentDrag, availableSpc, setAvailableSpc, show, setShow, turn, setTurn, kill, setKill, setPawnPromote, setGameOver, prevMove, setPrevMove, prevMove, socket, setNotation, setPiecesKilled, pawnPromote, room, setRoom, btnClicked, setBtnClicked}}>
-        <GameoOver {...{gameOver, socket, room}} />
+        <GameoOver {...{gameOver, socket, room, setBtnClicked}} />
         </Chessboard>
       </div>
       <KilledPiece piecesKilled = {piecesKilled}/>

@@ -26,7 +26,7 @@ export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked
                             disabled={btnClicked}
                             className="reset"
                             onClick={(e) => {
-                                socket.emit("resign", { room: room, resign: (turn == "w" ? "White Resign's" : "Black Resign's"), win: (turn == "w" ? "black Win's" : "White Wins;") });
+                                socket.emit("resign", { room: room, resign: (turn == "w" ? "White Resign's" : "Black Resign's"), win: (room[1] == "w" ? "black Win's" : "White Wins;") });
                                 setBtnClicked(true);
                             }
                         }>Resign</button>
@@ -36,7 +36,7 @@ export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked
                             className="reset"
                             disabled={btnClicked}
                             onClick={() => { 
-                                socket.emit("draw", { room: room });
+                                socket.emit("draw", { room: room, draw: "ask" });
                                 setBtnClicked(true);
                             }
                         }>Draw</button>
