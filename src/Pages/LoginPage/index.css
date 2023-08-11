@@ -1,6 +1,7 @@
 .Login {
+    margin-bottom: 150px;
     width: 100vw;
-    height: 100vh;
+    height: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -72,4 +73,41 @@ form {
 
 #button:disabled {
     cursor: not-allowed;
+}
+.ChessImages {
+    display: flex;
+    gap: 100px;
+}
+.side1 {
+    position: absolute;
+    bottom: 5%;
+    left: 1%;
+    height: 300px;
+    width: 400px;
+}
+.side2 {
+    position: absolute;
+    bottom: 8%;
+    right: 3%; 
+    height: 300px;
+    width: 400px;
+}
+.LoginPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+@media screen and (max-width: 700px) {
+    .side1 {
+        height: 200px;
+        width: 250px;
+        left: 19%;
+    }
+    .side2 {
+        display: none;
+    }
 }

@@ -150,8 +150,29 @@
 ::-webkit-scrollbar-thumb {
     background: #fef4f4; 
 }
-@media (max-width : 600px) {
-    .showMove {
+@media (max-width : 700px) {
+    .moves_container, .turn, hr{
         display: none;
+    }
+    .showMove {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 150px;
+        width: 100vw;
+    }
+    .player1,.player2 {
+        margin: 0px 50px 0px 0px; 
+    }
+    .profile1,.profile2 {
+        height: 60px;
+        width: 60px;
+    }
+    .time, .time1 {
+        font-size: 35px;
+    }
+    .name2,.rating1,.rating2 {
+        font-size: 20px;
     }
 }

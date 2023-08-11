@@ -41,3 +41,23 @@
     border-radius: 10px;
     cursor: pointer;
 }
+@media (max-width: 700px) {
+    .gameover {
+        width: 180px;
+        height: 140px;
+    }
+    .checkmate {
+        font-size: 15px;
+    }
+    .text {
+        font-size: 25px;
+    }
+    .won {
+        font-size: 20px;
+        margin-top: 0px;
+    }
+    .again {
+        height: 40px;
+        width: 160px;
+    }
+}

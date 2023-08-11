@@ -37,3 +37,8 @@
 .whImg {
     transform: rotate(180deg);
 }
+@media (max-width: 800px) {
+    .outPieces {
+        display: none;
+    }
+}

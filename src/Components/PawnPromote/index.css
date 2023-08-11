@@ -26,3 +26,32 @@ img {
 		transform: translateY(200px);
 	}
 }
+
+@keyframes res-identifier {
+	0% {
+		transform: translateY(800px);
+	}
+}
+
+@keyframes res-show {
+	0% {
+		transform: translateY(-800px);
+	}
+}
+
+@media (max-width: 700px) {
+	dialog {
+		left: 20%;
+		bottom: 100%;
+	}
+	.up {
+		animation: res-show 200ms ease-in-out;
+	}
+	.down {
+		animation: res-identifier 200ms ease-in-out;
+	}
+	img {
+		height: 50px;
+		width: 50px;
+	}
+}

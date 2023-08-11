@@ -88,7 +88,7 @@ img:hover {
 	top: 96.8%;
 	color: black;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
 	:root {
 		--cell-size: 45px;
 	}
@@ -99,10 +99,5 @@ img:hover {
 	}
 	.idx, .alpha2 {
 		font-size: 8px;
-	}
-	.reset {
-		width: 100px;
-		height: 30px;
-		font-size: 15px;
 	}
 }
