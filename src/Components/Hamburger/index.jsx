@@ -15,6 +15,10 @@ export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked
                 if (e.target.className == "NightMode") background.style = "background: rgb(35,35,35)"
                 else background.style = "background-image: linear-gradient( rgb(48, 93, 83),rgb(116, 138, 112))"
             }} />
+            <div className='yourTurn'>
+                <span>You're</span>
+                <div className={"color " + " " + (room[1] == "w" ? "whiteTurn" : "blackTurn")}></div>
+            </div>
             <div id="menuToggle">
                 <input type="checkbox" />
                 <span></span>

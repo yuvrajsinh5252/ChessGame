@@ -136,10 +136,38 @@ body {
   right: 5%;
   cursor: pointer;
 }
+.yourTurn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 3%;
+  right: 9%;
+  font-size: 20px;
+  color: white;
+  font-weight: 600;
+  gap: 10px;
+  z-index: 1000;
+}
+.color {
+  height: 30px;
+  width: 30px;
+  box-shadow: 0px 0px 0px 3px white;
+  border-radius: 50%;
+}
+.blackTurn {
+  background: black;
+}
+.whiteTurn {
+  background: white;
+}
 
 @media (max-width: 700px) {
   .LightMode, .NightMode {
     right: 20%;
     z-index: 1000;
+  }
+  .yourTurn {
+    right: 35%;
   }
 }

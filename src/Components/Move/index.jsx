@@ -44,23 +44,25 @@ function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
     <>
       <div className="player">
         <div className="showMove">
-          <div className={(turn == "w" ? "changeTurn" : "") + " " + "player1"}>
-            <img src="https://rb.gy/8p6c4" className="profile1" />
-            <div className="nameTag">
-              <div className="name2">{players[0]}</div>
-              <div className="rating1">1400<span>+(43)</span></div>
+          <div className="piecesFix">
+            <div className={(turn == "w" ? "changeTurn" : "") + " " + "player1"}>
+              <img src="https://rb.gy/8p6c4" className="profile1" />
+              <div className="nameTag">
+                <div className="name2">{players[0]}</div>
+                <div className="rating1">black 1400<span>+(43)</span></div>
+              </div>
+              <div className="time">
+                {timer[0][0] < 10 ? <>0</> : <></>}
+                {timer[0][0]}<div className="colon">:</div>
+                {timer[0][1] < 10 ? <>0</> : <></>}
+                {timer[0][1]}
+              </div>
             </div>
-            <div className="time">
-              {timer[0][0] < 10 ? <>0</> : <></>}
-              {timer[0][0]}<div className="colon">:</div>
-              {timer[0][1] < 10 ? <>0</> : <></>}
-              {timer[0][1]}
+            <div className="piecesPoints1">
+              {piecesKilled.map((piece, index) => {
+                return currElement.get(piece).endsWith("w") ? (<img className="points" key={index} src={piece} />) : ("");
+            })}
             </div>
-          </div>
-          <div className="piecesPoints1">
-            {piecesKilled.map((piece, index) => {
-              return currElement.get(piece).endsWith("w") ? (<img className="points" key={index} src={piece} />) : ("");
-          })}
           </div>
           <hr />
           
@@ -94,23 +96,25 @@ function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
           </div>
           </div>
           <hr />
-          <div className={(turn == "b" ? "changeTurn" : "") + " " + "player2"}>
-              <img src="https://rb.gy/8p6c4" className="profile1" />
-              <div className="nameTag">
-                <div className="name2">{players[1]}</div>
-                <div className="rating2">1400<span>+(43)</span></div>
-              </div>
-              <div className="time1">
-                {timer[1][0] < 10 ? <>0</> : <></>}
-                {timer[1][0]} <div className="colon">:</div>
-                {timer[1][1] < 10 ? <>0</> : <></>}
-                {timer[1][1]}
-              </div>
-          </div>
-          <div className="piecesPoints2">
-            {piecesKilled.map((piece, index) => {
-              return currElement.get(piece).endsWith("b") ? (<img className="points" key={index} src={piece} />) : ("");
-            })}
+          <div className="piecesFix">
+            <div className={(turn == "b" ? "changeTurn" : "") + " " + "player2"}>
+                <img src="https://rb.gy/8p6c4" className="profile1" />
+                <div className="nameTag">
+                  <div className="name2">{players[1]}</div>
+                  <div className="rating2">white 1400<span>+(43)</span></div>
+                </div>
+                <div className="time1">
+                  {timer[1][0] < 10 ? <>0</> : <></>}
+                  {timer[1][0]} <div className="colon">:</div>
+                  {timer[1][1] < 10 ? <>0</> : <></>}
+                  {timer[1][1]}
+                </div>
+            </div>
+            <div className="piecesPoints2">
+              {piecesKilled.map((piece, index) => {
+                return currElement.get(piece).endsWith("b") ? (<img className="points" key={index} src={piece} />) : ("");
+              })}
+            </div>
           </div>
         </div>
       </div>

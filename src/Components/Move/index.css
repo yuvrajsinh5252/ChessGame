@@ -175,4 +175,15 @@
     .name2,.rating1,.rating2 {
         font-size: 20px;
     }
+    .piecesPoints1 {
+        top: 57%;
+        left: 20%;
+    }
+    .piecesPoints2 {
+        bottom: 20%;
+        left: 20%;
+    }
+    .piecesFix {
+        position: relative;
+    }
 }

@@ -4,13 +4,13 @@ import { useState } from "react";
 import loading from "..\\public\\Assets\\loading.gif";
 import SideImage1 from "..\\public\\Assets\\SideImage1.png";
 import SideImage2 from "..\\public\\Assets\\SideImage2.png";
-import Logo from "..\\public\\Assets\\Logo.jpg";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage({ socket }) {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [waiting, setWaiting] = useState(false);
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +18,11 @@ export default function LoginPage({ socket }) {
         navigate(`/ChessGame?room=${data.room}`);
         socket.emit('start', data);
     });
-  }, []);
+    socket.on("err", (data) => {
+      setMessage(data.message);
+      if (data.message != "")  setWaiting(false);
+    });
+  }, [socket]);
 
   return (
     <div className="LoginPage">
@@ -47,7 +51,11 @@ export default function LoginPage({ socket }) {
               onClick={()=> {
                 if (name[0] !== null) {
                   socket.emit("join", {name, room});
-                  document.getElementsByClassName("search")[0].style.visibility = "visible";
+                  let elm = document.getElementsByClassName("search")[0];
+                  if (elm != null) {
+                    elm.style.visibility = "visible";
+                  }
+                  setMessage("");
                   setWaiting(true)
                 }            
               }}
@@ -61,12 +69,17 @@ export default function LoginPage({ socket }) {
               maxLength = "12"
               id="room" type="text" placeholder="room code..."/>
           </div>
-          <div className="search">
-            <h2>Waiting for other user to join</h2>
-            <img src={loading} />
-          </div>
+
+          {message == "" ? 
+            <div className="search">
+              <h2>Waiting for other user to join</h2>
+              <img src={loading} />
+            </div> : 
+            <div className="errmessage">{message}</div>
+          }
         </form>
       </div>
+      
     </div>
   );
 }

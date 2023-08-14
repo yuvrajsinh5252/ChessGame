@@ -15,7 +15,7 @@ function Home( {socket} ) {
   const [show, setShow] = useState(false);
   const [kill, setKill] = useState(new Set());
   const [pawnPromote, setPawnPromote] = useState([false, "white"]);
-  const [turn, setTurn] = useState("w");
+  const [turn, setTurn] = useState("b");
   const [check, setCheck] = useState([false,[-1,-1]]);
   const [gameOver, setGameOver] = useState([false, "", ""]);
   const [prevMove, setPrevMove] = useState([-1,-1,-1,-1]);
