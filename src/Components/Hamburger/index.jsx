@@ -1,12 +1,10 @@
 import './index.css'
-import Dark from "..\\public\\Assets\\DarkMode.png";
-import Light from "..\\public\\Assets\\LightMode.png";
 
 export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked }) {
     return (
         <nav role="navigation">
-            <img className="LightMode" src={Light} onClick={(e) => {
-                let mode = (e.target.className == "NightMode" ? Light : Dark)
+            <img className="LightMode" src="/Assets/LightMode.png" onClick={(e) => {
+                let mode = (e.target.className == "NightMode" ? "/Assets/LightMode.png" : "/Assets/DarkMode.png")
 
                 e.target.className = (e.target.className == "NightMode" ? "LightMode" : "NightMode")
                 e.target.src = mode;

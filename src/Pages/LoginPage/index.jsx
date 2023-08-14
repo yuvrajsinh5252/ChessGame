@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
 import "./index.css";
 import { useState } from "react";
-import loading from "..\\public\\Assets\\loading.gif";
-import SideImage1 from "..\\public\\Assets\\SideImage1.png";
-import SideImage2 from "..\\public\\Assets\\SideImage2.png";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage({ socket }) {
@@ -27,8 +24,8 @@ export default function LoginPage({ socket }) {
   return (
     <div className="LoginPage">
       <div className="ChessImages">
-        <img src={SideImage1} alt="png" className="side1" />
-        <img src={SideImage2} alt="png" className="side2"/>
+        <img src="/Assets/SideImage1.png" alt="png" className="side1" />
+        <img src="/Assets/SideImage2.png" alt="png" className="side2"/>
       </div>
       <div className="Login">
         <form action="#" onSubmit={
@@ -73,7 +70,7 @@ export default function LoginPage({ socket }) {
           {message == "" ? 
             <div className="search">
               <h2>Waiting for other user to join</h2>
-              <img src={loading} />
+              <img src="/Assets/loading.gif" />
             </div> : 
             <div className="errmessage">{message}</div>
           }
