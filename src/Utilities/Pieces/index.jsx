@@ -42,4 +42,10 @@ for (let [key , value] of currElement) {
     NmaeToImg.set(value, key);
 }
 
-export default {pieces, currElement, NmaeToImg};
+const object = {
+    pieces: pieces,
+    currElement: currElement,
+    NmaeToImg: NmaeToImg
+}
+
+export default object;
