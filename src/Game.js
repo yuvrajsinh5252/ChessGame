@@ -4,7 +4,7 @@ import LoginPage from './Pages/LoginPage';
 import { io } from 'socket.io-client';
 
 function Game() { 
-  const socket = io('http://localhost:3001');
+  const socket = io('https://chessgame-backend.onrender.com/');
   
   return (
       <>
