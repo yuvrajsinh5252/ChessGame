@@ -88,6 +88,18 @@ img:hover {
 	top: 96.8%;
 	color: black;
 }
+.rotate {
+	transform: rotate(180deg);
+}
+.rotate .idx {
+	right: 1.2%;
+	z-index: 100;
+}
+.rotate .container {
+	position: absolute;
+	bottom: 96.8%;
+	margin: 0px 5px;
+}
 @media screen and (max-width: 700px) {
 	:root {
 		--cell-size: 45px;

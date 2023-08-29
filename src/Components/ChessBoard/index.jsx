@@ -79,14 +79,16 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
   }, [socket]);
   // socket events ends
 
+  console.log("room:", room);
+
   return (
     <>
       <div className="chessboard">
-        <div className="border">
+        <div className={"border" + " " + (room[1] == 'b' ? 'rotate' : "")}>
           {board.map((row, idx) => {
             return (
               <div key={idx}>
-              <div className="idx">{8 - idx}</div>
+              <div className={"idx" + " " + (room[1] == "b" ? "rotate" : "")}>{8 - idx}</div>
               <div className="rows">
                 {row.map((el, idx2) => {
                   return (
@@ -149,6 +151,8 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                       }}
                       key={idx2}
                       className={
+                        (room[1] == "b" ? "rotate" : "")
+                        + " " +
                         ((idx + idx2) % 2 == 0 ? "white" : "black")
                         + " " +
                         ([...kill].some((item) => IsEqual(item, [idx,idx2])) && show ? "red" : "")
@@ -171,7 +175,9 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                         ></div>
                       )}
                     </div>
-                    <div className="container">{idx == 7 ? <div className="alpha2">{String.fromCharCode(97 + idx2)}</div> : <></>}</div>
+                    <div className={"container" + " " + (room[1] == "b" ? "rotate" : "")}>
+                      {idx == 7 ? <div className="alpha2">{String.fromCharCode(97 + idx2)}</div> : <></>}
+                    </div>
                     </div>
                     </div>
                   );
