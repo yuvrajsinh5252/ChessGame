@@ -111,6 +111,7 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                           setAvailableSpc(new Set());
                           setShow(false);
                         } else {
+                          setAvailableSpc(new Set());
                           if (!currElement.get(board[idx][idx2]).endsWith(turn) || room[1] != turn || btnClicked) return;
                           setCurrentDrag([idx, idx2]);
                           socket.emit("highlight", {
@@ -119,10 +120,11 @@ function ChessBoard({ board, setBoard,check, setCheck, over, setOver, currentDra
                             board: JSON.stringify(board),
                             currentDrag: [idx,idx2],
                           });
-                          setTimeout(() => {setShow(true)}, 50)
+                          setShow(true);
                         }
                       }}
                       onDragStart={(e) => {
+                        setAvailableSpc(new Set());
                         if (!currElement.get(board[idx][idx2]).endsWith(turn) || pawnPromote[0] || room[1] != turn || btnClicked) return;
                         setCurrentDrag([idx,idx2]); 
                         socket.emit("highlight", {
