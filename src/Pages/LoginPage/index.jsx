@@ -23,10 +23,6 @@ export default function LoginPage({ socket }) {
 
   return (
     <div className="LoginPage">
-      <div className="ChessImages">
-        <img src="/Assets/SideImage1.png" alt="png" className="side1" />
-        <img src="/Assets/SideImage2.png" alt="png" className="side2"/>
-      </div>
       <div className="Login">
         <form action="#" onSubmit={
           (e) => {
@@ -35,7 +31,7 @@ export default function LoginPage({ socket }) {
         }>
           <div className="user">
             <h1>Enter your username</h1>
-            <input 
+            <input
               onChange={
                 (e) => setName(e.target.value)
               }
@@ -43,7 +39,7 @@ export default function LoginPage({ socket }) {
               id="user1" type="text" placeholder="Username"/>
           </div>
           <div className="JoinRoom">
-            <input type="submit" 
+            <input type="submit"
               disabled={(name !== "" && room !== "" ? false : true) || waiting}
               onClick={()=> {
                 if (name[0] !== null) {
@@ -54,12 +50,12 @@ export default function LoginPage({ socket }) {
                   }
                   setMessage("");
                   setWaiting(true)
-                }            
+                }
               }}
               id="button"
               value="Join Room"
             />
-            <input 
+            <input
               onChange={
                 (e) => setRoom(e.target.value)
               }
@@ -67,16 +63,16 @@ export default function LoginPage({ socket }) {
               id="room" type="text" placeholder="room code..."/>
           </div>
 
-          {message == "" ? 
+          {message == "" ?
             <div className="search">
               <h2>Waiting for other user to join</h2>
               <img src="/Assets/loading.gif" />
-            </div> : 
+            </div> :
             <div className="errmessage">{message}</div>
           }
         </form>
       </div>
-      
+
     </div>
   );
 }

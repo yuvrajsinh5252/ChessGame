@@ -73,7 +73,7 @@ img:hover {
 .border {
 	padding: 7px;
 	border: 12px solid rgb(182, 194, 190);
-	border-radius: 10px;	
+	border-radius: 10px;
 	position: relative;
 }
 .idx {
@@ -111,5 +111,11 @@ img:hover {
 	}
 	.idx, .alpha2 {
 		font-size: 8px;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	:root {
+		--cell-size: 40px;
 	}
 }

@@ -28,7 +28,7 @@ function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
           else setTimer([[timer[0][0] - 1, 59], [timer[1][0], timer[1][1]]]);
         }
         else setTimer([[timer[0][0], timer[0][1] - 1], [timer[1][0], timer[1][1]]]);
-      } 
+      }
       else {
         if (timer[1][1] === 0) {
           if (timer[1][0] === 0) setGameOver([true, "Time Over", "b"])
@@ -65,13 +65,13 @@ function ShowMoves({ turn, setGameOver, socket, notation, piecesKilled}) {
             </div>
           </div>
           <hr />
-          
+
           <div className="turn">
             <div className="bturn">White</div>
             <div className="wturn">Black</div>
           </div>
           <div className="gap"></div>
-          
+
           <div className="moves_container">
             <div className="notation">
             {notation.Moves.map((move, index) => {

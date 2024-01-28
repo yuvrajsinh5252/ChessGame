@@ -56,8 +56,8 @@ body {
 
   cursor: pointer;
 
-  opacity: 0; 
-  z-index: 2; 
+  opacity: 0;
+  z-index: 2;
 
   -webkit-touch-callout: none;
 }
@@ -147,7 +147,7 @@ body {
   color: white;
   font-weight: 600;
   gap: 10px;
-  z-index: 1000;
+  z-index: 1;
 }
 .color {
   height: 30px;

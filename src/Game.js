@@ -3,9 +3,9 @@ import Home from './Pages/Home';
 import LoginPage from './Pages/LoginPage';
 import { io } from 'socket.io-client';
 
-function Game() { 
-  const socket = io('https://chessgame-backend.onrender.com/');
-  
+function Game() {
+  const socket = io('http://localhost:3001');
+
   return (
       <>
         <BrowserRouter>
@@ -15,7 +15,7 @@ function Game() {
             </Routes>
         </BrowserRouter>
       </>
-    ); 
+    );
 }
 
-export default Game;   
+export default Game;

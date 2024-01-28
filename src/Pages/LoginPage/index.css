@@ -26,6 +26,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 20px;
+    background-color: rgb(97, 97, 97);
+    border-radius: 10px;
 }
 .user {
     display: flex;
@@ -74,10 +77,7 @@ form {
 #button:disabled {
     cursor: not-allowed;
 }
-.ChessImages {
-    display: flex;
-    gap: 100px;
-}
+
 .side1 {
     position: absolute;
     bottom: 5%;
@@ -88,7 +88,7 @@ form {
 .side2 {
     position: absolute;
     bottom: 8%;
-    right: 3%; 
+    right: 3%;
     height: 300px;
     width: 400px;
 }

@@ -123,7 +123,7 @@
     overflow-y: scroll;
 }
 .player1, .player2 {
-    height: 13vh;
+    height: 120px;
     display: flex;
     align-items: center;
     margin-left: 10px;
@@ -143,12 +143,12 @@
 }
 ::-webkit-scrollbar {
     width: 10px;
-} 
+}
 ::-webkit-scrollbar-track {
     background: rgb(52, 53, 51);
 }
 ::-webkit-scrollbar-thumb {
-    background: #fef4f4; 
+    background: #fef4f4;
 }
 @media (max-width : 700px) {
     .moves_container, .turn, hr{
@@ -162,8 +162,18 @@
         gap: 150px;
         width: 100vw;
     }
+    .player1 {
+        margin-bottom: 20px;
+    }
+    .player2 {
+        margin-top: 20px;
+    }
     .player1,.player2 {
-        margin: 0px 50px 0px 0px; 
+        margin-left: 0px;
+        height: auto;
+        width: 100vw;
+        border: 1.5px solid white;
+        border-radius: 10px;
     }
     .profile1,.profile2 {
         height: 60px;
