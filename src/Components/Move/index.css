@@ -150,6 +150,7 @@
 ::-webkit-scrollbar-thumb {
     background: #fef4f4;
 }
+
 @media (max-width : 700px) {
     .moves_container, .turn, hr{
         display: none;
@@ -162,16 +163,11 @@
         gap: 150px;
         width: 100vw;
     }
-    .player1 {
-        margin-bottom: 20px;
-    }
-    .player2 {
-        margin-top: 20px;
-    }
     .player1,.player2 {
         margin-left: 0px;
         height: auto;
         width: 100vw;
+        margin: 20px 0px 20px 0px;
         border: 1.5px solid white;
         border-radius: 10px;
     }

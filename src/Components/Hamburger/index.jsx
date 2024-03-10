@@ -37,7 +37,7 @@ export default function Hamburger({ turn, socket,room, setBtnClicked, btnClicked
                         <button
                             className="reset"
                             disabled={btnClicked}
-                            onClick={() => { 
+                            onClick={() => {
                                 socket.emit("draw", { room: room, draw: "ask" });
                                 setBtnClicked(true);
                             }

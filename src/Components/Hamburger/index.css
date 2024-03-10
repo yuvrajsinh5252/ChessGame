@@ -128,21 +128,23 @@ body {
 #menuToggle input:checked ~ ul {
   transform: none;
 }
+
 .NightMode, .LightMode {
   height: 55px;
   width: 55px;
   position: absolute;
-  top: 1.5%;
-  right: 5%;
+  top: 10px;
+  right: 70px;
   cursor: pointer;
+  z-index: 1;
 }
 .yourTurn {
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 3%;
-  right: 9%;
+  top: 25px;
+  right: 125px;
   font-size: 20px;
   color: white;
   font-weight: 600;
@@ -160,14 +162,4 @@ body {
 }
 .whiteTurn {
   background: white;
-}
-
-@media (max-width: 700px) {
-  .LightMode, .NightMode {
-    right: 20%;
-    z-index: 1000;
-  }
-  .yourTurn {
-    right: 35%;
-  }
 }
