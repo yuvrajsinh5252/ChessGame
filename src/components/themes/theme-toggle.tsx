@@ -3,6 +3,7 @@
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -12,15 +13,14 @@ export default function ThemeToggle() {
 
   if (!mounted) return null;
 
-
   return (
-    <button
+    <Button
+      variant={"ghost"}
+      className="px-2"
       aria-label="Toggle Dark Mode"
-      type="button"
-      className="w-8 h-8 p-1 rounded-md focus:outline-none"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-    </button>
+    </Button>
   );
 }

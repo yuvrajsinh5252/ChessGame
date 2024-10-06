@@ -1,8 +1,8 @@
-interface CurrentPlayerProps {
-  currentPlayer: "white" | "black";
-}
+import { useChessStore } from "@/store/useChessStore";
 
-export const CurrentPlayer = ({ currentPlayer }: CurrentPlayerProps) => {
+export const CurrentPlayer = () => {
+  const { currentPlayer } = useChessStore((state) => state);
+
   return (
     <div>
       {currentPlayer === "white" ? "White" : "Black"}

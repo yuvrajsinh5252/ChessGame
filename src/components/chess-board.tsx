@@ -6,7 +6,7 @@ import { useState } from "react";
 import { CurrentPlayer } from "./current-player";
 
 export default function ChessBoard() {
-  const { board, movePiece, currentPlayer, isValidMove } = useChessStore();
+  const { board, movePiece, isValidMove } = useChessStore();
   const [selectedPiece, setSelectedPiece] = useState<{ row: number; col: number } | null>(null);
 
   // drag and drop handlers
@@ -56,7 +56,7 @@ export default function ChessBoard() {
           ))
         )}
       </div>
-      <CurrentPlayer currentPlayer={currentPlayer} />
+      <CurrentPlayer />
     </div>
   );
 }
