@@ -5,7 +5,7 @@ import { ChessPiece } from "./chess-piece";
 import { useState } from "react";
 
 export default function ChessBoard() {
-  const { board, movePiece, isValidMove } = useChessStore();
+  const { board, movePiece, isValidMove, isKingInCheck } = useChessStore();
   const [selectedPiece, setSelectedPiece] = useState<{ row: number; col: number } | null>(null);
 
   // drag and drop handlers
@@ -24,10 +24,12 @@ export default function ChessBoard() {
     if (selectedPiece) {
       if (movePiece(selectedPiece.row, selectedPiece.col, row, col)) {
         setSelectedPiece(null);
-      } else if (board[row][col] && isValidMove(row, col, row, col)) {
+      }
+      else if (board[row][col] && isValidMove(row, col, row, col)) {
         setSelectedPiece({ row, col });
       }
-    } else if (board[row][col]) {
+    }
+    else if (board[row][col]) {
       setSelectedPiece({ row, col });
     }
   };
@@ -46,6 +48,8 @@ export default function ChessBoard() {
           ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
           ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
           ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
+          ${selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex ? "ring-2 z-50 ring-blue-500" : ""}
+          ${board[rowIndex][colIndex] === isKingInCheck ? "ring-2 z-50 ring-red-500" : ""}
           `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}

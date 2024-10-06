@@ -19,6 +19,7 @@ interface ChessState {
     toRow: number,
     toCol: number
   ) => boolean | "" | null;
+  isKingInCheck: "K" | "k" | "noCheck";
 }
 
 const initialBoard: Board = [
@@ -50,12 +51,8 @@ export const useChessStore = create<ChessState>((set, get) => ({
     )
       return false;
 
-    newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
-    newBoard[fromRow][fromCol] = null;
-
     set((state) => ({
       ...state,
-      board: newBoard,
       currentPlayer: currentPlayer === "white" ? "black" : "white",
     }));
     return true;
@@ -73,6 +70,9 @@ export const useChessStore = create<ChessState>((set, get) => ({
     )
       return false;
 
+    // check if the move is valid using the isValidMove function
     return isValidMove(board, fromRow, fromCol, toRow, toCol);
   },
+
+  isKingInCheck: "noCheck",
 }));
