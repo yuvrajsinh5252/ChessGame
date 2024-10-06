@@ -1,16 +1,24 @@
+import { isValidMove } from "@/utils/isValid";
 import { create } from "zustand";
 
-type Piece = string | null;
-type Board = Piece[][];
+export type Piece = string | null;
+export type Board = Piece[][];
 
 interface ChessState {
   board: Board;
+  currentPlayer: "white" | "black";
   movePiece: (
     fromRow: number,
     fromCol: number,
     toRow: number,
     toCol: number
-  ) => void;
+  ) => boolean;
+  isValidMove: (
+    fromRow: number,
+    fromCol: number,
+    toRow: number,
+    toCol: number
+  ) => boolean | "" | null;
 }
 
 const initialBoard: Board = [
@@ -24,13 +32,47 @@ const initialBoard: Board = [
   ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
 
-export const useChessStore = create<ChessState>((set) => ({
+export const useChessStore = create<ChessState>((set, get) => ({
   board: initialBoard,
-  movePiece: (fromRow, fromCol, toRow, toCol) =>
-    set((state) => {
-      const newBoard = state.board.map((row) => [...row]);
-      newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
-      newBoard[fromRow][fromCol] = null;
-      return { board: newBoard };
-    }),
+  currentPlayer: "white",
+  movePiece: (fromRow, fromCol, toRow, toCol) => {
+    const { board, currentPlayer, isValidMove } = get();
+    if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
+
+    const newBoard = board.map((row) => [...row]);
+    const piece = newBoard[fromRow][fromCol];
+    if (!piece) return false;
+
+    const isWhitePiece = piece === piece.toUpperCase();
+    if (
+      (currentPlayer === "white" && !isWhitePiece) ||
+      (currentPlayer === "black" && isWhitePiece)
+    )
+      return false;
+
+    newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
+    newBoard[fromRow][fromCol] = null;
+
+    set((state) => ({
+      ...state,
+      board: newBoard,
+      currentPlayer: currentPlayer === "white" ? "black" : "white",
+    }));
+    return true;
+  },
+
+  isValidMove: (fromRow, fromCol, toRow, toCol) => {
+    const { board, currentPlayer } = get();
+    const piece = board[fromRow][fromCol];
+    if (!piece) return false;
+
+    const isWhitePiece = piece === piece.toUpperCase();
+    if (
+      (currentPlayer === "white" && !isWhitePiece) ||
+      (currentPlayer === "black" && isWhitePiece)
+    )
+      return false;
+
+    return isValidMove(board, fromRow, fromCol, toRow, toCol);
+  },
 }));
