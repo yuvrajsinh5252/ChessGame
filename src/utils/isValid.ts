@@ -1,22 +1,15 @@
-import { Board } from "@/store/useChessStore";
-import { useChessStore } from "@/store/useChessStore";
+import { Board, useChessStore } from "@/store/useChessStore";
+import { IsMoveValid } from "@/types/chess";
 
-let lastMove: {
-  fromRow: number;
-  fromCol: number;
-  toRow: number;
-  toCol: number;
-} | null = null;
-
-export const isValidMove = (
-  board: Board,
-  fromRow: number,
-  fromCol: number,
-  toRow: number,
-  toCol: number
-): boolean | "" | null => {
-  if (fromRow === toRow && fromCol === toCol) return null;
-  const piece = board[fromRow][fromCol];
+export const isMoveValid: IsMoveValid = (
+  Board,
+  fromRow,
+  fromCol,
+  toRow,
+  toCol
+) => {
+  if (fromRow === toRow && fromCol === toCol) return false;
+  const piece = Board[fromRow][fromCol];
   if (!piece) return false;
 
   const isWhite = piece === piece.toUpperCase();
@@ -28,51 +21,43 @@ export const isValidMove = (
       case "p": // Pawn
         if (isWhite) {
           return (
-            (dy === -1 && dx === 0 && !board[toRow][toCol]) ||
+            (dy === -1 && dx === 0 && !Board[toRow][toCol]) ||
             (dy === -2 &&
               dx === 0 &&
               fromRow === 6 &&
-              !board[toRow][toCol] &&
-              !board[toRow + 1][toCol]) ||
+              !Board[toRow][toCol] &&
+              !Board[toRow + 1][toCol]) ||
             (dy === -1 &&
               Math.abs(dx) === 1 &&
-              board[toRow][toCol] &&
-              board[toRow][toCol] !== board[toRow][toCol]?.toUpperCase()) ||
+              Board[toRow][toCol] &&
+              Board[toRow][toCol] !== Board[toRow][toCol]?.toUpperCase()) ||
             (dy === -1 &&
               Math.abs(dx) === 1 &&
               fromRow === 3 &&
-              lastMove &&
-              lastMove.toRow === 3 &&
-              lastMove.fromRow === 1 &&
-              lastMove.toCol === toCol &&
-              board[toRow + 1][toCol]?.toLowerCase() === "p")
+              Board[toRow + 1][toCol]?.toLowerCase() === "p")
           );
         } else {
           return (
-            (dy === 1 && dx === 0 && !board[toRow][toCol]) ||
+            (dy === 1 && dx === 0 && !Board[toRow][toCol]) ||
             (dy === 2 &&
               dx === 0 &&
               fromRow === 1 &&
-              !board[toRow][toCol] &&
-              !board[toRow - 1][toCol]) ||
+              !Board[toRow][toCol] &&
+              !Board[toRow - 1][toCol]) ||
             (dy === 1 &&
               Math.abs(dx) === 1 &&
-              board[toRow][toCol] &&
-              board[toRow][toCol]?.toUpperCase() === board[toRow][toCol]) ||
+              Board[toRow][toCol] &&
+              Board[toRow][toCol]?.toUpperCase() === Board[toRow][toCol]) ||
             (dy === 1 &&
               Math.abs(dx) === 1 &&
               fromRow === 4 &&
-              lastMove &&
-              lastMove.toRow === 4 &&
-              lastMove.fromRow === 6 &&
-              lastMove.toCol === toCol &&
-              board[toRow - 1][toCol]?.toLowerCase() === "p")
+              Board[toRow - 1][toCol]?.toLowerCase() === "p")
           );
         }
       case "r": // Rook
         return (
           (dx === 0 || dy === 0) &&
-          !hasObstacles(board, fromRow, fromCol, toRow, toCol)
+          !hasObstacles(Board, fromRow, fromCol, toRow, toCol)
         );
       case "n": // Knight
         return (
@@ -82,12 +67,12 @@ export const isValidMove = (
       case "b": // Bishop
         return (
           Math.abs(dx) === Math.abs(dy) &&
-          !hasObstacles(board, fromRow, fromCol, toRow, toCol)
+          !hasObstacles(Board, fromRow, fromCol, toRow, toCol)
         );
       case "q": // Queen
         return (
           (dx === 0 || dy === 0 || Math.abs(dx) === Math.abs(dy)) &&
-          !hasObstacles(board, fromRow, fromCol, toRow, toCol)
+          !hasObstacles(Board, fromRow, fromCol, toRow, toCol)
         );
       case "k": // King
         return Math.abs(dx) <= 1 && Math.abs(dy) <= 1;
@@ -97,57 +82,21 @@ export const isValidMove = (
   })();
 
   if (!moveIsValid) return false;
-
-  // Simulate the move
-  const newBoard = board.map((row) => row.slice());
-  newBoard[toRow][toCol] = piece;
-  newBoard[fromRow][fromCol] = null;
-
-  // Handle en passant capture
-  if (
-    piece.toLowerCase() === "p" &&
-    Math.abs(dx) === 1 &&
-    !board[toRow][toCol]
-  ) {
-    if (isWhite) {
-      newBoard[toRow + 1][toCol] = null;
-    } else {
-      newBoard[toRow - 1][toCol] = null;
-    }
-  }
-
-  useChessStore.setState((state) => {
-    return { ...state, board: newBoard };
-  });
-
-  // Check if the move puts the player's own king in check
-  let check: "noCheck" | "K" | "k" | undefined = "noCheck";
-
-  if (isKingInCheck(newBoard, isWhite)) check = isWhite ? "K" : "k";
-
-  useChessStore.setState((state) => ({
-    ...state,
-    board: newBoard,
-    isKingInCheck: check,
-  }));
-
-  if (check !== "noCheck") return false;
-  // Update last move
-  lastMove = { fromRow, fromCol, toRow, toCol };
-
   return true;
 };
 
-// Check if the king is in check
-const isKingInCheck = (board: Board, isWhite: boolean): boolean => {
-  const king = isWhite ? "K" : "k";
+export const isKingInCheck = (
+  Board: Board,
+  player: "white" | "black"
+): boolean => {
+  const king = player === "white" ? "K" : "k";
   let kingRow = -1;
   let kingCol = -1;
 
   // Find the king's position
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      if (board[row][col] === king) {
+  for (let row = 0; row < Board.length; row++) {
+    for (let col = 0; col < Board[row].length; col++) {
+      if (Board[row][col] === king) {
         kingRow = row;
         kingCol = col;
         break;
@@ -157,16 +106,16 @@ const isKingInCheck = (board: Board, isWhite: boolean): boolean => {
   }
 
   // Check for threats to the king
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      const piece = board[row][col];
+  for (let row = 0; row < Board.length; row++) {
+    for (let col = 0; col < Board[row].length; col++) {
+      const piece = Board[row][col];
       if (
         piece &&
-        (isWhite
+        (player === "white"
           ? piece === piece.toLowerCase()
           : piece === piece.toUpperCase())
       ) {
-        if (isValidMove(board, row, col, kingRow, kingCol)) {
+        if (isMoveValid(Board, row, col, kingRow, kingCol)) {
           return true;
         }
       }
@@ -177,7 +126,7 @@ const isKingInCheck = (board: Board, isWhite: boolean): boolean => {
 };
 
 export const hasObstacles = (
-  board: Board,
+  Board: Board,
   fromRow: number,
   fromCol: number,
   toRow: number,
@@ -189,7 +138,7 @@ export const hasObstacles = (
   let y = fromRow + dy;
 
   while (x !== toCol || y !== toRow) {
-    if (board[y][x] !== null) return true;
+    if (Board[y][x] !== null) return true;
     x += dx;
     y += dy;
   }

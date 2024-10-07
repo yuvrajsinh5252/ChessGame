@@ -2,10 +2,10 @@
 
 import { useChessStore } from "@/store/useChessStore";
 import { ChessPiece } from "./chess-piece";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 export default function ChessBoard() {
-  const { board, movePiece, isValidMove, isKingInCheck } = useChessStore();
+  const { board, movePiece, isValidMove, isKingInCheck, currentPlayer } = useChessStore();
   const [selectedPiece, setSelectedPiece] = useState<{ row: number; col: number } | null>(null);
 
   // drag and drop handlers
@@ -19,19 +19,28 @@ export default function ChessBoard() {
     e.preventDefault();
   };
 
+  // remove selected piece if it's been captured
+  useEffect(() => {
+    if (selectedPiece) {
+      const { row, col } = selectedPiece;
+      if (!board[row][col]) setSelectedPiece(null);
+    }
+  })
+
   // piece click handler
   const handlePieceClick = (row: number, col: number) => {
-    if (selectedPiece) {
-      if (movePiece(selectedPiece.row, selectedPiece.col, row, col)) {
-        setSelectedPiece(null);
+    if (currentPlayer === "black" && board[row][col] === board[row][col]?.toUpperCase()) return
+    if (currentPlayer === "white" && board[row][col] === board[row][col]?.toLowerCase()) return
+
+    setSelectedPiece((prev) => {
+      if (!prev) return { row, col };
+      if (prev.row === row && prev.col === col) return null;
+      if (isValidMove(prev.row, prev.col, row, col)) {
+        movePiece(prev.row, prev.col, row, col);
+        return null;
       }
-      else if (board[row][col] && isValidMove(row, col, row, col)) {
-        setSelectedPiece({ row, col });
-      }
-    }
-    else if (board[row][col]) {
-      setSelectedPiece({ row, col });
-    }
+      return { row, col };
+    });
   };
 
   return (
@@ -48,8 +57,13 @@ export default function ChessBoard() {
           ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
           ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
           ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
-          ${selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex ? "ring-2 z-50 ring-blue-500" : ""}
-          ${board[rowIndex][colIndex] === isKingInCheck ? "ring-2 z-50 ring-red-500" : ""}
+          ${selectedPiece?.row === rowIndex &&
+                selectedPiece?.col === colIndex &&
+                (board[selectedPiece.row][selectedPiece.col] === board[selectedPiece.row][selectedPiece.col]?.toUpperCase()
+                  ? "ring-2 z-50 ring-yellow-500"
+                  : "ring-2 z-50 ring-blue-500")
+                }
+        ${board[rowIndex][colIndex] === isKingInCheck ? "ring-2 z-50 ring-red-500" : ""}
           `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
@@ -86,6 +100,6 @@ export default function ChessBoard() {
           ))}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
