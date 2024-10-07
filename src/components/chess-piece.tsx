@@ -1,6 +1,16 @@
 import { Piece } from "@/types/chess";
 
-export function ChessPiece({ type, position }: Piece) {
+export function ChessPiece({ type, position, highlight }: Piece) {
+  if (!type) {
+    if (highlight) {
+      return (
+        <div
+          className="w-8 h-8 rounded-full bg-blue-500 bg-opacity-50"
+        />
+      );
+    } else return null;
+  }
+
   const color = type === type.toUpperCase() ? "white" : "black";
   const pieceImage = `/${color}/${type}.png`;
 

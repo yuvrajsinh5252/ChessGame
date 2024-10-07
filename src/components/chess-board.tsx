@@ -58,24 +58,24 @@ export default function ChessBoard() {
               ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
               ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
               ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
-              ${selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex ?
-                  (board[selectedPiece.row][selectedPiece.col] === board[selectedPiece.row][selectedPiece.col]?.toUpperCase()
-                    ? "ring-2 z-50 ring-yellow-500"
-                    : "ring-2 z-50 ring-blue-500")
-                  : ""}
-              ${selectedPiece && isMovePossible(board, selectedPiece.row, selectedPiece.col, rowIndex, colIndex) ? "ring-2 z-50 ring-green-500" : ""}
+
               ${board[rowIndex][colIndex] === isKingInCheck ? "ring-2 z-50 ring-red-500" : ""}
               `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
               onClick={() => handlePieceClick(rowIndex, colIndex)}
             >
-              {piece && (
+              {
                 <ChessPiece
                   type={piece}
                   position={{ row: rowIndex, col: colIndex }}
+                  highlight={
+                    selectedPiece &&
+                    isMovePossible(board, selectedPiece.row, selectedPiece.col, rowIndex, colIndex) ||
+                    selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex
+                  }
                 />
-              )}
+              }
             </div>
           ))
         )}

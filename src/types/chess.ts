@@ -28,8 +28,9 @@ export interface IsMoveValid {
 }
 
 export interface Piece {
-  type: PieceType;
+  type: PieceType | null;
   position: { row: number; col: number };
+  highlight: boolean;
 }
 
 export interface ValidState {
