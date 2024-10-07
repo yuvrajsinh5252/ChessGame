@@ -10,6 +10,11 @@ export interface ChessState {
   movePiece: MovePiece;
   isValidMove: ValidState;
   isKingInCheck: "K" | "k" | "noCheck";
+  isCheckMate: IsCheckMate;
+}
+
+interface IsCheckMate {
+  (player: "white" | "black"): boolean;
 }
 
 export interface IsMoveValid {

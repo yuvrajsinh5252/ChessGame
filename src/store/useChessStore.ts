@@ -1,5 +1,5 @@
 import { ChessState } from "@/types/chess";
-import { isKingInCheck, isMoveValid } from "@/utils/isValid";
+import { isKingInCheck, isMoveValid } from "@/utils/valid-move";
 import { create } from "zustand";
 
 export type Piece = string | null;
@@ -107,4 +107,5 @@ export const useChessStore = create<ChessState>((set, get) => ({
   },
 
   isKingInCheck: "noCheck",
+  isCheckMate: (_player) => false,
 }));

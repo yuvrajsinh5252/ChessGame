@@ -1,4 +1,4 @@
-import { Board, useChessStore } from "@/store/useChessStore";
+import { Board } from "@/store/useChessStore";
 import { IsMoveValid } from "@/types/chess";
 
 export const isMoveValid: IsMoveValid = (
@@ -10,7 +10,16 @@ export const isMoveValid: IsMoveValid = (
 ) => {
   if (fromRow === toRow && fromCol === toCol) return false;
   const piece = Board[fromRow][fromCol];
+  const target = Board[toRow][toCol];
   if (!piece) return false;
+  if (
+    piece &&
+    target &&
+    (piece.toUpperCase() === piece
+      ? target.toUpperCase() === target
+      : target.toLowerCase() === target)
+  )
+    return false;
 
   const isWhite = piece === piece.toUpperCase();
   const dx = toCol - fromCol;
