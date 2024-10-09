@@ -94,46 +94,6 @@ export const isMoveValid: IsMoveValid = (
   return true;
 };
 
-export const isKingInCheck = (
-  Board: Board,
-  player: "white" | "black"
-): boolean => {
-  const king = player === "white" ? "K" : "k";
-  let kingRow = -1;
-  let kingCol = -1;
-
-  // Find the king's position
-  for (let row = 0; row < Board.length; row++) {
-    for (let col = 0; col < Board[row].length; col++) {
-      if (Board[row][col] === king) {
-        kingRow = row;
-        kingCol = col;
-        break;
-      }
-    }
-    if (kingRow !== -1) break;
-  }
-
-  // Check for threats to the king
-  for (let row = 0; row < Board.length; row++) {
-    for (let col = 0; col < Board[row].length; col++) {
-      const piece = Board[row][col];
-      if (
-        piece &&
-        (player === "white"
-          ? piece === piece.toLowerCase()
-          : piece === piece.toUpperCase())
-      ) {
-        if (isMoveValid(Board, row, col, kingRow, kingCol)) {
-          return true;
-        }
-      }
-    }
-  }
-
-  return false;
-};
-
 export const hasObstacles = (
   Board: Board,
   fromRow: number,

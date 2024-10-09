@@ -1,5 +1,6 @@
 import { Board } from "@/store/useChessStore";
-import { isKingInCheck, isMoveValid } from "./valid-move";
+import { isMoveValid } from "./validMove";
+import { isKingInCheck } from "./kingCheck";
 
 export const isMovePossible: (
   board: Board,

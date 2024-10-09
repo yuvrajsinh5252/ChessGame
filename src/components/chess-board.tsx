@@ -3,7 +3,7 @@
 import { useChessStore } from "@/store/useChessStore";
 import { ChessPiece } from "./chess-piece";
 import { useEffect, useState } from "react";
-import { isMovePossible } from "@/utils/possible-moves";
+import { isMovePossible } from "@/utils/possibleMoves";
 
 export default function ChessBoard() {
   const { board, movePiece, isValidMove, isKingInCheck, currentPlayer } = useChessStore();
@@ -13,7 +13,7 @@ export default function ChessBoard() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, toRow: number, toCol: number) => {
     e.preventDefault();
     const [fromRow, fromCol] = e.dataTransfer.getData("text").split(",").map(Number);
-    movePiece(fromRow, fromCol, toRow, toCol);
+    movePiece(fromRow, fromCol, toRow, toCol, false);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -27,15 +27,14 @@ export default function ChessBoard() {
 
   // piece click handler
   const handlePieceClick = (row: number, col: number) => {
-    if (board && !board[row][col]) return;
+    if (board && !board[row][col] && !selectedPiece) return;
     if (currentPlayer === "black" && board[row][col] === board[row][col]?.toUpperCase()) return
     if (currentPlayer === "white" && board[row][col] === board[row][col]?.toLowerCase()) return
 
     setSelectedPiece((prev) => {
       if (!prev) return { row, col };
       if (prev.row === row && prev.col === col) return null;
-      if (isValidMove(prev.row, prev.col, row, col)) {
-        movePiece(prev.row, prev.col, row, col);
+      if (movePiece(prev.row, prev.col, row, col, false)) {
         return null;
       }
       return { row, col };

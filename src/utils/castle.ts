@@ -1,6 +1,6 @@
 import { Board } from "@/store/useChessStore";
 import { kingCheckOrMoved, rookMoved } from "@/types/chess";
-import { isKingInCheck } from "./valid-move";
+import { isKingInCheck } from "./kingCheck";
 
 export const CheckCastling = (
   piece: string,

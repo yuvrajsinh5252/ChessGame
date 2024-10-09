@@ -12,8 +12,10 @@ export interface ChessState {
   movePiece: MovePiece;
   isValidMove: ValidState;
   isKingInCheck: "K" | "k" | "noCheck";
-  isCheckMate: IsCheckMate;
+  isCheckMate: typeCheckMate;
 }
+
+export type typeCheckMate = "white" | "black" | "draw" | "noCheckMate";
 
 export type kingCheckOrMoved = {
   white: boolean;
@@ -24,10 +26,6 @@ export type rookMoved = {
   white: { left: boolean; right: boolean };
   black: { left: boolean; right: boolean };
 };
-
-export interface IsCheckMate {
-  (player: "white" | "black"): boolean;
-}
 
 export interface IsMoveValid {
   (
@@ -50,7 +48,13 @@ export interface ValidState {
 }
 
 export interface MovePiece {
-  (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean;
+  (
+    fromRow: number,
+    fromCol: number,
+    toRow: number,
+    toCol: number,
+    checking: false
+  ): boolean;
 }
 
 export interface lastMove {
