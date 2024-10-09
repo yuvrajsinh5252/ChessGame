@@ -1,25 +1,24 @@
 import { ChessState } from "@/types/chess";
+import { CheckCastling } from "@/utils/castling";
+import {
+  initialBoard,
+  initialRookMoved,
+  intitialkingCheckOrMoved,
+} from "@/utils/initial-setup";
 import { isKingInCheck, isMoveValid } from "@/utils/valid-move";
 import { create } from "zustand";
+// import { updateKingMoved, updateRookMoved } from "@/utils/castling";
 
 export type Piece = string | null;
 export type Board = Piece[][];
-
-const initialBoard: Board = [
-  ["r", "n", "b", "q", "k", "b", "n", "r"],
-  ["p", "p", "p", "p", "p", "p", "p", "p"],
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  ["P", "P", "P", "P", "P", "P", "P", "P"],
-  ["R", "N", "B", "Q", "K", "B", "N", "R"],
-];
 
 export const useChessStore = create<ChessState>((set, get) => ({
   board: initialBoard,
   currentPlayer: "white",
   lastMove: null,
+  kingCheckOrMoved: intitialkingCheckOrMoved,
+  rookMoved: initialRookMoved,
+
   movePiece: (fromRow, fromCol, toRow, toCol) => {
     const { board, currentPlayer, isValidMove, lastMove } = get();
     if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
@@ -57,24 +56,44 @@ export const useChessStore = create<ChessState>((set, get) => ({
 
     // Check if the move puts the current player's king in check
     if (isKingInCheck(newBoard, currentPlayer)) return false;
-    if (isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white"))
+    if (
+      isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white")
+    ) {
       set((state) => ({
         ...state,
-        isKingInCheck: currentPlayer == "white" ? "k" : "K",
+        kingCheckOrMoved: {
+          ...state.kingCheckOrMoved,
+          [currentPlayer]: true,
+        },
+        isKingInCheck: currentPlayer === "white" ? "k" : "K",
       }));
-    else set((state) => ({ ...state, isKingInCheck: "noCheck" }));
+    } else set((state) => ({ ...state, isKingInCheck: "noCheck" }));
 
     set((state) => ({
       ...state,
       board: newBoard,
+      kingCheckOrMoved:
+        (currentPlayer === "black" && toRow === 0) ||
+        (currentPlayer === "white" && toRow === 7)
+          ? { ...state.kingCheckOrMoved, [currentPlayer]: true }
+          : state.kingCheckOrMoved,
+      rookMoved: {
+        ...state.rookMoved,
+        [currentPlayer]: {
+          left: fromCol === 0 || fromCol === 4,
+          right: fromCol === 7 || fromCol === 4,
+        },
+      },
       currentPlayer: currentPlayer === "white" ? "black" : "white",
       lastMove: { fromRow, fromCol, toRow, toCol },
     }));
+
     return true;
   },
 
   isValidMove: (fromRow, fromCol, toRow, toCol) => {
-    const { board, currentPlayer, lastMove } = get();
+    const { board, currentPlayer, lastMove, kingCheckOrMoved, rookMoved } =
+      get();
     const piece = board[fromRow][fromCol];
     if (!piece) return false;
 
@@ -101,6 +120,20 @@ export const useChessStore = create<ChessState>((set, get) => ({
         return true;
       }
     }
+
+    if (
+      CheckCastling(
+        piece,
+        fromRow,
+        fromCol,
+        toCol,
+        board,
+        currentPlayer,
+        rookMoved,
+        kingCheckOrMoved
+      )
+    )
+      return true;
 
     // check if the move is valid using the isValidMove function
     return isMoveValid(board, fromRow, fromCol, toRow, toCol);

@@ -3,11 +3,7 @@ import { Piece } from "@/types/chess";
 export function ChessPiece({ type, position, highlight }: Piece) {
   if (!type) {
     if (highlight) {
-      return (
-        <div
-          className="w-8 h-8 rounded-full bg-blue-500 bg-opacity-50"
-        />
-      );
+      return <div className="w-6 h-6 rounded-full bg-black bg-opacity-50" />
     } else return null;
   }
 
@@ -20,11 +16,11 @@ export function ChessPiece({ type, position, highlight }: Piece) {
 
   return (
     <div
-      className="w-16 h-16 cursor-pointer"
+      className={"w-16 h-16 cursor-pointer " + (highlight ? "ring-2 z-50 ring-red-500" : "")}
       draggable
       onDragStart={handleDragStart}
     >
-      <img src={pieceImage} alt={`${color} ${type}`} className="w-full h-full" />
+      <img src={pieceImage} alt={`${color} ${type}`} className="w-full</div> h-full" />
     </div>
   );
 }

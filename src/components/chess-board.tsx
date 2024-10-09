@@ -20,13 +20,10 @@ export default function ChessBoard() {
     e.preventDefault();
   };
 
-  // remove selected piece if it's been captured
+  // remove selected piece if the current player changes
   useEffect(() => {
-    if (selectedPiece) {
-      const { row, col } = selectedPiece;
-      if (!board[row][col]) setSelectedPiece(null);
-    }
-  })
+    setSelectedPiece(null);
+  }, [currentPlayer]);
 
   // piece click handler
   const handlePieceClick = (row: number, col: number) => {
@@ -59,8 +56,9 @@ export default function ChessBoard() {
               ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
               ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
 
-              ${board[rowIndex][colIndex] === isKingInCheck ? "ring-2 z-50 ring-red-500" : ""}
-              `}
+              ${selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex ? "bg-gradient-to-br from-blue-300 to-blue-600" : ""}
+              ${board[rowIndex][colIndex] === isKingInCheck ? "bg-gradient-to-br from-red-500 to-red-700" : ""}
+            `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
               onClick={() => handlePieceClick(rowIndex, colIndex)}
@@ -70,9 +68,8 @@ export default function ChessBoard() {
                   type={piece}
                   position={{ row: rowIndex, col: colIndex }}
                   highlight={
-                    selectedPiece &&
-                    isMovePossible(board, selectedPiece.row, selectedPiece.col, rowIndex, colIndex) ||
-                    selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex
+                    !!selectedPiece &&
+                    isMovePossible(board, selectedPiece?.row, selectedPiece?.col, rowIndex, colIndex)
                   }
                 />
               }
@@ -83,7 +80,7 @@ export default function ChessBoard() {
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
-              key={`row-${index}`}
+              key={`row - ${index}`}
               className="absolute left-0 w-4 h-16 flex items-center justify-center text-[8px] text-black"
               style={{ top: `${index * 12.5 - 4}%` }}
             >
@@ -100,7 +97,7 @@ export default function ChessBoard() {
             </div>
           ))}
         </div>
-      </div>
+      </div >
     </div >
   );
 }

@@ -7,13 +7,25 @@ export interface ChessState {
   board: Board;
   currentPlayer: "white" | "black";
   lastMove: NullableLastMove;
+  kingCheckOrMoved: kingCheckOrMoved;
+  rookMoved: rookMoved;
   movePiece: MovePiece;
   isValidMove: ValidState;
   isKingInCheck: "K" | "k" | "noCheck";
   isCheckMate: IsCheckMate;
 }
 
-interface IsCheckMate {
+export type kingCheckOrMoved = {
+  white: boolean;
+  black: boolean;
+};
+
+export type rookMoved = {
+  white: { left: boolean; right: boolean };
+  black: { left: boolean; right: boolean };
+};
+
+export interface IsCheckMate {
   (player: "white" | "black"): boolean;
 }
 

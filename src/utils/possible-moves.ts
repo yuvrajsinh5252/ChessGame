@@ -9,13 +9,18 @@ export const isMovePossible: (
   toCol: number
 ) => boolean = (board, row, col, toRow, toCol) => {
   const piece = board[row][col];
-  if (
-    piece &&
-    isMoveValid(board, row, col, toRow, toCol) &&
-    !isKingInCheck(board, piece === piece.toUpperCase() ? "white" : "black")
-  ) {
-    return true;
+  if (!piece || !isMoveValid(board, row, col, toRow, toCol)) {
+    return false;
   }
 
-  return false;
+  // Create a copy of the board to simulate the move
+  const newBoard = board.map((row) => row.slice());
+  newBoard[toRow][toCol] = piece;
+  newBoard[row][col] = null;
+
+  // Check if the move leaves the king in check
+  const color = piece === piece.toUpperCase() ? "white" : "black";
+  if (isKingInCheck(newBoard, color)) return false;
+
+  return true;
 };
