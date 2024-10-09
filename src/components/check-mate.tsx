@@ -15,7 +15,7 @@ export const CheckMate = () => {
 
   if (isCheckMate != "noCheckMate") {
     return (
-      <Dialog>
+      <Dialog open={true}>
         <DialogTrigger>
           <button className="hidden">Trigger</button>
         </DialogTrigger>
@@ -23,7 +23,7 @@ export const CheckMate = () => {
           <DialogHeader>
             <DialogTitle>Checkmate</DialogTitle>
             <DialogDescription>
-              {isCheckMate === "white" ? "White" : "Black"} wins!
+              {isCheckMate === "white" ? "Black" : "White"} wins!
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

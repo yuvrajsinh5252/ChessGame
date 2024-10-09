@@ -20,7 +20,7 @@ export const useChessStore = create<ChessState>((set, get) => ({
   kingCheckOrMoved: intitialkingCheckOrMoved,
   rookMoved: initialRookMoved,
 
-  movePiece: (fromRow, fromCol, toRow, toCol, checking) => {
+  movePiece: (fromRow, fromCol, toRow, toCol) => {
     const { board, currentPlayer, isValidMove, lastMove } = get();
     if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
 
@@ -40,37 +40,36 @@ export const useChessStore = create<ChessState>((set, get) => ({
     // Check if the move puts the current player's king in check
     if (isKingInCheck(newBoard, currentPlayer)) return false;
 
-    !checking &&
-      set((state) => ({
-        ...state,
-        board: newBoard,
-        isKingInCheck: isKingInCheck(
-          newBoard,
-          currentPlayer === "white" ? "black" : "white"
-        )
-          ? currentPlayer === "white"
-            ? "k"
-            : "K"
-          : "noCheck",
-        kingCheckOrMoved:
-          (currentPlayer === "black" && toRow === 0) ||
-          (currentPlayer === "white" && toRow === 7)
-            ? { ...state.kingCheckOrMoved, [currentPlayer]: true }
-            : state.kingCheckOrMoved,
-        rookMoved: {
-          ...state.rookMoved,
-          [currentPlayer]: {
-            left: fromCol === 0 || fromCol === 4,
-            right: fromCol === 7 || fromCol === 4,
-          },
+    set((state) => ({
+      ...state,
+      board: newBoard,
+      isKingInCheck: isKingInCheck(
+        newBoard,
+        currentPlayer === "white" ? "black" : "white"
+      )
+        ? currentPlayer === "white"
+          ? "k"
+          : "K"
+        : "noCheck",
+      kingCheckOrMoved:
+        (currentPlayer === "black" && toRow === 0) ||
+        (currentPlayer === "white" && toRow === 7)
+          ? { ...state.kingCheckOrMoved, [currentPlayer]: true }
+          : state.kingCheckOrMoved,
+      rookMoved: {
+        ...state.rookMoved,
+        [currentPlayer]: {
+          left: fromCol === 0 || fromCol === 4,
+          right: fromCol === 7 || fromCol === 4,
         },
-        currentPlayer: currentPlayer === "white" ? "black" : "white",
-        lastMove: { fromRow, fromCol, toRow, toCol },
-        isCheckMate: isCheckMate(
-          board,
-          currentPlayer == "white" ? "black" : "white"
-        ),
-      }));
+      },
+      currentPlayer: currentPlayer === "white" ? "black" : "white",
+      lastMove: { fromRow, fromCol, toRow, toCol },
+      isCheckMate: isCheckMate(
+        newBoard,
+        currentPlayer == "white" ? "black" : "white"
+      ),
+    }));
 
     return true;
   },

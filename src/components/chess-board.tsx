@@ -13,7 +13,7 @@ export default function ChessBoard() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, toRow: number, toCol: number) => {
     e.preventDefault();
     const [fromRow, fromCol] = e.dataTransfer.getData("text").split(",").map(Number);
-    movePiece(fromRow, fromCol, toRow, toCol, false);
+    movePiece(fromRow, fromCol, toRow, toCol);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -34,7 +34,8 @@ export default function ChessBoard() {
     setSelectedPiece((prev) => {
       if (!prev) return { row, col };
       if (prev.row === row && prev.col === col) return null;
-      if (movePiece(prev.row, prev.col, row, col, false)) {
+      if (isValidMove(prev.row, prev.col, row, col)) {
+        movePiece(prev.row, prev.col, row, col);
         return null;
       }
       return { row, col };
