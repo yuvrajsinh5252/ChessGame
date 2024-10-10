@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useChessStore } from "@/store/useChessStore";
 import {
@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 export const CheckMate = () => {
   const { isCheckMate } = useChessStore((state) => state);
@@ -16,9 +16,7 @@ export const CheckMate = () => {
   if (isCheckMate != "noCheckMate") {
     return (
       <Dialog open={true}>
-        <DialogTrigger>
-          <button className="hidden">Trigger</button>
-        </DialogTrigger>
+        <DialogTrigger asChild></DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Checkmate</DialogTitle>

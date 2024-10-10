@@ -1,7 +1,7 @@
 "use client";
 
 import { useChessStore } from "@/store/useChessStore";
-import { ChessPiece } from "./chess-piece";
+import { ChessPiece } from "./chessPiece";
 import { useEffect, useState } from "react";
 import useStore from "@/lib/hooks/useStore";
 import { initialBoard } from "@/utils/initialSetup";
