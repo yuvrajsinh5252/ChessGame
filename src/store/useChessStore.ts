@@ -35,9 +35,11 @@ export const useChessStore = create(
           CheckEnpassant(newBoard, { fromRow, fromCol, toRow, toCol }, lastMove)
         )
           newBoard[lastMove.toRow][lastMove.toCol] = null;
+
         const data = checkCastling(
           fromRow,
           fromCol,
+          toRow,
           toCol,
           newBoard,
           currentPlayer,
@@ -45,7 +47,6 @@ export const useChessStore = create(
           get().kingCheckOrMoved
         );
         if (data) {
-          console.log(data);
           newBoard[fromRow][data.rookCol] = null;
           newBoard[fromRow][data.newRookCol] = data.rook;
         }
@@ -108,6 +109,7 @@ export const useChessStore = create(
           checkCastling(
             fromRow,
             fromCol,
+            toRow,
             toCol,
             board,
             currentPlayer,
