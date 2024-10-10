@@ -1,11 +1,51 @@
 "use client";
 
 import { useChessStore } from "@/store/useChessStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export const ChoosePiece = () => {
-  const { board, currentPlayer, isValidMove, movePiece } = useChessStore(
+  const { currentPlayer, canPromotePawn, promotePawn } = useChessStore(
     (state) => state
   );
 
-  return <div className="grid grid-cols-8 gap-1"></div>;
+  if (!canPromotePawn) return null;
+  return (
+    <Dialog open={true}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Choose a piece to promote your pawn to</DialogTitle>
+          <DialogDescription>
+            <div className="flex flex-wrap gap-2 justify-center items-center">
+              {["Q", "R", "B", "N"].map((piece) => (
+                <button key={piece} className="btn">
+                  <img
+                    src={`/${
+                      currentPlayer === "white" ? "black" : "white"
+                    }/${piece}.png`}
+                    alt={piece}
+                    className="w-16 h-16 mt-5 hover:scale-110 transform transition-transform hover:bg-gray-200 rounded-lg"
+                    onClick={() => {
+                      promotePawn(
+                        canPromotePawn.row,
+                        canPromotePawn.col,
+                        piece
+                      );
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
 };

@@ -1,4 +1,5 @@
 import { Board } from "@/store/useChessStore";
+import { typePromotePawn } from "@/types/chess";
 
 export const promotePawn = (
   board: Board,
@@ -7,15 +8,19 @@ export const promotePawn = (
   toRow: number,
   toCol: number,
   currentPlayer: "white" | "black"
-): boolean => {
+): typePromotePawn => {
   const piece = board[fromRow][fromCol];
-  if (piece !== (currentPlayer === "white" ? "P" : "p")) return false;
-  if (currentPlayer === "white" && toRow !== 0) return false;
-  if (currentPlayer === "black" && toRow !== 7) return false;
-  if (toCol < 0 || toCol > 7) return false;
-  if (board[toRow][toCol]) return false;
+  console.log(fromRow, fromCol, piece);
+  if (piece !== (currentPlayer === "white" ? "P" : "p")) return null;
+  if (currentPlayer === "white" && toRow === 0) {
+    console.log("white");
+    return { row: toRow, col: toCol, piece: null };
+  }
+  if (currentPlayer === "black" && toRow === 7) {
+    console.log("black");
+    return { row: toRow, col: toCol, piece: null };
+  }
+  if (toCol < 0 || toCol > 7) return null;
 
-  board[toRow][toCol] = currentPlayer === "white" ? "Q" : "q";
-  board[fromRow][fromCol] = "";
-  return true;
+  return null;
 };

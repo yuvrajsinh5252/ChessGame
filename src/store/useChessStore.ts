@@ -1,4 +1,4 @@
-import { ChessState } from "@/types/chess";
+import { ChessState, typePromotePawn } from "@/types/chess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
 import {
@@ -7,6 +7,7 @@ import {
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
+import { promotePawn } from "@/utils/promotePawn";
 import { isMoveValid } from "@/utils/validMove";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -22,6 +23,8 @@ export const useChessStore = create(
       lastMove: null,
       kingCheckOrMoved: intitialkingCheckOrMoved,
       rookMoved: initialRookMoved,
+      isKingInCheck: "noCheck",
+      isCheckMate: "noCheckMate",
 
       movePiece: (fromRow, fromCol, toRow, toCol) => {
         const { board, currentPlayer, isValidMove, lastMove } = get();
@@ -87,6 +90,14 @@ export const useChessStore = create(
             newBoard,
             currentPlayer == "white" ? "black" : "white"
           ),
+          canPromotePawn: promotePawn(
+            board,
+            fromRow,
+            fromCol,
+            toRow,
+            toCol,
+            currentPlayer
+          ),
         }));
 
         return true;
@@ -123,8 +134,14 @@ export const useChessStore = create(
         return isMoveValid(board, fromRow, fromCol, toRow, toCol);
       },
 
-      isKingInCheck: "noCheck",
-      isCheckMate: "noCheckMate",
+      promotePawn: (row, col, newPiece) => {
+        const { board, currentPlayer } = get();
+        const newBoard = board.map((row) => [...row]);
+        newBoard[row][col] =
+          currentPlayer === "white" ? newPiece.toLowerCase() : newPiece;
+        set({ board: newBoard, canPromotePawn: null });
+      },
+      canPromotePawn: null,
     }),
     {
       name: "chess-store",

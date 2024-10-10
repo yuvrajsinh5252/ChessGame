@@ -10,7 +10,7 @@ export default function Home() {
     <MaxWidthWrapper>
       <div className="flex flex-col gap-2 justify-center items-center h-screen">
         <div className="flex gap-2 flex-col justify-center items-center pt-10">
-          {/* <ChoosePiece /> */}
+          <ChoosePiece />
           <CheckMate />
           <BlackPlayer />
           <ChessBoard />

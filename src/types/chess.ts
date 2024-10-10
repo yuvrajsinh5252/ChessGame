@@ -13,7 +13,15 @@ export interface ChessState {
   isValidMove: ValidState;
   isKingInCheck: "K" | "k" | "noCheck";
   isCheckMate: typeCheckMate;
+  canPromotePawn: typePromotePawn;
+  promotePawn: (row: number, col: number, newPiece: PieceType) => void;
 }
+
+export type typePromotePawn = {
+  row: number;
+  col: number;
+  piece: PieceType | null;
+} | null;
 
 export type typeCheckMate = "white" | "black" | "draw" | "noCheckMate";
 
