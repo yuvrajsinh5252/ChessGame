@@ -2,8 +2,7 @@ import { Board } from "@/store/useChessStore";
 import { kingCheckOrMoved, rookMoved } from "@/types/chess";
 import { isKingInCheck } from "./kingCheck";
 
-export const CheckCastling = (
-  piece: string,
+export const checkCastling = (
   fromRow: number,
   fromCol: number,
   toCol: number,
@@ -11,7 +10,14 @@ export const CheckCastling = (
   currentPlayer: "white" | "black",
   rookMoved: rookMoved,
   kingCheckOrMoved: kingCheckOrMoved
-): boolean => {
+): {
+  rook: string;
+  rookCol: number;
+  newRookCol: number;
+} | null => {
+  const piece = board[fromRow][fromCol];
+  if (!piece) return null;
+
   if (piece.toLowerCase() === "k" && Math.abs(fromCol - toCol) === 2) {
     const direction = toCol - fromCol > 0 ? 1 : -1;
     const rookCol = direction === 1 ? 7 : 0;
@@ -26,18 +32,15 @@ export const CheckCastling = (
     ) {
       for (let col = fromCol + direction; col !== rookCol; col += direction) {
         if (board[fromRow][col] || isKingInCheck(board, currentPlayer)) {
-          return false;
+          return null;
         }
       }
 
       // Move the rook to the correct position
       const newRookCol = fromCol + direction;
-      board[fromRow][newRookCol] = rook;
-      board[fromRow][rookCol] = null;
-
-      return true;
+      return { rook, rookCol, newRookCol };
     }
   }
 
-  return false;
+  return null;
 };

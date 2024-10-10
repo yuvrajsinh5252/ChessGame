@@ -1,18 +1,39 @@
-"use client"
+"use client";
 
 import { useChessStore } from "@/store/useChessStore";
 import { ChessPiece } from "./chess-piece";
 import { useEffect, useState } from "react";
-import { isMovePossible } from "@/utils/possibleMoves";
+import useStore from "@/lib/hooks/useStore";
+import { initialBoard } from "@/utils/initialSetup";
+import { LoadingBoard } from "./loadingBoard";
 
 export default function ChessBoard() {
-  const { board, movePiece, isValidMove, isKingInCheck, currentPlayer } = useChessStore();
-  const [selectedPiece, setSelectedPiece] = useState<{ row: number; col: number } | null>(null);
+  const store = useStore(useChessStore, (state) => state);
+  const isLoading = !store;
+  const { board, movePiece, isValidMove, isKingInCheck, currentPlayer } =
+    store! || {
+      board: initialBoard,
+      movePiece: () => false,
+      isValidMove: () => false,
+      isKingInCheck: "noCheck",
+      currentPlayer: "white",
+    };
+  const [selectedPiece, setSelectedPiece] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
 
   // drag and drop handlers
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, toRow: number, toCol: number) => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>,
+    toRow: number,
+    toCol: number
+  ) => {
     e.preventDefault();
-    const [fromRow, fromCol] = e.dataTransfer.getData("text").split(",").map(Number);
+    const [fromRow, fromCol] = e.dataTransfer
+      .getData("text")
+      .split(",")
+      .map(Number);
     movePiece(fromRow, fromCol, toRow, toCol);
   };
 
@@ -28,8 +49,16 @@ export default function ChessBoard() {
   // piece click handler
   const handlePieceClick = (row: number, col: number) => {
     if (board && !board[row][col] && !selectedPiece) return;
-    if (currentPlayer === "black" && board[row][col] === board[row][col]?.toUpperCase()) return
-    if (currentPlayer === "white" && board[row][col] === board[row][col]?.toLowerCase()) return
+    if (
+      currentPlayer === "black" &&
+      board[row][col] === board[row][col]?.toUpperCase()
+    )
+      return;
+    if (
+      currentPlayer === "white" &&
+      board[row][col] === board[row][col]?.toLowerCase()
+    )
+      return;
 
     setSelectedPiece((prev) => {
       if (!prev) return { row, col };
@@ -41,6 +70,8 @@ export default function ChessBoard() {
       return { row, col };
     });
   };
+
+  if (isLoading) return <LoadingBoard />;
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
@@ -56,8 +87,17 @@ export default function ChessBoard() {
               ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
               ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
 
-              ${selectedPiece?.row === rowIndex && selectedPiece?.col === colIndex ? "bg-gradient-to-br from-blue-300 to-blue-600" : ""}
-              ${board[rowIndex][colIndex] === isKingInCheck ? "bg-gradient-to-br from-red-500 to-red-700" : ""}
+              ${
+                selectedPiece?.row === rowIndex &&
+                selectedPiece?.col === colIndex
+                  ? "bg-gradient-to-br from-blue-300 to-blue-600"
+                  : ""
+              }
+              ${
+                board[rowIndex][colIndex] === isKingInCheck
+                  ? "bg-gradient-to-br from-red-500 to-red-700"
+                  : ""
+              }
             `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
@@ -69,7 +109,12 @@ export default function ChessBoard() {
                   position={{ row: rowIndex, col: colIndex }}
                   highlight={
                     !!selectedPiece &&
-                    isMovePossible(board, selectedPiece?.row, selectedPiece?.col, rowIndex, colIndex)
+                    isValidMove(
+                      selectedPiece?.row,
+                      selectedPiece?.col,
+                      rowIndex,
+                      colIndex
+                    )
                   }
                 />
               }
@@ -97,7 +142,7 @@ export default function ChessBoard() {
             </div>
           ))}
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

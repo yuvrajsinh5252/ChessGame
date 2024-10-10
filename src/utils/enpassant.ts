@@ -1,23 +1,20 @@
 import { Board } from "@/store/useChessStore";
-import { NullableLastMove } from "@/types/chess";
+import { lastMove, NullableLastMove } from "@/types/chess";
 
 export const CheckEnpassant = (
-  newBoard: Board,
-  {
-    fromRow,
-    fromCol,
-    toRow,
-    toCol,
-  }: { fromRow: number; fromCol: number; toRow: number; toCol: number },
+  board: Board,
+  { fromRow, fromCol, toRow, toCol }: lastMove,
   lastMove: NullableLastMove
-) => {
-  const piece = newBoard[fromRow][fromCol];
+): boolean => {
+  if (lastMove == null) return false;
+  const piece = board[fromRow][fromCol];
+
   if (
     piece &&
     piece.toLowerCase() === "p" &&
     Math.abs(fromRow - toRow) === 1 &&
     Math.abs(fromCol - toCol) === 1 &&
-    !newBoard[toRow][toCol]
+    !board[toRow][toCol]
   ) {
     if (
       lastMove &&
@@ -25,9 +22,11 @@ export const CheckEnpassant = (
       Math.abs(lastMove.fromRow - lastMove.toRow) === 2 &&
       lastMove.toCol === toCol
     ) {
+      board[lastMove.toRow][lastMove.toCol] = null;
       return true;
     }
 
     return false;
   }
+  return false;
 };
