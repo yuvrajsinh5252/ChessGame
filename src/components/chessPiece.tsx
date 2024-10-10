@@ -1,9 +1,14 @@
 import { Piece } from "@/types/chess";
 
-export function ChessPiece({ type, position, highlight }: Piece) {
+export function ChessPiece({
+  type,
+  position,
+  highlight,
+  setSelectedPiece,
+}: Piece) {
   if (!type) {
     if (highlight) {
-      return <div className="w-6 h-6 rounded-full bg-black bg-opacity-50" />
+      return <div className="w-6 h-6 rounded-full bg-black bg-opacity-50" />;
     } else return null;
   }
 
@@ -11,16 +16,24 @@ export function ChessPiece({ type, position, highlight }: Piece) {
   const pieceImage = `/${color}/${type}.png`;
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    setSelectedPiece(position);
     e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
   };
 
   return (
     <div
-      className={"w-16 h-16 cursor-pointer " + (highlight ? "ring-2 z-50 ring-red-500" : "")}
+      className={
+        "w-16 h-16 cursor-pointer " +
+        (highlight ? "ring-2 z-50 ring-red-500" : "")
+      }
       draggable
       onDragStart={handleDragStart}
     >
-      <img src={pieceImage} alt={`${color} ${type}`} className="w-full</div> h-full" />
+      <img
+        src={pieceImage}
+        alt={`${color} ${type}`}
+        className="w-full</div> h-full"
+      />
     </div>
   );
 }

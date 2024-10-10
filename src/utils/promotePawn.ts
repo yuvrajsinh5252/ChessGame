@@ -10,16 +10,11 @@ export const promotePawn = (
   currentPlayer: "white" | "black"
 ): typePromotePawn => {
   const piece = board[fromRow][fromCol];
-  console.log(fromRow, fromCol, piece);
   if (piece !== (currentPlayer === "white" ? "P" : "p")) return null;
-  if (currentPlayer === "white" && toRow === 0) {
-    console.log("white");
+  if (currentPlayer === "white" && toRow === 0)
     return { row: toRow, col: toCol, piece: null };
-  }
-  if (currentPlayer === "black" && toRow === 7) {
-    console.log("black");
+  if (currentPlayer === "black" && toRow === 7)
     return { row: toRow, col: toCol, piece: null };
-  }
   if (toCol < 0 || toCol > 7) return null;
 
   return null;

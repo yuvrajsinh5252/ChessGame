@@ -13,6 +13,7 @@ export interface ChessState {
   isValidMove: ValidState;
   isKingInCheck: "K" | "k" | "noCheck";
   isCheckMate: typeCheckMate;
+  eliminatedPieces: { white: PieceType[]; black: PieceType[] };
   canPromotePawn: typePromotePawn;
   promotePawn: (row: number, col: number, newPiece: PieceType) => void;
 }
@@ -49,6 +50,7 @@ export interface Piece {
   type: PieceType | null;
   position: { row: number; col: number };
   highlight: boolean;
+  setSelectedPiece: any;
 }
 
 export interface ValidState {

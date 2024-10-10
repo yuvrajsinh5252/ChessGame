@@ -25,6 +25,7 @@ export const useChessStore = create(
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
+      eliminatedPieces: { white: [], black: [] },
 
       movePiece: (fromRow, fromCol, toRow, toCol) => {
         const { board, currentPlayer, isValidMove, lastMove } = get();
@@ -33,11 +34,15 @@ export const useChessStore = create(
         const newBoard = board.map((row) => [...row]);
         const piece = newBoard[fromRow][fromCol];
 
+        let EliminatedPiece = null;
+
         if (
           lastMove &&
           CheckEnpassant(newBoard, { fromRow, fromCol, toRow, toCol }, lastMove)
-        )
+        ) {
+          EliminatedPiece = newBoard[lastMove.toRow][lastMove.toCol];
           newBoard[lastMove.toRow][lastMove.toCol] = null;
+        }
 
         const data = checkCastling(
           fromRow,
@@ -55,6 +60,7 @@ export const useChessStore = create(
         }
 
         // Move the piece to the new position
+        if (newBoard[toRow][toCol]) EliminatedPiece = newBoard[toRow][toCol];
         newBoard[toRow][toCol] = piece;
         newBoard[fromRow][fromCol] = null;
 
@@ -98,6 +104,15 @@ export const useChessStore = create(
             toCol,
             currentPlayer
           ),
+          eliminatedPieces: {
+            ...state.eliminatedPieces,
+            [currentPlayer === "white" ? "black" : "white"]: [
+              ...state.eliminatedPieces[
+                currentPlayer === "white" ? "black" : "white"
+              ],
+              EliminatedPiece,
+            ],
+          },
         }));
 
         return true;

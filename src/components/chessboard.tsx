@@ -116,6 +116,7 @@ export default function ChessBoard() {
                       colIndex
                     )
                   }
+                  setSelectedPiece={setSelectedPiece}
                 />
               }
             </div>
