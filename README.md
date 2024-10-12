@@ -1,3 +1,1 @@
-# ChessGame
-
-A simple Multiplayer Chess-Game
+# Simple Multiplayer Chess Game

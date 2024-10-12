@@ -1,3 +1,5 @@
-node_modules
-package-lock.json
-pnpm-lock.yaml
+# dependencies
+/node_modules
+/.next/
+next-env.d.ts
+bun.lockb
