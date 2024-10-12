@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaChessBoard } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -20,19 +19,19 @@ export default function Home() {
               href="/two-player"
               title="Two Player"
               description="Play against a friend on the same device"
-              color="bg-blue-600 hover:bg-blue-700"
+              color="bg-blue-500 hover:bg-blue-600"
             />
             <GameModeCard
               href="/online-multiplayer"
               title="Online Multiplayer"
               description="Challenge players from around the world"
-              color="bg-green-600 hover:bg-green-700"
+              color="bg-green-500 hover:bg-green-600"
             />
             <GameModeCard
               href="/computer"
               title="Play Against Computer"
               description="Test your skills against AI opponents"
-              color="bg-red-600 hover:bg-red-700"
+              color="bg-red-500 hover:bg-red-600"
             />
           </div>
         </div>

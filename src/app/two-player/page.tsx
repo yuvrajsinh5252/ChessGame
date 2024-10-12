@@ -2,6 +2,7 @@ import { BlackPlayer } from "@/components/blackPlayer";
 import { CheckMate } from "@/components/checkmate";
 import ChessBoard from "@/components/chessboard";
 import { ChoosePiece } from "@/components/choose-piece";
+import { Controls } from "@/components/controls";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { WhitePlayer } from "@/components/whitePlayer";
 
@@ -16,6 +17,7 @@ export default function Home() {
           <ChessBoard />
           <WhitePlayer />
         </div>
+        <Controls />
       </div>
     </MaxWidthWrapper>
   );
