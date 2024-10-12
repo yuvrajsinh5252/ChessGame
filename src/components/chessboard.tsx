@@ -91,7 +91,7 @@ export default function ChessBoard() {
           row.map((piece, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`w-16 h-16 flex items-center justify-center
+              className={`w-16 h-16 max-sm:h-11 max-sm:w-11 flex items-center justify-center
               ${(rowIndex + colIndex) % 2 === 0 ? "bg-gray-300" : "bg-gray-500"}
               ${rowIndex === 0 && colIndex === 0 ? "rounded-tl-lg" : ""}
               ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
@@ -138,8 +138,8 @@ export default function ChessBoard() {
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
-              key={`row - ${index}`}
-              className="absolute left-0 w-4 h-16 flex items-center justify-center text-[8px] text-black"
+              key={`row-${index}`}
+              className="absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black"
               style={{ top: `${index * 12.5 - 4}%` }}
             >
               {8 - index}
@@ -148,7 +148,7 @@ export default function ChessBoard() {
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={`col-${index}`}
-              className="absolute bottom-0 w-16 h-4 flex items-center justify-center text-[8px] text-black"
+              className="absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black"
               style={{ left: `${index * 12.5 - 5}%` }}
             >
               {String.fromCharCode(97 + index)}

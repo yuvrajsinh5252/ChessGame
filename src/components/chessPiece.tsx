@@ -24,7 +24,7 @@ export function ChessPiece({
   return (
     <div
       className={
-        "w-16 h-16 cursor-pointer " +
+        "w-16 h-16 cursor-pointer max-sm:h-11 max-sm:w-11" +
         (highlight ? "ring-2 z-50 ring-red-500" : "")
       }
       draggable
