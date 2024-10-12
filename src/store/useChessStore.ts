@@ -1,4 +1,4 @@
-import { ChessState, typePromotePawn } from "@/types/chess";
+import { ChessState } from "@/types/chess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
 import {
