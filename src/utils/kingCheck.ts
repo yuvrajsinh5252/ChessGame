@@ -61,7 +61,7 @@ export const isCheckMate = (
       ) {
         for (let toRow = 0; toRow < board.length; toRow++) {
           for (let toCol = 0; toCol < board[toRow].length; toCol++) {
-            if (isMovePossible(board, row, col, toRow, toCol)) {
+            if (isMovePossible(board, row, col, toRow, toCol, player)) {
               const newBoard = board.map((row) => row.slice());
               newBoard[toRow][toCol] = board[row][col];
               newBoard[row][col] = null;

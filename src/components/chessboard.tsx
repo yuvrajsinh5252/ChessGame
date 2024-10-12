@@ -48,7 +48,7 @@ export default function ChessBoard() {
 
   // piece click handler
   const handlePieceClick = (row: number, col: number) => {
-    if (board && !board[row][col] && !selectedPiece) return;
+    if (board && !board[row][col]) return;
     if (
       currentPlayer === "black" &&
       board[row][col] === board[row][col]?.toUpperCase()
@@ -69,6 +69,17 @@ export default function ChessBoard() {
       }
       return { row, col };
     });
+  };
+
+  // square click handler
+  const handleSquareClick = (row: number, col: number) => {
+    if (
+      selectedPiece &&
+      isValidMove(selectedPiece.row, selectedPiece.col, row, col)
+    ) {
+      movePiece(selectedPiece.row, selectedPiece.col, row, col);
+      setSelectedPiece(null);
+    } else handlePieceClick(row, col);
   };
 
   if (isLoading) return <LoadingBoard />;
@@ -101,11 +112,12 @@ export default function ChessBoard() {
             `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
-              onClick={() => handlePieceClick(rowIndex, colIndex)}
+              onClick={() => handleSquareClick(rowIndex, colIndex)}
             >
               {
                 <ChessPiece
                   type={piece}
+                  currentPlayer={currentPlayer}
                   position={{ row: rowIndex, col: colIndex }}
                   highlight={
                     !!selectedPiece &&

@@ -7,8 +7,8 @@ import {
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
+import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
-import { isMoveValid } from "@/utils/validMove";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -131,22 +131,17 @@ export const useChessStore = create(
         )
           return false;
 
-        if (
-          checkCastling(
-            fromRow,
-            fromCol,
-            toRow,
-            toCol,
-            board,
-            currentPlayer,
-            rookMoved,
-            kingCheckOrMoved
-          )
-        )
-          return true;
-
-        // check if the move is valid using the isValidMove function
-        return isMoveValid(board, fromRow, fromCol, toRow, toCol);
+        return isMovePossible(
+          newBoard,
+          fromRow,
+          fromCol,
+          toRow,
+          toCol,
+          currentPlayer,
+          get().lastMove,
+          rookMoved,
+          kingCheckOrMoved
+        );
       },
 
       promotePawn: (row, col, newPiece) => {
@@ -154,7 +149,16 @@ export const useChessStore = create(
         const newBoard = board.map((row) => [...row]);
         newBoard[row][col] =
           currentPlayer === "white" ? newPiece.toLowerCase() : newPiece;
-        set({ board: newBoard, canPromotePawn: null });
+
+        set({
+          board: newBoard,
+          canPromotePawn: null,
+          isKingInCheck: isKingInCheck(newBoard, currentPlayer)
+            ? currentPlayer === "white"
+              ? "K"
+              : "k"
+            : "noCheck",
+        });
       },
       canPromotePawn: null,
     }),

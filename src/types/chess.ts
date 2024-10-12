@@ -49,6 +49,7 @@ export interface IsMoveValid {
 export interface Piece {
   type: PieceType | null;
   position: { row: number; col: number };
+  currentPlayer: PieceColor;
   highlight: boolean;
   setSelectedPiece: any;
 }
