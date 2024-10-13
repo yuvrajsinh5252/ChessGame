@@ -1,6 +1,9 @@
-import Room from "@/components/online-mode/room";
+import Room from "@/Components/online-mode/room";
+import { intital } from "../server";
 
-export default function Home() {
+export default async function Home() {
+  await intital();
+
   return (
     <div className="min-h-screen flex justify-center items-center flex-col p-4">
       <div className="bg-white/50 dark:bg-white/10 shadow-md rounded-lg p-6 w-full max-w-md">
