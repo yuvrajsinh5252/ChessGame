@@ -1,24 +1,22 @@
 "use client";
 
-import { useStore } from "zustand";
 import { Input } from "../ui/input";
-import useRoomStore from "@/store/useRoomStore";
-import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Room() {
-  const state = useStore(useRoomStore, (state) => state);
-  const isLoading = !state;
-  const [id, setId] = useState<string | null>(null);
+  const router = useRouter();
+  const [id, setId] = useState<string>("");
 
-  useEffect(() => {
-    if (state.roomId) {
-      redirect(`/online-multiplayer/${state.roomId}`);
-      // window.location.href = `/online-multiplayer/${state.roomId}`;
-    }
-  }, [state.roomId]);
+  const createRoom = async () => {
+    const res = await fetch("/api/rooms/create");
+    const roomId: string = await res.text();
+    router.push(`/online-multiplayer/room/${roomId}`);
+  };
 
-  if (isLoading) return <div>Loading...</div>;
+  const joinRoom = async (roomId: string) => {
+    router.push(`/online-multiplayer/room/${roomId}`);
+  };
 
   return (
     <div className="w-full max-w-md">
@@ -30,11 +28,16 @@ export default function Room() {
           className="w-full dark:bg-gray-600"
         />
         <button
-          onClick={() => id && state.joinRoom(id)}
-          type="submit"
+          onClick={() => joinRoom(id)}
           className="mt-2 w-full bg-blue-500 p-2 rounded"
         >
           Join Room
+        </button>
+        <button
+          onClick={createRoom}
+          className="mt-2 w-full bg-blue-500 p-2 rounded"
+        >
+          Create Room
         </button>
       </form>
     </div>

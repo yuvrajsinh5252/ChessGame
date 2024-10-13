@@ -13,11 +13,34 @@ datasource db {
   url      = env("DATABASE_URL_UNPOOLED")
 }
 
-model Game {
-  id            Int     @id @default(autoincrement())
-  board         String // Store board state as JSON
-  currentPlayer String
-  whiteTime     Int     @default(600) // 10 minutes in seconds
-  blackTime     Int     @default(600) // 10 minutes in seconds
-  lastMove      String? // Store last move as JSON
+model game {
+  roomId           String  @id @default(cuid())
+  players          Int[]
+  board            String // Store board state as JSON
+  currentPlayer    String
+  kingCheckOrMoved String
+  rookMoved        String
+  eliminatedPiece  String
+  isKingInCheck    Boolean @default(false)
+  isCheckmate      Boolean @default(false)
+  canPawnPromote   Boolean @default(false)
+  whiteTime        Int     @default(600) // 10 minutes in seconds
+  blackTime        Int     @default(600) // 10 minutes in seconds
+  lastMove         String? // Store last move as JSON
 }
+
+// model ChatRoom {
+//   id        String    @id @default(cuid())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   messages  Message[]
+// }
+
+// model Message {
+//   id         String   @id @default(cuid())
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+//   text       String
+//   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+//   chatRoomId String
+// }
