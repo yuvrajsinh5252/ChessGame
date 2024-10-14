@@ -11,16 +11,19 @@ export default function Room() {
 
   const createRoom = async () => {
     const res = await fetch("/api/rooms/create");
-    const roomId: string = await res.text();
+    const data = await res.json();
+
+    const roomId = data.roomId;
+    const playerId = data.playerId;
 
     const channel = pusherClient.subscribe(`room-${roomId}`);
     channel.bind("player-joined", () => {
-      router.push(`/online-multiplayer/room/${roomId}`);
+      router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
     });
   };
 
   const joinRoom = async (roomId: string) => {
-    const data = await fetch(`/api/rooms/getroom`, {
+    const res = await fetch(`/api/rooms/join`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,14 +31,17 @@ export default function Room() {
       body: JSON.stringify({ roomId }),
     });
 
-    if (data.status === 404) {
+    const data = await res.json();
+    const playerId = data.playerId;
+
+    if (res.status === 404) {
       alert("Room not found");
       return;
-    } else if (data.status === 400) {
+    } else if (res.status === 400) {
       alert("Room is full");
       return;
-    } else if (data.status === 200)
-      router.push(`/online-multiplayer/room/${roomId}`);
+    } else if (res.status === 200)
+      router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
   };
 
   return (

@@ -17,7 +17,7 @@ export async function GET() {
     },
   });
 
-  await prisma.player.create({
+  const player = await prisma.player.create({
     data: {
       color: "white",
       game: {
@@ -26,5 +26,10 @@ export async function GET() {
     },
   });
 
-  return new Response(createdRoom.roomId);
+  return new Response(
+    JSON.stringify({ roomId: createdRoom.roomId, playerId: player.id }),
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 }

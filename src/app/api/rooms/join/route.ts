@@ -36,6 +36,12 @@ export async function POST(req: NextRequest) {
       message: "A new player has joined the room",
     });
 
-    return new Response("Room found connecting...", { status: 200 });
+    return new Response(
+      JSON.stringify({
+        message: "Room found connecting...",
+        playerId: newPlayer.id,
+      }),
+      { status: 200 }
+    );
   }
 }
