@@ -1,6 +1,4 @@
 import { OnlineBoard } from "@/Components/online-mode/onlineboard";
-import useRoomStore from "@/store/useRoomStore";
-import { useStore } from "zustand";
 
 interface PageProps {
   params: {
@@ -8,9 +6,8 @@ interface PageProps {
   };
 }
 
-export default function page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
   const { roomId } = params;
-  console.log(roomId);
 
   return <OnlineBoard />;
 }

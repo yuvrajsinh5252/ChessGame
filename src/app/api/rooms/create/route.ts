@@ -14,7 +14,15 @@ export async function GET() {
       eliminatedPiece: JSON.stringify({}),
       kingCheckOrMoved: JSON.stringify(intitialkingCheckOrMoved),
       rookMoved: JSON.stringify(initialRookMoved),
-      players: [1],
+    },
+  });
+
+  await prisma.player.create({
+    data: {
+      color: "white",
+      game: {
+        connect: { roomId: createdRoom.roomId },
+      },
     },
   });
 
