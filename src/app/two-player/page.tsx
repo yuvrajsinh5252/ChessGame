@@ -1,10 +1,10 @@
-import { BlackPlayer } from "@/components/blackPlayer";
-import { CheckMate } from "@/components/checkmate";
-import ChessBoard from "@/components/chessboard";
-import { ChoosePiece } from "@/components/choose-piece";
-import { Controls } from "@/components/controls";
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { WhitePlayer } from "@/components/whitePlayer";
+import { BlackPlayer } from "@/Components/blackPlayer";
+import { CheckMate } from "@/Components/checkmate";
+import ChessBoard from "@/Components/chessboard";
+import { ChoosePiece } from "@/Components/choose-piece";
+import { Controls } from "@/Components/controls";
+import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
+import { WhitePlayer } from "@/Components/whitePlayer";
 
 export default function Home() {
   return (
