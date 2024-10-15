@@ -9,7 +9,6 @@ export async function getGameState(gameId: string) {
   const game = await prisma.game.findUnique({ where: { roomId: gameId } });
   const players = await prisma.player.findMany({
     where: { gameId },
-    select: { id: true, color: true },
   });
 
   if (!game) {
@@ -42,6 +41,8 @@ export async function handlePlayerMove(
   const game = await prisma.game.findUnique({ where: { roomId: gameId } });
   if (!game) throw new Error("Game not found");
 
+  if (player != game.currentPlayer) return "Error";
+
   const board = JSON.parse(game.board);
   const currentPlayer = game.currentPlayer;
 
@@ -66,6 +67,5 @@ export async function handlePlayerMove(
 
 export async function getPlayerColor(playerId: string) {
   const player = await prisma.player.findUnique({ where: { id: playerId } });
-
   return player?.color;
 }

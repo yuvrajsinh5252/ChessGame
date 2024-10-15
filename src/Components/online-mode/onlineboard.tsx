@@ -7,7 +7,7 @@ import { OnlineChessPiece } from "./chessPiece";
 import { LoadingBoard } from "../loadingBoard";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
-import { OnlineChessStore } from "@/types/onlineChess";
+import { GameState } from "@/types/onlineChess";
 
 export function OnlineBoard({
   roomId,
@@ -16,7 +16,8 @@ export function OnlineBoard({
   roomId: string;
   player: "white" | "black";
 }) {
-  const { gameState, players } = useOnlineChessStore((state) => state);
+  const { gameState, players, updateGameState, updatePlayersState } =
+    useOnlineChessStore((state) => state);
 
   const [isLoading, setisLoading] = useState(true);
   const [selectedPiece, setSelectedPiece] = useState<{
@@ -28,7 +29,8 @@ export function OnlineBoard({
     const fetchGameState = async () => {
       try {
         const data = await getGameState(roomId);
-        useOnlineChessStore.setState(data);
+        updateGameState(data.gameState);
+        updatePlayersState(data.players);
         setisLoading(false);
       } catch (error) {
         console.error("Failed to fetch game state:", error);
@@ -38,33 +40,19 @@ export function OnlineBoard({
     fetchGameState();
 
     const channel = pusherClient.subscribe(`room-${roomId}`);
-
-    channel.bind("move", (data: OnlineChessStore) => {
-      useOnlineChessStore.setState(data);
-    });
+    channel.bind("move", (data: GameState) => updateGameState(data));
 
     return () => {
       channel.unbind("move");
       pusherClient.unsubscribe(`room-${roomId}`);
     };
-  }, [roomId, gameState.board]);
+  }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
 
   const handleCellClick = (row: number, col: number) => {
     if (selectedPiece) {
-      const newBoard = [...gameState.board];
-      newBoard[row][col] = newBoard[selectedPiece.row][selectedPiece.col];
-      newBoard[selectedPiece.row][selectedPiece.col] = null;
-
-      useOnlineChessStore.setState((state) => ({
-        ...state,
-        board: newBoard,
-      }));
-
       handlePlayerMove(roomId, selectedPiece, { row, col }, player);
       setSelectedPiece(null);
-    } else {
-      setSelectedPiece({ row, col });
-    }
+    } else setSelectedPiece({ row, col });
   };
 
   if (isLoading) return <LoadingBoard />;
@@ -76,7 +64,7 @@ export function OnlineBoard({
           player === "black" ? "rotate-180" : ""
         }`}
       >
-        {gameState.board.map((row: any[], rowIndex: number) =>
+        {gameState?.board.map((row: any[], rowIndex: number) =>
           row.map((cell: PieceType, colIndex: number) => (
             <div
               key={`${rowIndex}-${colIndex}`}
@@ -93,8 +81,12 @@ export function OnlineBoard({
                   ? "bg-gradient-to-br from-blue-300 to-blue-600"
                   : ""
               }
-              ${player === "black" ? "rotate-180" : ""}`}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
+              ${player === "black" ? "rotate-180" : ""}
+              `}
+              onClick={() =>
+                // gameState.currentPlayer == player &&
+                handleCellClick(rowIndex, colIndex)
+              }
             >
               <OnlineChessPiece
                 type={cell}
@@ -133,6 +125,10 @@ export function OnlineBoard({
           ))}
         </div>
       </div>
+      <div>
+        {gameState.currentPlayer} {player}{" "}
+      </div>
+      <div>{players.map((player) => player.id).join(" vs ")}</div>
     </div>
   );
 }

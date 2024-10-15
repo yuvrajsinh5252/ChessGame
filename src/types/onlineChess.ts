@@ -1,8 +1,15 @@
 import { Board } from "@/store/useChessStore";
-import { kingCheckOrMoved, NullableLastMove, rookMoved } from "./chess";
+import {
+  kingCheckOrMoved,
+  MovePiece,
+  NullableLastMove,
+  rookMoved,
+  ValidState,
+} from "./chess";
 
 export interface Player {
   id: string;
+  gameId?: string;
   name?: string;
   color: "white" | "black";
 }
@@ -18,10 +25,17 @@ export interface GameState {
   };
   kingCheckOrMoved: kingCheckOrMoved;
   rookMoved: rookMoved;
-  isKingInCheck: "noCheck" | "white" | "black";
+  isKingInCheck: "noCheck" | "K" | "k";
 }
 
 export interface OnlineChessStore {
   players: Player[];
   gameState: GameState;
+}
+
+export interface OnlineChessStoreActions {
+  updateGameState: (gameState: Partial<GameState>) => void;
+  updatePlayersState: (players: Player[]) => void;
+  movePiece: MovePiece;
+  isValidMove: ValidState;
 }
