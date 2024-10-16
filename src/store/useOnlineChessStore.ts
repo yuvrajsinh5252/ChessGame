@@ -2,6 +2,7 @@ import {
   OnlineChessStore,
   OnlineChessStoreActions,
   Player,
+  winner,
 } from "@/types/onlineChess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
@@ -17,7 +18,7 @@ import { create } from "zustand";
 const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
   (set, get) => ({
     players: [],
-    winner: "in-progress",
+    winner: "",
     gameState: {
       board: initialBoard,
       currentPlayer: "white",
@@ -137,6 +138,15 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
         const newState = {
           ...state,
           players: players,
+        };
+        return newState;
+      }),
+
+    updateWinner: (winner: winner) =>
+      set((state) => {
+        const newState = {
+          ...state,
+          winner: winner,
         };
         return newState;
       }),

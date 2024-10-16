@@ -6,7 +6,7 @@ import { Board } from "@/store/useChessStore";
 import { GameState } from "@/types/onlineChess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
-import { isKingInCheck } from "@/utils/kingCheck";
+import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { isMovePossible } from "@/utils/possibleMove";
 
 //  This function is used to get the game state from the database
@@ -38,7 +38,7 @@ export async function handlePlayerMove(
     const lastMove = game.lastMove ? JSON.parse(game.lastMove) : null;
     const rookMoved = JSON.parse(game.rookMoved);
     const kingCheckOrMoved = JSON.parse(game.kingCheckOrMoved);
-    // const eliminatedPieces = JSON.parse(game.eliminatedPieces);
+    const eliminatedPieces = JSON.parse(game.eliminatedPiece);
     const currentPlayer = game.currentPlayer;
 
     const newBoard = board.map((row) => row.slice());
@@ -51,6 +51,8 @@ export async function handlePlayerMove(
       (currentPlayer === "black" && isWhitePiece)
     )
       throw new Error("Invalid move");
+
+    let EliminatedPiece = null;
 
     if (
       isMovePossible(
@@ -65,8 +67,6 @@ export async function handlePlayerMove(
         kingCheckOrMoved
       )
     ) {
-      let EliminatedPiece = null;
-
       if (
         lastMove &&
         CheckEnpassant(
@@ -142,22 +142,32 @@ export async function handlePlayerMove(
         toCol: to.col,
       },
       eliminatedPieces: {
-        white: [],
-        black: [],
+        ...eliminatedPieces,
+        [currentPlayer === "white" ? "black" : "white"]: [
+          ...eliminatedPieces[currentPlayer === "white" ? "black" : "white"],
+          EliminatedPiece,
+        ],
       },
     };
 
     await pusherServer.trigger(`room-${gameId}`, "move", gameState);
 
+    const res = isCheckMate(newBoard, newCurrentPlayer);
+    const winner = res === "noCheckMate" ? "" : res;
+
+    await pusherServer.trigger(`room-${gameId}`, "winner", winner);
+
     await prisma.game.update({
       where: { roomId: gameId },
       data: {
         board: JSON.stringify(newBoard),
+        winner: winner,
         currentPlayer: newCurrentPlayer,
         lastMove: JSON.stringify(gameState.lastMove),
         kingCheckOrMoved: JSON.stringify(gameState.kingCheckOrMoved),
         rookMoved: JSON.stringify(gameState.rookMoved),
         isKingInCheck: gameState.isKingInCheck,
+        eliminatedPiece: JSON.stringify(gameState.eliminatedPieces),
       },
     });
 

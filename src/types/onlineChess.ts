@@ -30,12 +30,16 @@ export interface GameState {
 
 export interface OnlineChessStore {
   players: Player[];
+  winner: winner;
   gameState: GameState;
 }
+
+export type winner = "white" | "black" | "draw" | "";
 
 export interface OnlineChessStoreActions {
   updateGameState: (gameState: Partial<GameState>) => void;
   updatePlayersState: (players: Player[]) => void;
+  updateWinner: (winner: winner) => void;
   movePiece: MovePiece;
   isValidMove: ValidState;
 }
