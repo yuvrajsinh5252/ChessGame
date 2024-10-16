@@ -39,3 +39,10 @@ export interface OnlineChessStoreActions {
   movePiece: MovePiece;
   isValidMove: ValidState;
 }
+
+export interface OnlinePiece {
+  type: string;
+  position: { row: number; col: number };
+  lastMove: NullableLastMove;
+  highlight: boolean;
+}

@@ -1,13 +1,11 @@
-import { Piece } from "@/types/chess";
+import { OnlinePiece } from "@/types/onlineChess";
 
 export function OnlineChessPiece({
   type,
   position,
   lastMove,
-  currentPlayer,
   highlight,
-  setSelectedPiece,
-}: Piece) {
+}: OnlinePiece) {
   if (!type) {
     if (
       lastMove?.fromRow === position.row &&
@@ -28,25 +26,18 @@ export function OnlineChessPiece({
   const color = type === type.toUpperCase() ? "white" : "black";
   const pieceImage = `/${color}/${type}.png`;
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    if (color === currentPlayer) setSelectedPiece(position);
-    e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
-  };
-
   return (
     <div
       className={
         "w-16 h-16 cursor-pointer max-sm:h-10 max-sm:w-10 " +
         (highlight ? "bg-red-500/50 " : "") +
         (lastMove?.fromRow == position.row && lastMove?.fromCol == position.col
-          ? "bg-blue-400/50"
+          ? "bg-blue-400/50 "
           : "") +
         (lastMove?.toRow == position.row && lastMove?.toCol == position.col
-          ? "bg-blue-400/50"
+          ? "bg-blue-400/50 "
           : "")
       }
-      draggable
-      onDragStart={handleDragStart}
     >
       <img
         src={pieceImage}

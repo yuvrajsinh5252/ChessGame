@@ -2,24 +2,33 @@
 
 import React, { useEffect, useState } from "react";
 import { pusherClient } from "@/lib/pusher";
-import { handlePlayerMove, getGameState } from "@/app/server";
-import { OnlineChessPiece } from "./chessPiece";
+import { handlePlayerMove, getGameState, getPlayerColor } from "@/app/server";
+import { OnlineChessPiece } from "./onlinechessPiece";
 import { LoadingBoard } from "../loadingBoard";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
-import { GameState } from "@/types/onlineChess";
+import { GameState, Player } from "@/types/onlineChess";
 
 export function OnlineBoard({
   roomId,
-  player,
+  playerId,
 }: {
   roomId: string;
-  player: "white" | "black";
+  playerId: string;
 }) {
-  const { gameState, players, updateGameState, updatePlayersState } =
-    useOnlineChessStore((state) => state);
+  const {
+    gameState,
+    players,
+    updateGameState,
+    updatePlayersState,
+    isValidMove,
+    movePiece,
+  } = useOnlineChessStore((state) => state);
 
   const [isLoading, setisLoading] = useState(true);
+  const [playerColor, setPlayerColor] = useState<"white" | "black" | null>(
+    null
+  );
   const [selectedPiece, setSelectedPiece] = useState<{
     row: number;
     col: number;
@@ -29,8 +38,35 @@ export function OnlineBoard({
     const fetchGameState = async () => {
       try {
         const data = await getGameState(roomId);
-        updateGameState(data.gameState);
-        updatePlayersState(data.players);
+        const playerColour = await getPlayerColor(playerId);
+        if (playerColour) setPlayerColor(playerColour);
+
+        const recievedGameState: GameState = {
+          board: JSON.parse(data.gameState.board),
+          status: "in-progress",
+          currentPlayer: data.gameState.currentPlayer as "white" | "black",
+          lastMove: data.gameState.lastMove
+            ? JSON.parse(data.gameState.lastMove)
+            : null,
+          eliminatedPieces: JSON.parse(data.gameState.eliminatedPiece) as {
+            white: string[];
+            black: string[];
+          },
+          kingCheckOrMoved: JSON.parse(data.gameState.kingCheckOrMoved),
+          rookMoved: JSON.parse(data.gameState.rookMoved),
+          isKingInCheck: data.gameState.isKingInCheck as "noCheck" | "K" | "k",
+        };
+
+        const recievedPlayers: Player[] = (data.players as any).map(
+          (player: any) => ({
+            id: player.id,
+            color: player.color,
+          })
+        );
+
+        updateGameState(recievedGameState);
+        updatePlayersState(recievedPlayers);
+
         setisLoading(false);
       } catch (error) {
         console.error("Failed to fetch game state:", error);
@@ -48,11 +84,44 @@ export function OnlineBoard({
     };
   }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
 
-  const handleCellClick = (row: number, col: number) => {
+  const handleCellClick = async (row: number, col: number) => {
     if (selectedPiece) {
-      handlePlayerMove(roomId, selectedPiece, { row, col }, player);
+      if (!isValidMove(selectedPiece.row, selectedPiece.col, row, col)) {
+        setSelectedPiece(null);
+        return;
+      }
+
+      const OriginalGameState = { ...gameState };
+      movePiece(selectedPiece.row, selectedPiece.col, row, col);
       setSelectedPiece(null);
-    } else setSelectedPiece({ row, col });
+
+      const res = await handlePlayerMove(
+        roomId,
+        selectedPiece,
+        { row, col },
+        playerColor!
+      );
+      setSelectedPiece(null);
+
+      if (res == "Error") updateGameState(OriginalGameState);
+    } else {
+      const { board, currentPlayer } = gameState;
+
+      if (board && !board[row][col]) return;
+      if (currentPlayer !== playerColor) return;
+      if (
+        playerColor === "black" &&
+        board[row][col] === board[row][col]?.toUpperCase()
+      )
+        return;
+      if (
+        playerColor === "white" &&
+        board[row][col] === board[row][col]?.toLowerCase()
+      )
+        return;
+
+      setSelectedPiece({ row, col });
+    }
   };
 
   if (isLoading) return <LoadingBoard />;
@@ -61,7 +130,7 @@ export function OnlineBoard({
     <div className="flex flex-col gap-2 justify-center items-center">
       <div
         className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative ${
-          player === "black" ? "rotate-180" : ""
+          playerColor === "black" ? "rotate-180" : ""
         }`}
       >
         {gameState?.board.map((row: any[], rowIndex: number) =>
@@ -81,20 +150,28 @@ export function OnlineBoard({
                   ? "bg-gradient-to-br from-blue-300 to-blue-600"
                   : ""
               }
-              ${player === "black" ? "rotate-180" : ""}
-              `}
-              onClick={() =>
-                // gameState.currentPlayer == player &&
-                handleCellClick(rowIndex, colIndex)
+              ${
+                gameState.board[rowIndex][colIndex] === gameState.isKingInCheck
+                  ? "bg-gradient-to-br from-red-500 to-red-700"
+                  : ""
               }
+              ${playerColor === "black" ? "rotate-180" : ""}
+              `}
+              onClick={() => handleCellClick(rowIndex, colIndex)}
             >
               <OnlineChessPiece
                 type={cell}
-                currentPlayer={gameState.currentPlayer}
                 position={{ row: rowIndex, col: colIndex }}
-                setSelectedPiece={setSelectedPiece}
-                highlight={!!selectedPiece}
                 lastMove={gameState.lastMove}
+                highlight={
+                  !!selectedPiece &&
+                  isValidMove(
+                    selectedPiece.row,
+                    selectedPiece.col,
+                    rowIndex,
+                    colIndex
+                  )
+                }
               />
             </div>
           ))
@@ -105,7 +182,7 @@ export function OnlineBoard({
             <div
               key={`row-${index}`}
               className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                player === "black" ? "rotate-180" : ""
+                playerColor === "black" ? "rotate-180" : ""
               }`}
               style={{ top: `${index * 12.5 - 4}%` }}
             >
@@ -116,7 +193,7 @@ export function OnlineBoard({
             <div
               key={`col-${index}`}
               className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                player === "black" ? "rotate-180" : ""
+                playerColor === "black" ? "rotate-180" : ""
               }`}
               style={{ left: `${index * 12.5 - 5}%` }}
             >
@@ -126,7 +203,9 @@ export function OnlineBoard({
         </div>
       </div>
       <div>
-        {gameState.currentPlayer} {player}{" "}
+        you are playing as <span className="text-red-500">{playerColor}</span>{" "}
+        and the turn of the current player is{" "}
+        <span className="text-green-500">{gameState.currentPlayer}</span>{" "}
       </div>
       <div>{players.map((player) => player.id).join(" vs ")}</div>
     </div>
