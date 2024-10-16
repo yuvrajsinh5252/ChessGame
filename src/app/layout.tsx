@@ -21,7 +21,7 @@ export default function RootLayout({
       <link rel="icon" href="/logo.png" />
       <body className={inter.className}>
         <Provider>
-          {/* <Navbar /> */}
+          <Navbar />
           {children}
         </Provider>
       </body>

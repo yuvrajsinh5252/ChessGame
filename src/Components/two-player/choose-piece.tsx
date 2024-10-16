@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 
 export const ChoosePiece = () => {
   const { currentPlayer, canPromotePawn, promotePawn } = useChessStore(

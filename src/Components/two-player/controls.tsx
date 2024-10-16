@@ -1,7 +1,7 @@
 "use client";
 
 import { FaUndo, FaRedo, FaSyncAlt, FaArrowLeft } from "react-icons/fa";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 
 export function Controls() {
