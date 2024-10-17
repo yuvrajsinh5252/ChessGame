@@ -1,17 +1,11 @@
 "use client";
 
-import useStore from "@/lib/hooks/useStore";
-import { useChessStore } from "@/store/useChessStore";
+import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { EliminatedPieces } from "../eliminated";
 
-export function WhitePlayer() {
-  const store = useStore(useChessStore, (state) => state);
-  const { eliminatedPieces, currentPlayer } = store! || {
-    eliminatedPieces: { white: [], black: [] },
-    currentPlayer: "white",
-  };
-
-  if (!store) return null;
+export function White() {
+  const { gameState } = useOnlineChessStore((state) => state);
+  const { currentPlayer, eliminatedPieces } = gameState;
 
   return (
     <div
@@ -27,7 +21,7 @@ export function WhitePlayer() {
       <div>
         <div className="flex items-center justify-center gap-1">
           <EliminatedPieces
-            playerColour={"black"}
+            playerColour={"white"}
             eliminatedPieces={eliminatedPieces}
           />
         </div>

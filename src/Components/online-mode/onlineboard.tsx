@@ -95,6 +95,7 @@ export function OnlineBoard({
       .split(",")
       .map(Number);
 
+    if (playerColor !== gameState.currentPlayer) return;
     const OriginalGameState = { ...gameState };
 
     movePiece(fromRow, fromCol, toRow, toCol);
@@ -119,6 +120,7 @@ export function OnlineBoard({
 
   const handlePieceClick = async (row: number, col: number) => {
     if (gameState.board && !gameState.board[row][col]) return;
+    if (playerColor !== gameState.currentPlayer) return;
     if (
       gameState.currentPlayer === "black" &&
       gameState.board[row][col] === gameState.board[row][col]?.toUpperCase()
@@ -204,6 +206,7 @@ export function OnlineBoard({
                 position={{ row: rowIndex, col: colIndex }}
                 lastMove={gameState.lastMove}
                 currentPlayer={gameState.currentPlayer}
+                playerColor={playerColor!}
                 setSelectedPiece={setSelectedPiece}
                 highlight={
                   !!selectedPiece &&
@@ -244,12 +247,6 @@ export function OnlineBoard({
           ))}
         </div>
       </div>
-      <div>
-        you are playing as <span className="text-red-500">{playerColor}</span>{" "}
-        and the turn of the current player is{" "}
-        <span className="text-green-500">{gameState.currentPlayer}</span>{" "}
-      </div>
-      <div>{players.map((player) => player.id).join(" vs ")}</div>
     </div>
   );
 }

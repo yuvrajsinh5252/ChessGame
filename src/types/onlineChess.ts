@@ -53,4 +53,5 @@ export interface OnlinePiece {
   setSelectedPiece: React.Dispatch<
     React.SetStateAction<{ row: number; col: number } | null>
   >;
+  playerColor: "white" | "black";
 }

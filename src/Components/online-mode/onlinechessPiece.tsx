@@ -7,6 +7,7 @@ export function OnlineChessPiece({
   highlight,
   currentPlayer,
   setSelectedPiece,
+  playerColor,
 }: OnlinePiece) {
   if (!type) {
     if (
@@ -29,6 +30,8 @@ export function OnlineChessPiece({
   const pieceImage = `/${color}/${type}.png`;
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (playerColor !== currentPlayer) return;
+
     if (color === currentPlayer) setSelectedPiece(position);
     e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
   };
