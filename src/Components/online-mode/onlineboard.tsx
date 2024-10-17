@@ -84,14 +84,70 @@ export function OnlineBoard({
     };
   }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
 
-  const handleCellClick = async (row: number, col: number) => {
-    if (selectedPiece) {
-      if (!isValidMove(selectedPiece.row, selectedPiece.col, row, col)) {
-        setSelectedPiece(null);
-        return;
-      }
+  const handleDrop = async (
+    e: React.DragEvent<HTMLDivElement>,
+    toRow: number,
+    toCol: number
+  ) => {
+    e.preventDefault();
+    const [fromRow, fromCol] = e.dataTransfer
+      .getData("text")
+      .split(",")
+      .map(Number);
 
+    const OriginalGameState = { ...gameState };
+
+    movePiece(fromRow, fromCol, toRow, toCol);
+    handlePlayerMove(
+      roomId,
+      { row: fromRow, col: fromCol },
+      { row: toRow, col: toCol },
+      playerColor!
+    ).then((res) => {
+      if (res !== "Move successful") updateGameState(OriginalGameState);
+    });
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  // remove selected piece if the current player changes
+  useEffect(() => {
+    setSelectedPiece(null);
+  }, [gameState.currentPlayer]);
+
+  const handlePieceClick = async (row: number, col: number) => {
+    if (gameState.board && !gameState.board[row][col]) return;
+    if (
+      gameState.currentPlayer === "black" &&
+      gameState.board[row][col] === gameState.board[row][col]?.toUpperCase()
+    )
+      return;
+    if (
+      gameState.currentPlayer === "white" &&
+      gameState.board[row][col] === gameState.board[row][col]?.toLowerCase()
+    )
+      return;
+
+    setSelectedPiece((prev) => {
+      if (!prev) return { row, col };
+      if (prev.row === row && prev.col === col) return null;
+      if (isValidMove(prev.row, prev.col, row, col)) {
+        movePiece(prev.row, prev.col, row, col);
+        return null;
+      }
+      return { row, col };
+    });
+  };
+
+  const handleCellClick = async (row: number, col: number) => {
+    if (
+      selectedPiece &&
+      isValidMove(selectedPiece.row, selectedPiece.col, row, col)
+    ) {
       const OriginalGameState = { ...gameState };
+
       movePiece(selectedPiece.row, selectedPiece.col, row, col);
       setSelectedPiece(null);
 
@@ -101,27 +157,9 @@ export function OnlineBoard({
         { row, col },
         playerColor!
       );
-      setSelectedPiece(null);
 
-      if (res == "Error") updateGameState(OriginalGameState);
-    } else {
-      const { board, currentPlayer } = gameState;
-
-      if (board && !board[row][col]) return;
-      if (currentPlayer !== playerColor) return;
-      if (
-        playerColor === "black" &&
-        board[row][col] === board[row][col]?.toUpperCase()
-      )
-        return;
-      if (
-        playerColor === "white" &&
-        board[row][col] === board[row][col]?.toLowerCase()
-      )
-        return;
-
-      setSelectedPiece({ row, col });
-    }
+      if (res !== "Move successful") updateGameState(OriginalGameState);
+    } else handlePieceClick(row, col);
   };
 
   if (isLoading) return <LoadingBoard />;
@@ -157,12 +195,16 @@ export function OnlineBoard({
               }
               ${playerColor === "black" ? "rotate-180" : ""}
               `}
+              onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+              onDragOver={handleDragOver}
               onClick={() => handleCellClick(rowIndex, colIndex)}
             >
               <OnlineChessPiece
                 type={cell}
                 position={{ row: rowIndex, col: colIndex }}
                 lastMove={gameState.lastMove}
+                currentPlayer={gameState.currentPlayer}
+                setSelectedPiece={setSelectedPiece}
                 highlight={
                   !!selectedPiece &&
                   isValidMove(

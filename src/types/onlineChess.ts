@@ -49,4 +49,8 @@ export interface OnlinePiece {
   position: { row: number; col: number };
   lastMove: NullableLastMove;
   highlight: boolean;
+  currentPlayer: "white" | "black";
+  setSelectedPiece: React.Dispatch<
+    React.SetStateAction<{ row: number; col: number } | null>
+  >;
 }

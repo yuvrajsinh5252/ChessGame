@@ -5,6 +5,8 @@ export function OnlineChessPiece({
   position,
   lastMove,
   highlight,
+  currentPlayer,
+  setSelectedPiece,
 }: OnlinePiece) {
   if (!type) {
     if (
@@ -26,6 +28,11 @@ export function OnlineChessPiece({
   const color = type === type.toUpperCase() ? "white" : "black";
   const pieceImage = `/${color}/${type}.png`;
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (color === currentPlayer) setSelectedPiece(position);
+    e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
+  };
+
   return (
     <div
       className={
@@ -38,6 +45,8 @@ export function OnlineChessPiece({
           ? "bg-blue-400/50 "
           : "")
       }
+      draggable
+      onDragStart={handleDragStart}
     >
       <img
         src={pieceImage}

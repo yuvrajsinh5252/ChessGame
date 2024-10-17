@@ -27,19 +27,26 @@ export const isMovePossible: (
   kingCheckOrMoved
 ) => {
   const piece = board[fromRow][fromCol];
-  if (!piece || !isMoveValid(board, fromRow, fromCol, toRow, toCol)) {
-    return false;
-  }
+  if (!piece) return false;
 
-  // Create a copy of the board to simulate the move
+  let Enpassant = false;
+  let Castle = false;
+  let move = false;
+
   const newBoard = board.map((row) => row.slice());
-  newBoard[toRow][toCol] = piece;
-  newBoard[fromRow][fromCol] = null;
+
+  if (isMoveValid(board, fromRow, fromCol, toRow, toCol)) {
+    // Create a copy of the board to simulate the move
+    newBoard[toRow][toCol] = piece;
+    newBoard[fromRow][fromCol] = null;
+    move = true;
+  }
 
   if (
     lastMove &&
     CheckEnpassant(newBoard, { fromRow, fromCol, toRow, toCol }, lastMove)
   ) {
+    Enpassant = true;
     newBoard[lastMove.toRow][lastMove.toCol] = null;
   }
 
@@ -55,6 +62,7 @@ export const isMovePossible: (
       kingCheckOrMoved
     );
     if (data) {
+      Castle = true;
       newBoard[fromRow][data.rookCol] = null;
       newBoard[fromRow][data.newRookCol] = data.rook;
     }
@@ -63,6 +71,5 @@ export const isMovePossible: (
   // Check if the move leaves the king in check
   const color = piece === piece.toUpperCase() ? "white" : "black";
   if (isKingInCheck(newBoard, color)) return false;
-
-  return true;
+  return move || Enpassant || Castle;
 };

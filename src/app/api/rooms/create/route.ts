@@ -11,7 +11,7 @@ export async function GET() {
       board: JSON.stringify(initialBoard),
       currentPlayer: "white",
       lastMove: JSON.stringify({}),
-      eliminatedPiece: JSON.stringify({}),
+      eliminatedPiece: JSON.stringify({ white: [], black: [] }),
       kingCheckOrMoved: JSON.stringify(intitialkingCheckOrMoved),
       rookMoved: JSON.stringify(initialRookMoved),
     },

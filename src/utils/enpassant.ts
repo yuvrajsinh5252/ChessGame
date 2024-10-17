@@ -16,7 +16,13 @@ export const CheckEnpassant = (
     Math.abs(fromCol - toCol) === 1 &&
     !board[toRow][toCol]
   ) {
+    const isWhitePawn = piece === "P";
+    const isBlackPawn = piece === "p";
+    const isMovingForward =
+      (isWhitePawn && toRow < fromRow) || (isBlackPawn && toRow > fromRow);
+
     if (
+      isMovingForward &&
       lastMove &&
       lastMove.toRow === fromRow &&
       Math.abs(lastMove.fromRow - lastMove.toRow) === 2 &&

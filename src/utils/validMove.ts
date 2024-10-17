@@ -30,37 +30,29 @@ export const isMoveValid: IsMoveValid = (
       case "p": // Pawn
         if (isWhite) {
           return (
-            (dy === -1 && dx === 0 && !Board[toRow][toCol]) ||
+            (dy === -1 && dx === 0 && !Board[toRow][toCol]) || // Normal single move
             (dy === -2 &&
               dx === 0 &&
               fromRow === 6 &&
               !Board[toRow][toCol] &&
-              !Board[toRow + 1][toCol]) ||
+              !Board[toRow + 1][toCol]) || // Double move
             (dy === -1 &&
               Math.abs(dx) === 1 &&
               Board[toRow][toCol] &&
-              Board[toRow][toCol] !== Board[toRow][toCol]?.toUpperCase()) ||
-            (dy === -1 &&
-              Math.abs(dx) === 1 &&
-              fromRow === 3 &&
-              Board[toRow + 1][toCol]?.toLowerCase() === "p")
+              Board[toRow][toCol] !== Board[toRow][toCol]?.toUpperCase()) // Capture move
           );
         } else {
           return (
-            (dy === 1 && dx === 0 && !Board[toRow][toCol]) ||
+            (dy === 1 && dx === 0 && !Board[toRow][toCol]) || // Normal single move
             (dy === 2 &&
               dx === 0 &&
               fromRow === 1 &&
               !Board[toRow][toCol] &&
-              !Board[toRow - 1][toCol]) ||
+              !Board[toRow - 1][toCol]) || // Double move
             (dy === 1 &&
               Math.abs(dx) === 1 &&
               Board[toRow][toCol] &&
-              Board[toRow][toCol]?.toUpperCase() === Board[toRow][toCol]) ||
-            (dy === 1 &&
-              Math.abs(dx) === 1 &&
-              fromRow === 4 &&
-              Board[toRow - 1][toCol]?.toLowerCase() === "p")
+              Board[toRow][toCol]?.toUpperCase() === Board[toRow][toCol]) // Capture move
           );
         }
       case "r": // Rook
