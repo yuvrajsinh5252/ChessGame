@@ -129,14 +129,14 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
 
       const newBoard = board.map((row) => [...row]);
       newBoard[row][col] =
-        currentPlayer === "white" ? newPiece.toLowerCase() : newPiece;
+        currentPlayer === "black" ? newPiece.toLowerCase() : newPiece;
 
       set({
         gameState: {
           ...gameState,
           board: newBoard,
           isKingInCheck: isKingInCheck(newBoard, currentPlayer)
-            ? currentPlayer === "white"
+            ? currentPlayer === "black"
               ? "K"
               : "k"
             : "noCheck",

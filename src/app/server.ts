@@ -163,19 +163,23 @@ export async function handlePlayerMove(
           : (isCheckMate(newBoard, newCurrentPlayer) as winner),
     };
 
+    if (gameState.canPromotePawn) {
+      gameState.currentPlayer = currentPlayer;
+    }
+
     await pusherServer.trigger(`room-${gameId}`, "move", gameState);
 
     const res = isCheckMate(newBoard, newCurrentPlayer);
     const winner = res === "noCheckMate" ? "none" : res;
-
-    await pusherServer.trigger(`room-${gameId}`, "winner", winner);
 
     await prisma.game.update({
       where: { roomId: gameId },
       data: {
         board: JSON.stringify(newBoard),
         winner: winner,
-        currentPlayer: newCurrentPlayer,
+        currentPlayer: gameState.canPromotePawn
+          ? currentPlayer
+          : newCurrentPlayer,
         lastMove: JSON.stringify(gameState.lastMove),
         kingCheckOrMoved: JSON.stringify(gameState.kingCheckOrMoved),
         rookMoved: JSON.stringify(gameState.rookMoved),
@@ -213,14 +217,14 @@ export async function serverPawnPromote(
   const currentPlayer = game.currentPlayer;
 
   const newBoard = board.map((row) => [...row]);
-  newBoard[row][col] = currentPlayer === "white" ? piece.toLowerCase() : piece;
+  newBoard[row][col] = currentPlayer === "black" ? piece.toLowerCase() : piece;
 
   const gameState: GameState = {
     board: newBoard,
     currentPlayer: currentPlayer as "white" | "black",
     winner: game.winner as winner,
     isKingInCheck: isKingInCheck(newBoard, currentPlayer as "white" | "black")
-      ? currentPlayer === "white"
+      ? currentPlayer === "black"
         ? "K"
         : "k"
       : "noCheck",

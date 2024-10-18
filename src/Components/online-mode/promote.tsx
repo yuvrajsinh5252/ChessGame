@@ -21,7 +21,7 @@ export const Promote = ({
   const { gameState, promotePawn } = useOnlineChessStore((state) => state);
   const { currentPlayer, canPromotePawn } = gameState;
 
-  if (!canPromotePawn || playerColor === gameState.currentPlayer) return null;
+  if (!canPromotePawn || playerColor !== gameState.currentPlayer) return null;
   return (
     <Dialog open={true}>
       <DialogTrigger asChild></DialogTrigger>
@@ -33,9 +33,7 @@ export const Promote = ({
               {["Q", "R", "B", "N"].map((piece) => (
                 <button key={piece} className="btn">
                   <img
-                    src={`/${
-                      currentPlayer === "white" ? "black" : "white"
-                    }/${piece}.png`}
+                    src={`/${currentPlayer}/${piece}.png`}
                     alt={piece}
                     className="w-16 h-16 mt-5 hover:scale-110 transform transition-transform hover:bg-gray-200 rounded-lg"
                     onClick={async () => {
