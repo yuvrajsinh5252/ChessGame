@@ -8,6 +8,8 @@ import { White } from "@/Components/online-mode/white";
 import { useEffect, useState } from "react";
 import { getPlayerColor } from "@/app/server";
 import { Loader2 } from "lucide-react";
+import { Winner } from "@/Components/online-mode/winner";
+import { Promote } from "@/Components/online-mode/promote";
 
 interface PageProps {
   params: {
@@ -44,6 +46,8 @@ export default function Page({ params }: PageProps) {
     <MaxWidthWrapper>
       <div className="flex flex-col gap-2 justify-center items-center">
         <div className="flex gap-2 flex-col justify-center items-center pt-10 max-sm:pt-20 min-h-screen">
+          <Promote playerColor={color} roomId={roomId} />
+          <Winner />
           {color === "white" ? (
             <>
               <Black />

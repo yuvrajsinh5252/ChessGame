@@ -9,7 +9,7 @@ export function EliminatedPieces({
     playerColour == "black" ? eliminatedPieces.black : eliminatedPieces.white;
 
   return (
-    <div>
+    <div className="flex items-center justify-center gap-1">
       {eliminatedPieces ? (
         Object.entries(
           data.reduce((acc, piece) => {

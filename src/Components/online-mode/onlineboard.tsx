@@ -7,7 +7,7 @@ import { OnlineChessPiece } from "./onlinechessPiece";
 import { LoadingBoard } from "../loadingBoard";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
-import { GameState, Player } from "@/types/onlineChess";
+import { GameState, Player, winner } from "@/types/onlineChess";
 
 export function OnlineBoard({
   roomId,
@@ -18,7 +18,6 @@ export function OnlineBoard({
 }) {
   const {
     gameState,
-    players,
     updateGameState,
     updatePlayersState,
     isValidMove,
@@ -55,6 +54,11 @@ export function OnlineBoard({
           kingCheckOrMoved: JSON.parse(data.gameState.kingCheckOrMoved),
           rookMoved: JSON.parse(data.gameState.rookMoved),
           isKingInCheck: data.gameState.isKingInCheck as "noCheck" | "K" | "k",
+          canPromotePawn:
+            data.gameState.canPawnPromote === "{}"
+              ? null
+              : JSON.parse(data.gameState.canPawnPromote),
+          winner: data.gameState.winner as winner,
         };
 
         const recievedPlayers: Player[] = (data.players as any).map(
@@ -77,6 +81,7 @@ export function OnlineBoard({
 
     const channel = pusherClient.subscribe(`room-${roomId}`);
     channel.bind("move", (data: GameState) => updateGameState(data));
+    channel.bind("promote", (data: GameState) => updateGameState(data));
 
     return () => {
       channel.unbind("move");

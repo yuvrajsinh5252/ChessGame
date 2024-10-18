@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/Components/ui/dialog";
 
 export const CheckMate = () => {
@@ -16,7 +15,6 @@ export const CheckMate = () => {
   if (isCheckMate != "noCheckMate") {
     return (
       <Dialog open={true}>
-        <DialogTrigger asChild></DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Checkmate</DialogTitle>

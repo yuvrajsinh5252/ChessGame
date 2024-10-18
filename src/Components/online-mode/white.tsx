@@ -19,12 +19,10 @@ export function White() {
         <span>White</span>
       </div>
       <div>
-        <div className="flex items-center justify-center gap-1">
-          <EliminatedPieces
-            playerColour={"white"}
-            eliminatedPieces={eliminatedPieces}
-          />
-        </div>
+        <EliminatedPieces
+          playerColour={"white"}
+          eliminatedPieces={eliminatedPieces}
+        />
       </div>
     </div>
   );

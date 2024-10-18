@@ -18,16 +18,17 @@ import { create } from "zustand";
 const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
   (set, get) => ({
     players: [],
-    winner: "",
     gameState: {
       board: initialBoard,
       currentPlayer: "white",
+      winner: "none",
       status: "waiting",
       lastMove: null,
       eliminatedPieces: { white: [], black: [] },
       kingCheckOrMoved: intitialkingCheckOrMoved,
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
+      canPromotePawn: null,
     },
 
     movePiece: (fromRow, fromCol, toRow, toCol) => {
@@ -122,6 +123,28 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       );
     },
 
+    promotePawn: (row, col, newPiece) => {
+      const { gameState } = get();
+      const { board, currentPlayer } = gameState;
+
+      const newBoard = board.map((row) => [...row]);
+      newBoard[row][col] =
+        currentPlayer === "white" ? newPiece.toLowerCase() : newPiece;
+
+      set({
+        gameState: {
+          ...gameState,
+          board: newBoard,
+          isKingInCheck: isKingInCheck(newBoard, currentPlayer)
+            ? currentPlayer === "white"
+              ? "K"
+              : "k"
+            : "noCheck",
+          canPromotePawn: null,
+        },
+      });
+    },
+
     updateGameState: (gameState) =>
       set((state) => {
         const newState = {
@@ -138,15 +161,6 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
         const newState = {
           ...state,
           players: players,
-        };
-        return newState;
-      }),
-
-    updateWinner: (winner: winner) =>
-      set((state) => {
-        const newState = {
-          ...state,
-          winner: winner,
         };
         return newState;
       }),

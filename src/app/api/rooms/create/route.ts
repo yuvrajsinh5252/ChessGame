@@ -14,6 +14,7 @@ export async function GET() {
       eliminatedPiece: JSON.stringify({ white: [], black: [] }),
       kingCheckOrMoved: JSON.stringify(intitialkingCheckOrMoved),
       rookMoved: JSON.stringify(initialRookMoved),
+      canPawnPromote: JSON.stringify({}),
     },
   });
 

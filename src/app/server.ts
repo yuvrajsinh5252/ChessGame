@@ -3,11 +3,12 @@
 import { prisma } from "@/lib/db/prisma";
 import { pusherServer } from "@/lib/pusher";
 import { Board } from "@/store/useChessStore";
-import { GameState } from "@/types/onlineChess";
+import { GameState, winner } from "@/types/onlineChess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { isMovePossible } from "@/utils/possibleMove";
+import { promotePawn } from "@/utils/promotePawn";
 
 //  This function is used to get the game state from the database
 export async function getGameState(gameId: string) {
@@ -148,12 +149,24 @@ export async function handlePlayerMove(
           EliminatedPiece,
         ],
       },
+      canPromotePawn: promotePawn(
+        board,
+        from.row,
+        from.col,
+        to.row,
+        to.col,
+        currentPlayer
+      ),
+      winner:
+        isCheckMate(newBoard, newCurrentPlayer) === "noCheckMate"
+          ? "none"
+          : (isCheckMate(newBoard, newCurrentPlayer) as winner),
     };
 
     await pusherServer.trigger(`room-${gameId}`, "move", gameState);
 
     const res = isCheckMate(newBoard, newCurrentPlayer);
-    const winner = res === "noCheckMate" ? "" : res;
+    const winner = res === "noCheckMate" ? "none" : res;
 
     await pusherServer.trigger(`room-${gameId}`, "winner", winner);
 
@@ -168,6 +181,9 @@ export async function handlePlayerMove(
         rookMoved: JSON.stringify(gameState.rookMoved),
         isKingInCheck: gameState.isKingInCheck,
         eliminatedPiece: JSON.stringify(gameState.eliminatedPieces),
+        canPawnPromote: JSON.stringify(
+          gameState.canPromotePawn === null ? {} : gameState.canPromotePawn
+        ),
       },
     });
 
@@ -180,4 +196,52 @@ export async function handlePlayerMove(
 export async function getPlayerColor(playerId: string) {
   const player = await prisma.player.findUnique({ where: { id: playerId } });
   return player?.color as "white" | "black" | null;
+}
+
+export async function serverPawnPromote(
+  gameId: string,
+  { row, col, piece }: { row: number; col: number; piece: string }
+) {
+  const game = await prisma.game.findUnique({ where: { roomId: gameId } });
+  if (!game) throw new Error("Game not found");
+
+  const board: Board = JSON.parse(game.board);
+  const lastMove = game.lastMove ? JSON.parse(game.lastMove) : null;
+  const rookMoved = JSON.parse(game.rookMoved);
+  const kingCheckOrMoved = JSON.parse(game.kingCheckOrMoved);
+  const eliminatedPieces = JSON.parse(game.eliminatedPiece);
+  const currentPlayer = game.currentPlayer;
+
+  const newBoard = board.map((row) => [...row]);
+  newBoard[row][col] = currentPlayer === "white" ? piece.toLowerCase() : piece;
+
+  const gameState: GameState = {
+    board: newBoard,
+    currentPlayer: currentPlayer as "white" | "black",
+    winner: game.winner as winner,
+    isKingInCheck: isKingInCheck(newBoard, currentPlayer as "white" | "black")
+      ? currentPlayer === "white"
+        ? "K"
+        : "k"
+      : "noCheck",
+    canPromotePawn: null,
+    status: "in-progress",
+    eliminatedPieces: eliminatedPieces,
+    lastMove: lastMove,
+    kingCheckOrMoved: kingCheckOrMoved,
+    rookMoved: rookMoved,
+  };
+
+  await prisma.game.update({
+    where: { roomId: gameId },
+    data: {
+      board: JSON.stringify(newBoard),
+      isKingInCheck: gameState.isKingInCheck,
+      canPawnPromote: JSON.stringify({}),
+    },
+  });
+
+  await pusherServer.trigger(`room-${gameId}`, "promote", gameState);
+
+  return "Pawn promoted successfully";
 }

@@ -23,7 +23,7 @@ model game {
   rookMoved        String
   eliminatedPiece  String
   isKingInCheck    String   @default("noCheck")
-  canPawnPromote   Boolean  @default(false)
+  canPawnPromote   String
   whiteTime        Int      @default(600)
   blackTime        Int      @default(600) // 10 minutes in seconds
   lastMove         String?

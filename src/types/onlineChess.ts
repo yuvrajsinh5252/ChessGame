@@ -3,7 +3,9 @@ import {
   kingCheckOrMoved,
   MovePiece,
   NullableLastMove,
+  PieceType,
   rookMoved,
+  typePromotePawn,
   ValidState,
 } from "./chess";
 
@@ -17,6 +19,7 @@ export interface Player {
 export interface GameState {
   board: Board;
   currentPlayer: "white" | "black";
+  winner: winner;
   status: "waiting" | "in-progress" | "finished";
   lastMove: NullableLastMove;
   eliminatedPieces: {
@@ -26,20 +29,20 @@ export interface GameState {
   kingCheckOrMoved: kingCheckOrMoved;
   rookMoved: rookMoved;
   isKingInCheck: "noCheck" | "K" | "k";
+  canPromotePawn: typePromotePawn;
 }
 
 export interface OnlineChessStore {
   players: Player[];
-  winner: winner;
   gameState: GameState;
 }
 
-export type winner = "white" | "black" | "draw" | "";
+export type winner = "white" | "black" | "draw" | "none";
 
 export interface OnlineChessStoreActions {
   updateGameState: (gameState: Partial<GameState>) => void;
   updatePlayersState: (players: Player[]) => void;
-  updateWinner: (winner: winner) => void;
+  promotePawn: (row: number, col: number, newPiece: PieceType) => void;
   movePiece: MovePiece;
   isValidMove: ValidState;
 }
