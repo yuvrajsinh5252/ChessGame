@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { LoaderIcon } from "lucide-react";
+import { CreateRoom, JoinGame } from "@/app/server";
 
 export default function Room() {
   const router = useRouter();
@@ -30,18 +31,11 @@ export default function Room() {
 
   const createRoom = async () => {
     setLoading(true);
-    const res = await fetch("/api/rooms/create", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-
+    const data = await CreateRoom();
     const roomId = data.roomId;
     const playerId = data.playerId;
 
-    if (res.status === 200) {
+    if (roomId && playerId) {
       setRoomid(roomId);
       setPlayerId(playerId);
     }
@@ -56,20 +50,14 @@ export default function Room() {
       return;
     }
 
-    const res = await fetch(`/api/rooms/join`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomId }),
-    });
+    const data = await JoinGame({ roomId });
+    if (data === "Error") {
+      setRoomid("Error");
+      return;
+    }
 
-    const data = await res.json();
-    const OtherplayerId = data.playerId;
-
-    if (res.status === 404) setRoomid("Room not found");
-    else if (res.status === 400) setRoomid("Room is full");
-    else if (res.status === 200) {
+    const OtherplayerId = data?.playerId;
+    if (data?.playerId) {
       router.push(
         `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
       );

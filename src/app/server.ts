@@ -9,6 +9,95 @@ import { CheckEnpassant } from "@/utils/enpassant";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
+import {
+  initialBoard,
+  initialRookMoved,
+  intitialkingCheckOrMoved,
+} from "@/utils/initialSetup";
+
+export async function CreateRoom() {
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+  await prisma.player.deleteMany({
+    where: {
+      game: {
+        createdAt: {
+          lt: fifteenMinutesAgo,
+        },
+      },
+    },
+  });
+
+  await prisma.game.deleteMany({
+    where: {
+      createdAt: {
+        lt: fifteenMinutesAgo,
+      },
+    },
+  });
+
+  const createdRoom = await prisma.game.create({
+    data: {
+      board: JSON.stringify(initialBoard),
+      currentPlayer: "white",
+      lastMove: JSON.stringify({}),
+      eliminatedPiece: JSON.stringify({ white: [], black: [] }),
+      kingCheckOrMoved: JSON.stringify(intitialkingCheckOrMoved),
+      rookMoved: JSON.stringify(initialRookMoved),
+      canPawnPromote: JSON.stringify({}),
+    },
+  });
+
+  const player = await prisma.player.create({
+    data: {
+      color: "white",
+      game: {
+        connect: { roomId: createdRoom.roomId },
+      },
+    },
+  });
+
+  return { roomId: createdRoom.roomId, playerId: player.id };
+}
+
+export async function JoinGame({ roomId }: { roomId: string }) {
+  try {
+    if (!roomId) throw new Error("Room ID is required");
+
+    const room = await prisma.player.findMany({
+      where: {
+        gameId: roomId,
+      },
+    });
+
+    if (room.length === 2) throw new Error("Room is full");
+    if (room.length === 0) throw new Error("Room not found");
+    if (room.length === 1) {
+      const newPlayer = await prisma.player.create({
+        data: {
+          gameId: roomId,
+          color: room[0].color === "white" ? "black" : "white",
+        },
+      });
+
+      await prisma.game.update({
+        where: { roomId: roomId },
+        data: {
+          players: {
+            connect: { id: newPlayer.id },
+          },
+        },
+      });
+
+      await pusherServer.trigger(`room-${roomId}`, "player-joined", {
+        message: "A new player has joined the room",
+      });
+
+      return { playerId: newPlayer.id };
+    }
+  } catch (error) {
+    return "Error";
+  }
+}
 
 //  This function is used to get the game state from the database
 export async function getGameState(gameId: string) {
