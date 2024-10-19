@@ -7,7 +7,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/layouts/**/*.{js,ts,jsx,tsx,mdx}",
-    "./@/**/*.{ts,tsx}", // <- HERE
+    "./src/**/*.{js,ts,jsx,tsx,mdx}", // Including all subdirectories in src
   ],
   theme: {
     extend: {
