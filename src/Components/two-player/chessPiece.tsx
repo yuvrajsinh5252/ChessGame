@@ -1,4 +1,5 @@
 import { Piece } from "@/types/chess";
+import Image from "next/image";
 
 export function ChessPiece({
   type,
@@ -48,9 +49,11 @@ export function ChessPiece({
       draggable
       onDragStart={handleDragStart}
     >
-      <img
+      <Image
         src={pieceImage}
         alt={`${color} ${type}`}
+        width={64}
+        height={64}
         className={
           "w-full h-full " + (currentPlayer === "black" ? "rotate-180" : "")
         }

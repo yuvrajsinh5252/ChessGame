@@ -25,21 +25,26 @@ export default function Page({ params }: PageProps) {
   const playerId = searchParams.get("playerId");
   const { roomId } = params;
 
-  if (!playerId || !roomId) return <div>Invalid URL</div>;
-
   useEffect(() => {
+    if (!playerId || !roomId) return;
+
     const fetchPlayerColor = async () => {
       let playerColor = await getPlayerColor(playerId);
       setColor(playerColor);
     };
 
     fetchPlayerColor();
-  }, [playerId]);
+  }, [playerId, roomId]);
+
+  if (!playerId || !roomId) return <div>Invalid URL</div>;
 
   if (!color)
     return (
-      <div className="h-[calc(100vh-6rem)] animate-spin flex justify-center items-center">
-        <Loader2 size={50} />
+      <div className="relative">
+        <Loader2
+          className="absolute animate-spin left-1/2 right-1/2 h-screen"
+          size={50}
+        />
       </div>
     );
 

@@ -1,4 +1,5 @@
 import { OnlinePiece } from "@/types/onlineChess";
+import Image from "next/image";
 
 export function OnlineChessPiece({
   type,
@@ -51,8 +52,10 @@ export function OnlineChessPiece({
       draggable
       onDragStart={handleDragStart}
     >
-      <img
+      <Image
         src={pieceImage}
+        width={64}
+        height={64}
         alt={`${color} ${type}`}
         className={
           "w-full h-full " + (playerColor === "black" ? " rotate-180 " : "")

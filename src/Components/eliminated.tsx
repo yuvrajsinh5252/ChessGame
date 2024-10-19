@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function EliminatedPieces({
   eliminatedPieces,
   playerColour,
@@ -23,10 +25,11 @@ export function EliminatedPieces({
             key={index}
             className="relative flex items-center p-0.5 px-1 rounded bg-gray-300"
           >
-            <img
+            <Image
               src={`/${playerColour}/${piece}.png`}
               alt={piece}
-              className="w-6 h-6"
+              width={24}
+              height={24}
             />
             <div>
               {count > 1 && (

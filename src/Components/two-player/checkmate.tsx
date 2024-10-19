@@ -8,9 +8,8 @@ import {
   DialogTitle,
 } from "@/Components/ui/dialog";
 import { useChessStore } from "@/store/useChessStore";
-import useOnlineChessStore from "@/store/useOnlineChessStore";
 
-export const Winner = () => {
+export const CheckMate = () => {
   const { isCheckMate } = useChessStore((state) => state);
 
   if (isCheckMate !== "noCheckMate") {
