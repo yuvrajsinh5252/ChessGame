@@ -24,10 +24,11 @@ export const Promote = ({
   if (!canPromotePawn || playerColor !== gameState.currentPlayer) return null;
   return (
     <Dialog open={true}>
-      <DialogTrigger asChild></DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Choose a piece to promote your pawn to</DialogTitle>
+          <DialogTitle className="text-center">
+            Choose a piece to promote your pawn to
+          </DialogTitle>
           <DialogDescription>
             <div className="flex flex-wrap gap-2 justify-center items-center">
               {["Q", "R", "B", "N"].map((piece) => (

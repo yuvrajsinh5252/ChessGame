@@ -55,7 +55,7 @@ export function OnlineChessPiece({
         src={pieceImage}
         alt={`${color} ${type}`}
         className={
-          "w-full h-full " + playerColor === "black" ? "rotate-180" : ""
+          "w-full h-full " + (playerColor === "black" ? " rotate-180 " : "")
         }
       />
     </div>

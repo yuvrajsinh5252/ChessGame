@@ -20,7 +20,7 @@ export interface GameState {
   board: Board;
   currentPlayer: "white" | "black";
   winner: winner;
-  status: "waiting" | "in-progress" | "finished";
+  status: "waiting" | "in-progress" | "finished" | "promote" | "resigned";
   lastMove: NullableLastMove;
   eliminatedPieces: {
     white: string[];

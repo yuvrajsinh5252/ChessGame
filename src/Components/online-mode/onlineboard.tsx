@@ -82,6 +82,13 @@ export function OnlineBoard({
     const channel = pusherClient.subscribe(`room-${roomId}`);
     channel.bind("move", (data: GameState) => updateGameState(data));
     channel.bind("promote", (data: GameState) => updateGameState(data));
+    channel.bind("resign", (data: { winner: winner; status: "resigned" }) =>
+      updateGameState({
+        ...gameState,
+        winner: data.winner,
+        status: data.status,
+      })
+    );
 
     return () => {
       channel.unbind("move");

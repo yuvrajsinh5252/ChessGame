@@ -111,21 +111,40 @@ export async function handlePlayerMove(
     } else throw new Error("Invalid move");
 
     const newCurrentPlayer = currentPlayer === "white" ? "black" : "white";
+    let OpponentKingCheck = false;
+    if (isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white"))
+      OpponentKingCheck = true;
 
     const gameState: GameState = {
       board: newBoard,
-      isKingInCheck: isKingInCheck(
-        newBoard,
-        currentPlayer === "white" ? "black" : "white"
-      )
+      isKingInCheck: OpponentKingCheck
         ? currentPlayer === "white"
           ? "k"
           : "K"
         : "noCheck",
       kingCheckOrMoved:
         (currentPlayer === "black" && to.row === 0) ||
-        (currentPlayer === "white" && to.row === 7)
-          ? { ...kingCheckOrMoved, [currentPlayer]: true }
+        (currentPlayer === "white" && to.row === 7) ||
+        (piece === "K" &&
+          from.row === 7 &&
+          from.col === 4 &&
+          to.row === 7 &&
+          to.col === 6) ||
+        (piece === "k" &&
+          from.row === 0 &&
+          from.col === 4 &&
+          to.row === 0 &&
+          to.col === 6) ||
+        OpponentKingCheck
+          ? OpponentKingCheck
+            ? {
+                ...kingCheckOrMoved,
+                [currentPlayer === "white" ? "black" : "white"]: true,
+              }
+            : {
+                ...kingCheckOrMoved,
+                [currentPlayer]: true,
+              }
           : kingCheckOrMoved,
       rookMoved: {
         ...rookMoved,
@@ -165,6 +184,7 @@ export async function handlePlayerMove(
 
     if (gameState.canPromotePawn) {
       gameState.currentPlayer = currentPlayer;
+      gameState.status = "promote";
     }
 
     await pusherServer.trigger(`room-${gameId}`, "move", gameState);
@@ -221,9 +241,12 @@ export async function serverPawnPromote(
 
   const gameState: GameState = {
     board: newBoard,
-    currentPlayer: currentPlayer as "white" | "black",
+    currentPlayer: currentPlayer === "white" ? "black" : "white",
     winner: game.winner as winner,
-    isKingInCheck: isKingInCheck(newBoard, currentPlayer as "white" | "black")
+    isKingInCheck: isKingInCheck(
+      newBoard,
+      currentPlayer === "white" ? "black" : "white"
+    )
       ? currentPlayer === "black"
         ? "K"
         : "k"
@@ -239,6 +262,7 @@ export async function serverPawnPromote(
   await prisma.game.update({
     where: { roomId: gameId },
     data: {
+      currentPlayer: currentPlayer === "white" ? "black" : "white",
       board: JSON.stringify(newBoard),
       isKingInCheck: gameState.isKingInCheck,
       canPawnPromote: JSON.stringify({}),
@@ -248,4 +272,27 @@ export async function serverPawnPromote(
   await pusherServer.trigger(`room-${gameId}`, "promote", gameState);
 
   return "Pawn promoted successfully";
+}
+
+export async function handlePlayerResign(gameId: string, playerId: string) {
+  const game = await prisma.game.findUnique({ where: { roomId: gameId } });
+  if (!game) throw new Error("Game not found");
+
+  const players = await prisma.player.findMany({ where: { gameId } });
+
+  const winner = players.find((player) => player.id === playerId)
+    ?.color as winner;
+
+  await prisma.game.update({
+    where: { roomId: gameId },
+    data: {
+      winner,
+    },
+  });
+
+  await pusherServer.trigger(`room-${gameId}`, "resign", {
+    winner,
+    status: "resigned",
+  });
+  return "Player resigned";
 }
