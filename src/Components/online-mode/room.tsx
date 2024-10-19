@@ -90,7 +90,7 @@ export default function Room() {
           ) : (
             <div className="text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Click "Create Room" or enter a room ID to join.
+                Click &quot;Create Room&quot; or enter a room ID to join.
               </p>
             </div>
           )}
