@@ -24,8 +24,9 @@ model game {
   eliminatedPiece  String
   isKingInCheck    String   @default("noCheck")
   canPawnPromote   String
+  createdAt        DateTime @default(now())
   whiteTime        Int      @default(600)
-  blackTime        Int      @default(600) // 10 minutes in seconds
+  blackTime        Int      @default(600)
   lastMove         String?
 }
 

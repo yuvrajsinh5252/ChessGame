@@ -6,6 +6,25 @@ import {
 } from "@/utils/initialSetup";
 
 export async function GET() {
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+  await prisma.player.deleteMany({
+    where: {
+      game: {
+        createdAt: {
+          lt: fifteenMinutesAgo,
+        },
+      },
+    },
+  });
+
+  await prisma.game.deleteMany({
+    where: {
+      createdAt: {
+        lt: fifteenMinutesAgo,
+      },
+    },
+  });
+
   const createdRoom = await prisma.game.create({
     data: {
       board: JSON.stringify(initialBoard),

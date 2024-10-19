@@ -9,9 +9,10 @@ import {
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { Button } from "../ui/button";
+import { deleteGame } from "@/app/server";
 
 export const Winner = () => {
-  const { gameState } = useOnlineChessStore((state) => state);
+  const { gameState, players } = useOnlineChessStore((state) => state);
   const winner = gameState?.winner;
 
   if (winner !== "none") {
@@ -20,7 +21,9 @@ export const Winner = () => {
         <DialogContent className="w-fit p-5 rounded-lg">
           <DialogHeader>
             <DialogTitle>
-              <h1 className="text-2xl font-semibold text-center">Game Over</h1>
+              <span className="text-2xl font-semibold text-center">
+                Game Over
+              </span>
             </DialogTitle>
             <DialogDescription className="text-center pt-2 text-lg font-semibold">
               {gameState?.status === "resigned"
@@ -34,7 +37,12 @@ export const Winner = () => {
                 : "Black win's"}{" "}
             </DialogDescription>
             <div className="mt-4 flex justify-center">
-              <Button onClick={() => (window.location.href = "/")}>
+              <Button
+                onClick={() => {
+                  if (players[0].gameId) deleteGame(players[0].gameId);
+                  window.location.href = "/";
+                }}
+              >
                 Back to Home
               </Button>
             </div>

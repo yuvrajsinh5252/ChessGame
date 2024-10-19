@@ -1,4 +1,4 @@
-import { handlePlayerResign } from "@/app/server";
+import { handlePlayerDraw, handlePlayerResign } from "@/app/server";
 import { Button } from "../ui/button";
 
 export function GameControl({
@@ -12,7 +12,9 @@ export function GameControl({
     <div className="absolute bottom-5 flex gap-2">
       <Button
         onClick={() => {
-          handlePlayerResign(roomId, playerId);
+          if (window.confirm("Are you sure you want to resign?")) {
+            handlePlayerResign(roomId, playerId);
+          }
         }}
       >
         Resign
@@ -20,12 +22,19 @@ export function GameControl({
       <Button
         variant={"destructive"}
         onClick={() => {
+          handlePlayerResign(roomId, playerId);
           window.location.href = "/";
         }}
       >
         Leave Game
       </Button>
-      <Button onClick={() => {}}>Draw</Button>
+      <Button
+        onClick={() => {
+          handlePlayerDraw(roomId, playerId);
+        }}
+      >
+        Draw
+      </Button>
     </div>
   );
 }

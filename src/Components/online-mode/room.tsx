@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { LoaderIcon } from "lucide-react";
@@ -10,27 +10,52 @@ export default function Room() {
   const router = useRouter();
   const [id, setId] = useState<string>("");
   const [roomid, setRoomid] = useState<string>("");
+  const [playerId, setPlayerId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!roomid || !playerId) return;
+
+    const channel = pusherClient.subscribe(`room-${roomid}`);
+    channel.bind("player-joined", () => {
+      setLoading(false);
+      router.push(`/online-multiplayer/room/${roomid}?playerId=${playerId}`);
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusherClient.unsubscribe(`room-${playerId}`);
+    };
+  }, [roomid, playerId, pusherClient, router]);
 
   const createRoom = async () => {
     setLoading(true);
-    const res = await fetch("/api/rooms/create");
+    const res = await fetch("/api/rooms/create", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     const data = await res.json();
 
     const roomId = data.roomId;
     const playerId = data.playerId;
 
+    if (res.status === 200) {
+      setRoomid(roomId);
+      setPlayerId(playerId);
+    }
+
     if (roomId) setRoomid(roomId);
     else setRoomid("Error");
-
-    const channel = pusherClient.subscribe(`room-${roomId}`);
-    channel.bind("player-joined", () => {
-      setLoading(false);
-      router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
-    });
   };
 
   const joinRoom = async (roomId: string) => {
+    if (playerId) {
+      alert("You are already in a room");
+      return;
+    }
+
     const res = await fetch(`/api/rooms/join`, {
       method: "POST",
       headers: {
@@ -40,12 +65,14 @@ export default function Room() {
     });
 
     const data = await res.json();
-    const playerId = data.playerId;
+    const OtherplayerId = data.playerId;
 
     if (res.status === 404) setRoomid("Room not found");
     else if (res.status === 400) setRoomid("Room is full");
     else if (res.status === 200) {
-      router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
+      router.push(
+        `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
+      );
     }
   };
 
@@ -70,7 +97,7 @@ export default function Room() {
           </div>
         ) : (
           <button
-            onClick={createRoom}
+            onClick={() => createRoom()}
             className="mt-2 w-full bg-blue-500 p-2 rounded"
           >
             Create Room

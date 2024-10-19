@@ -2,7 +2,6 @@ import {
   OnlineChessStore,
   OnlineChessStoreActions,
   Player,
-  winner,
 } from "@/types/onlineChess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";

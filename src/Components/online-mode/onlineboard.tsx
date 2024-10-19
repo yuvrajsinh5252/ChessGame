@@ -17,6 +17,7 @@ export function OnlineBoard({
   playerId: string;
 }) {
   const {
+    players,
     gameState,
     updateGameState,
     updatePlayersState,
@@ -65,6 +66,7 @@ export function OnlineBoard({
           (player: any) => ({
             id: player.id,
             color: player.color,
+            gameId: roomId,
           })
         );
 
@@ -89,12 +91,46 @@ export function OnlineBoard({
         status: data.status,
       })
     );
+    // channel.bind("drawAccepted", (data: { status: "draw" }) =>
+    //   updateGameState({
+    //     ...gameState,
+    //     winner: data.status,
+    //   })
+    // );
+    // channel.bind("drawDeclined", () =>
+    //   updatePlayersState(
+    //     players.map((player) => ({
+    //       ...player,
+    //       drawRequest: false,
+    //     }))
+    //   )
+    // );
+
+    const newChnanel = pusherClient.subscribe(`room-${playerId}`);
+    newChnanel.bind("draw", (data: { status: "draw" }) => {
+      // const updatedPlayers = players.map((player) =>
+      //   player.id === playerId ? { ...player, drawRequest: true } : player
+      // );
+      // updatePlayersState(updatedPlayers);
+    });
 
     return () => {
+      channel.unbind("promote");
+      channel.unbind("resign");
       channel.unbind("move");
       pusherClient.unsubscribe(`room-${roomId}`);
+
+      newChnanel.unbind("draw");
+      pusherClient.unsubscribe(`room-${playerId}`);
     };
-  }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
+  }, [
+    roomId,
+    getGameState,
+    updateGameState,
+    setisLoading,
+    pusherClient,
+    updatePlayersState,
+  ]);
 
   const handleDrop = async (
     e: React.DragEvent<HTMLDivElement>,

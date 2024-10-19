@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import { Winner } from "@/Components/online-mode/winner";
 import { Promote } from "@/Components/online-mode/promote";
 import { GameControl } from "@/Components/online-mode/gameControl";
+import { DrawRequest } from "@/Components/online-mode/drawRequest";
 
 interface PageProps {
   params: {
@@ -51,9 +52,10 @@ export default function Page({ params }: PageProps) {
   return (
     <MaxWidthWrapper>
       <div className="flex flex-col gap-2 justify-center items-center">
-        <div className="flex gap-2 flex-col justify-center items-center pt-10 max-sm:pt-20 min-h-screen">
+        <div className="flex gap-2 flex-col justify-center items-center pt-10 max-sm:pt-20 min-h-screen max-sm:pb-24">
           <Promote playerColor={color} roomId={roomId} />
           <Winner />
+          <DrawRequest roomId={roomId} playerId={playerId} />
           {color === "white" ? (
             <>
               <Black />
