@@ -37,12 +37,12 @@ export function ChessPiece({
     <div
       className={
         "w-16 h-16 cursor-pointer max-sm:h-10 max-sm:w-10 " +
-        (highlight ? "bg-red-500/50 " : "") +
+        (highlight ? " bg-red-500/50 " : "") +
         (lastMove?.fromRow == position.row && lastMove?.fromCol == position.col
-          ? "bg-blue-400/50"
+          ? " bg-blue-400/50 "
           : "") +
         (lastMove?.toRow == position.row && lastMove?.toCol == position.col
-          ? "bg-blue-400/50"
+          ? " bg-blue-400/50 "
           : "")
       }
       draggable
@@ -51,7 +51,9 @@ export function ChessPiece({
       <img
         src={pieceImage}
         alt={`${color} ${type}`}
-        className="w-full h-full"
+        className={
+          "w-full h-full " + (currentPlayer === "black" ? "rotate-180" : "")
+        }
       />
     </div>
   );

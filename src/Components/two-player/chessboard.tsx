@@ -92,7 +92,7 @@ export default function ChessBoard() {
     <div className="flex flex-col gap-2 justify-center items-center">
       <div
         className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative ${
-          currentPlayer === "black" ? "rotate-180" : ""
+          currentPlayer === "black" ? " rotate-180 " : ""
         }`}
       >
         {board.map((row, rowIndex) =>
@@ -100,23 +100,26 @@ export default function ChessBoard() {
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`w-16 h-16 max-sm:h-10 max-sm:w-10 flex items-center justify-center
-              ${(rowIndex + colIndex) % 2 === 0 ? "bg-gray-300" : "bg-gray-500"}
-              ${rowIndex === 0 && colIndex === 0 ? "rounded-tl-lg" : ""}
-              ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
-              ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
-              ${rowIndex === 7 && colIndex === 7 ? "rounded-br-lg" : ""}
+              ${
+                (rowIndex + colIndex) % 2 === 0
+                  ? " bg-gray-300 "
+                  : " bg-gray-500 "
+              }
+              ${rowIndex === 0 && colIndex === 0 ? " rounded-tl-lg " : ""}
+              ${rowIndex === 0 && colIndex === 7 ? " rounded-tr-lg " : ""}
+              ${rowIndex === 7 && colIndex === 0 ? " rounded-bl-lg " : ""}
+              ${rowIndex === 7 && colIndex === 7 ? " rounded-br-lg " : ""}
               ${
                 selectedPiece?.row === rowIndex &&
                 selectedPiece?.col === colIndex
-                  ? "bg-gradient-to-br from-blue-300 to-blue-600"
+                  ? " bg-gradient-to-br from-blue-300 to-blue-600"
                   : ""
               }
               ${
                 board[rowIndex][colIndex] === isKingInCheck
-                  ? "bg-gradient-to-br from-red-500 to-red-700"
+                  ? " bg-gradient-to-br from-red-500 to-red-700 "
                   : ""
               }
-              ${currentPlayer === "black" ? "rotate-180" : ""}
             `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}
@@ -149,7 +152,7 @@ export default function ChessBoard() {
             <div
               key={`row-${index}`}
               className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                currentPlayer === "black" ? "rotate-180" : ""
+                currentPlayer === "black" ? " rotate-180" : ""
               }`}
               style={{ top: `${index * 12.5 - 4}%` }}
             >
@@ -160,7 +163,7 @@ export default function ChessBoard() {
             <div
               key={`col-${index}`}
               className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                currentPlayer === "black" ? "rotate-180" : ""
+                currentPlayer === "black" ? " rotate-180" : ""
               }`}
               style={{ left: `${index * 12.5 - 5}%` }}
             >

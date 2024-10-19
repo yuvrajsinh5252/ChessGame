@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./styles/globals.css";
 import { Provider } from "@/Components/themes/provider";
 import Navbar from "@/Components/navbar";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <link rel="icon" href="/logo.png" />
+      <link rel="icon" href="/image.png" />
       <body className={inter.className}>
         <Provider>
           <Navbar />

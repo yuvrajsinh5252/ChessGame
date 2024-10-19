@@ -65,22 +65,43 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       newBoard[fromRow][fromCol] = null;
 
       if (isKingInCheck(newBoard, currentPlayer)) return false;
+      let OpponentKingCheck = false;
+      if (
+        isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white")
+      )
+        OpponentKingCheck = true;
 
       updateGameState({
         board: newBoard,
-        isKingInCheck: isKingInCheck(
-          newBoard,
-          currentPlayer === "white" ? "black" : "white"
-        )
+        isKingInCheck: OpponentKingCheck
           ? currentPlayer === "white"
             ? "k"
             : "K"
           : "noCheck",
         kingCheckOrMoved:
           (currentPlayer === "black" && toRow === 0) ||
-          (currentPlayer === "white" && toRow === 7)
-            ? { ...get().gameState.kingCheckOrMoved, [currentPlayer]: true }
-            : get().gameState.kingCheckOrMoved,
+          (currentPlayer === "white" && toRow === 7) ||
+          (piece === "K" &&
+            fromRow === 7 &&
+            fromCol === 4 &&
+            toRow === 7 &&
+            toCol === 6) ||
+          (piece === "k" &&
+            fromRow === 0 &&
+            fromCol === 4 &&
+            toRow === 0 &&
+            toCol === 6) ||
+          OpponentKingCheck
+            ? OpponentKingCheck
+              ? {
+                  ...gameState.kingCheckOrMoved,
+                  [currentPlayer === "white" ? "black" : "white"]: true,
+                }
+              : {
+                  ...gameState.kingCheckOrMoved,
+                  [currentPlayer]: true,
+                }
+            : gameState.kingCheckOrMoved,
         rookMoved: {
           ...get().gameState.rookMoved,
           [currentPlayer]: {

@@ -200,7 +200,6 @@ export function OnlineBoard({
                   ? "bg-gradient-to-br from-red-500 to-red-700"
                   : ""
               }
-              ${playerColor === "black" ? "rotate-180" : ""}
               `}
               onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               onDragOver={handleDragOver}

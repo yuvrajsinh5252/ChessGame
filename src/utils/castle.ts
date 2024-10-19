@@ -21,7 +21,10 @@ export const checkCastling = (
         fromCol !== 4 ||
         toRow !== 7 ||
         (toCol !== 6 && toCol !== 2)
-      : fromRow !== 0 || fromCol !== 4 || toRow !== 0 || (toCol !== 6 && toCol)
+      : fromRow !== 0 ||
+        fromCol !== 4 ||
+        toRow !== 0 ||
+        (toCol !== 6 && toCol !== 2)
   )
     return null;
   const piece = board[fromRow][fromCol];
