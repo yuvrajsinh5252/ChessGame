@@ -62,13 +62,12 @@ export function OnlineBoard({
           winner: data.gameState.winner as winner,
         };
 
-        const recievedPlayers: Player[] = (data.players as any).map(
-          (player: any) => ({
-            id: player.id,
-            color: player.color,
-            gameId: roomId,
-          })
-        );
+        const recievedPlayers: Player[] = data.players.map((player: any) => ({
+          id: player.id,
+          color: player.color,
+          gameId: player.gameId,
+          drawRequest: player.drawRequest,
+        }));
 
         updateGameState(recievedGameState);
         updatePlayersState(recievedPlayers);
@@ -91,46 +90,44 @@ export function OnlineBoard({
         status: data.status,
       })
     );
-    // channel.bind("drawAccepted", (data: { status: "draw" }) =>
-    //   updateGameState({
-    //     ...gameState,
-    //     winner: data.status,
-    //   })
-    // );
-    // channel.bind("drawDeclined", () =>
-    //   updatePlayersState(
-    //     players.map((player) => ({
-    //       ...player,
-    //       drawRequest: false,
-    //     }))
-    //   )
-    // );
-
-    const newChnanel = pusherClient.subscribe(`room-${playerId}`);
-    newChnanel.bind("draw", (data: { status: "draw" }) => {
-      // const updatedPlayers = players.map((player) =>
-      //   player.id === playerId ? { ...player, drawRequest: true } : player
-      // );
-      // updatePlayersState(updatedPlayers);
-    });
+    channel.bind("drawAccepted", (data: { status: "draw" }) =>
+      updateGameState({
+        ...gameState,
+        winner: data.status,
+      })
+    );
+    channel.bind("drawDeclined", () =>
+      updatePlayersState(
+        players.map((player) => ({
+          ...player,
+          drawRequest: false,
+        }))
+      )
+    );
 
     return () => {
       channel.unbind("promote");
       channel.unbind("resign");
       channel.unbind("move");
       pusherClient.unsubscribe(`room-${roomId}`);
+    };
+  }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
 
+  useEffect(() => {
+    const newChnanel = pusherClient.subscribe(`room-${playerId}`);
+    newChnanel.bind("draw", (data: { status: "draw" }) => {
+      updatePlayersState(
+        players.map((player) =>
+          player.id === playerId ? { ...player, drawRequest: true } : player
+        )
+      );
+    });
+
+    return () => {
       newChnanel.unbind("draw");
       pusherClient.unsubscribe(`room-${playerId}`);
     };
-  }, [
-    roomId,
-    getGameState,
-    updateGameState,
-    setisLoading,
-    pusherClient,
-    updatePlayersState,
-  ]);
+  }, [pusherClient, updatePlayersState, players]);
 
   const handleDrop = async (
     e: React.DragEvent<HTMLDivElement>,

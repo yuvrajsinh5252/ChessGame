@@ -31,7 +31,10 @@ export default function Home() {
               href="/computer"
               title="Play Against Computer"
               description="Test your skills against AI opponents"
-              color="bg-red-500 hover:bg-red-600"
+              color="
+              bg-gray-400/70 hover:bg-gray-500/70
+              dark:bg-gray-400/50 dark:hover:bg-gray-500/50
+              "
             />
           </div>
         </div>
@@ -53,7 +56,7 @@ function GameModeCard({ href, title, description, color }: GameModeCardProps) {
       href={href}
       className={`${color} rounded-lg p-6 text-center transition-transform transform hover:scale-105`}
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center max-sm:text-xs max-sm:p-2">
         <Image
           src={
             href === "/two-player"
@@ -63,11 +66,11 @@ function GameModeCard({ href, title, description, color }: GameModeCardProps) {
               : "/computer.png"
           }
           alt="icon"
-          width={href === "/computer" ? 84 : 54}
-          height={href === "/computer" ? 84 : 54}
+          width={84}
+          height={84}
         />
-        <h2 className="text-2xl font-bold mb-2">{title}</h2>
-        <p className="text-sm">{description}</p>
+        <h2 className="text-2xl font-bold mb-2 max-sm:text-lg">{title}</h2>
+        <p className="text-sm max-sm:text-xs">{description}</p>
       </div>
     </Link>
   );

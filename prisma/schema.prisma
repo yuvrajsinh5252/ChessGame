@@ -31,9 +31,10 @@ model game {
 }
 
 model player {
-  id     String  @id @default(cuid())
-  color  String
-  name   String?
-  gameId String
-  game   game    @relation(fields: [gameId], references: [roomId])
+  id          String  @id @default(cuid())
+  drawRequest Boolean @default(false)
+  color       String
+  name        String?
+  gameId      String
+  game        game    @relation(fields: [gameId], references: [roomId])
 }

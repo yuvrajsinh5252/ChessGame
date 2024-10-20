@@ -18,9 +18,10 @@ export function DrawRequest({
   roomId: string;
   playerId: string;
 }) {
-  const { players } = useOnlineChessStore((state) => state);
+  const { players, updatePlayersState } = useOnlineChessStore((state) => state);
 
-  const res = players.find((player) => player.id === playerId);
+  const res = players ? players.find((player) => player.id === playerId) : null;
+
   if (!res || res.drawRequest !== true) return null;
   return (
     <Dialog open={true}>
@@ -38,6 +39,12 @@ export function DrawRequest({
             <Button
               onClick={() => {
                 drawAccepted(roomId);
+                updatePlayersState(
+                  players.map((player) => ({
+                    ...player,
+                    drawRequest: false,
+                  }))
+                );
               }}
               variant={"destructive"}
             >
@@ -46,6 +53,12 @@ export function DrawRequest({
             <Button
               onClick={() => {
                 drawDeclined(roomId);
+                updatePlayersState(
+                  players.map((player) => ({
+                    ...player,
+                    drawRequest: false,
+                  }))
+                );
               }}
             >
               Decline

@@ -176,14 +176,10 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
         return newState;
       }),
 
-    updatePlayersState: (players: Player[]) =>
-      set((state) => {
-        const newState = {
-          ...state,
-          players: players,
-        };
-        return newState;
-      }),
+    updatePlayersState: (players) =>
+      set(() => ({
+        players: players,
+      })),
   })
 );
 

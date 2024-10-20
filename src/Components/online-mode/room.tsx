@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { LoaderIcon } from "lucide-react";
 import { CreateRoom, JoinGame } from "@/app/server";
+import { ShareLink } from "./shareLink";
 
 export default function Room() {
   const router = useRouter();
@@ -33,11 +34,11 @@ export default function Room() {
     setLoading(true);
     const data = await CreateRoom();
     const roomId = data.roomId;
-    const playerId = data.playerId;
+    const CurrentplayerId = data.playerId;
 
-    if (roomId && playerId) {
+    if (roomId && CurrentplayerId) {
       setRoomid(roomId);
-      setPlayerId(playerId);
+      setPlayerId(CurrentplayerId);
     }
 
     if (roomId) setRoomid(roomId);
@@ -96,12 +97,7 @@ export default function Room() {
       <div className="mt-4 p-4 border rounded bg-gray-100 dark:bg-gray-700">
         <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
           {roomid ? (
-            <div className="text-center">
-              <p className="text-lg font-semibold text-cyan-600 dark:text-cyan-400">
-                Room ID: {roomid}
-              </p>
-              <p className="text-sm">Share this ID to start the game.</p>
-            </div>
+            <ShareLink roomid={roomid} />
           ) : (
             <div className="text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
