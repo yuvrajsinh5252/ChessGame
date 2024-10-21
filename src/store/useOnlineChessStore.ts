@@ -1,8 +1,4 @@
-import {
-  OnlineChessStore,
-  OnlineChessStoreActions,
-  Player,
-} from "@/types/onlineChess";
+import { OnlineChessStore, OnlineChessStoreActions } from "@/types/onlineChess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
 import {
@@ -20,6 +16,7 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
     gameState: {
       board: initialBoard,
       currentPlayer: "white",
+      movingPiece: null,
       winner: "none",
       status: "waiting",
       lastMove: null,
@@ -70,47 +67,57 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       )
         OpponentKingCheck = true;
 
-      updateGameState({
-        board: newBoard,
-        isKingInCheck: OpponentKingCheck
-          ? currentPlayer === "white"
-            ? "k"
-            : "K"
-          : "noCheck",
-        kingCheckOrMoved:
-          (currentPlayer === "black" && toRow === 0) ||
-          (currentPlayer === "white" && toRow === 7) ||
-          (piece === "K" &&
-            fromRow === 7 &&
-            fromCol === 4 &&
-            toRow === 7 &&
-            toCol === 6) ||
-          (piece === "k" &&
-            fromRow === 0 &&
-            fromCol === 4 &&
-            toRow === 0 &&
-            toCol === 6) ||
-          OpponentKingCheck
-            ? OpponentKingCheck
-              ? {
-                  ...gameState.kingCheckOrMoved,
-                  [currentPlayer === "white" ? "black" : "white"]: true,
-                }
-              : {
-                  ...gameState.kingCheckOrMoved,
-                  [currentPlayer]: true,
-                }
-            : gameState.kingCheckOrMoved,
-        rookMoved: {
-          ...get().gameState.rookMoved,
-          [currentPlayer]: {
-            left: fromCol === 0 || fromCol === 4,
-            right: fromCol === 7 || fromCol === 4,
-          },
+      set({
+        gameState: {
+          ...gameState,
+          movingPiece: { fromRow, fromCol, toRow, toCol },
+          lastMove: { fromRow, fromCol, toRow, toCol },
         },
-        currentPlayer: currentPlayer === "white" ? "black" : "white",
-        lastMove: { fromRow, fromCol, toRow, toCol },
       });
+
+      setTimeout(() => {
+        updateGameState({
+          board: newBoard,
+          isKingInCheck: OpponentKingCheck
+            ? currentPlayer === "white"
+              ? "k"
+              : "K"
+            : "noCheck",
+          kingCheckOrMoved:
+            (currentPlayer === "black" && toRow === 0) ||
+            (currentPlayer === "white" && toRow === 7) ||
+            (piece === "K" &&
+              fromRow === 7 &&
+              fromCol === 4 &&
+              toRow === 7 &&
+              toCol === 6) ||
+            (piece === "k" &&
+              fromRow === 0 &&
+              fromCol === 4 &&
+              toRow === 0 &&
+              toCol === 6) ||
+            OpponentKingCheck
+              ? OpponentKingCheck
+                ? {
+                    ...gameState.kingCheckOrMoved,
+                    [currentPlayer === "white" ? "black" : "white"]: true,
+                  }
+                : {
+                    ...gameState.kingCheckOrMoved,
+                    [currentPlayer]: true,
+                  }
+              : gameState.kingCheckOrMoved,
+          rookMoved: {
+            ...get().gameState.rookMoved,
+            [currentPlayer]: {
+              left: fromCol === 0 || fromCol === 4,
+              right: fromCol === 7 || fromCol === 4,
+            },
+          },
+          currentPlayer: currentPlayer === "white" ? "black" : "white",
+          lastMove: { fromRow, fromCol, toRow, toCol },
+        });
+      }, 300);
 
       return true;
     },
@@ -165,21 +172,32 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       });
     },
 
-    updateGameState: (gameState) =>
-      set((state) => {
-        const newState = {
-          gameState: {
-            ...state.gameState,
-            ...gameState,
-          },
-        };
-        return newState;
-      }),
+    updateGameState: (newGameState) => {
+      const { lastMove } = newGameState;
 
-    updatePlayersState: (players) =>
-      set(() => ({
-        players: players,
-      })),
+      set({
+        gameState: {
+          ...get().gameState,
+          movingPiece: lastMove!,
+          lastMove: lastMove!,
+        },
+      });
+      setTimeout(
+        () =>
+          set((state) => {
+            const newState = {
+              gameState: {
+                ...state.gameState,
+                ...newGameState,
+              },
+            };
+            return newState;
+          }),
+        200
+      );
+    },
+
+    updatePlayersState: (players) => set({ players: players }),
   })
 );
 

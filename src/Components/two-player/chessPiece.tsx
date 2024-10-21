@@ -23,7 +23,7 @@ export function ChessPiece({
       const timeout = setTimeout(() => setIsMoving(false), 300);
       return () => clearTimeout(timeout);
     }
-  }, [movingPiece, position, lastMove]);
+  }, [movingPiece, position]);
 
   if (!type) {
     if (
@@ -52,31 +52,46 @@ export function ChessPiece({
     e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
   };
 
+  const translateX = movingPiece?.toCol
+    ? (movingPiece.toCol - position.col) * 100
+    : 0;
+  const translateY = movingPiece?.toRow
+    ? (movingPiece.toRow - position.row) * 100
+    : 0;
+
   return (
     <div
       ref={pieceRef}
-      className={
-        "w-16 h-16 cursor-pointer max-sm:h-10 max-sm:w-10 " +
-        (highlight ? " bg-red-500/50 " : "") +
-        (lastMove?.fromRow === position.row &&
-        lastMove?.fromCol === position.col
-          ? " bg-blue-400/50 "
-          : "") +
-        (lastMove?.toRow === position.row && lastMove?.toCol === position.col
-          ? " bg-blue-400/50 "
-          : "")
-      }
+      className={`w-16 h-16 cursor-pointer max-sm:h-10 max-sm:w-10 ${
+        highlight ? "bg-red-500/50" : ""
+      } ${
+        lastMove?.fromRow === position.row &&
+        lastMove?.fromCol === position.col &&
+        !isMoving
+          ? "bg-blue-400/50"
+          : ""
+      } ${
+        lastMove?.toRow === position.row &&
+        lastMove?.toCol === position.col &&
+        !isMoving
+          ? "bg-blue-400/50"
+          : ""
+      }`}
       draggable
       onDragStart={handleDragStart}
       style={{
-        transition: isMoving ? "transform 0.3s ease" : "none",
-        transform: isMoving
-          ? `translate(${
-              ((movingPiece?.toCol ?? position.col) - position.col) * 100
-            }%, ${
-              ((movingPiece?.toRow ?? position.row) - position.row) * 100
-            }%)`
-          : "none",
+        transition:
+          lastMove?.fromRow === position.row &&
+          lastMove?.fromCol === position.col &&
+          isMoving
+            ? "transform 0.3s ease"
+            : "none",
+        transform:
+          lastMove?.fromRow === position.row &&
+          lastMove?.fromCol === position.col &&
+          isMoving
+            ? `translate(${translateX}%, ${translateY}%)`
+            : "none",
       }}
     >
       <Image
@@ -84,7 +99,7 @@ export function ChessPiece({
         alt={`${color} ${type}`}
         width={64}
         height={64}
-        className={"w-full h-full "}
+        className="w-full h-full"
       />
     </div>
   );

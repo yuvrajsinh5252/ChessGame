@@ -60,12 +60,10 @@ export const useChessStore = create(
           newBoard[fromRow][data.newRookCol] = data.rook;
         }
 
-        // Move the piece to the new position
         if (newBoard[toRow][toCol]) EliminatedPiece = newBoard[toRow][toCol];
         newBoard[toRow][toCol] = piece;
         newBoard[fromRow][fromCol] = null;
 
-        // Check if the move puts the current player's king in check
         if (isKingInCheck(newBoard, currentPlayer)) return false;
 
         let OpponentKingCheck = false;
@@ -75,6 +73,7 @@ export const useChessStore = create(
           OpponentKingCheck = true;
 
         set({
+          lastMove: { fromRow, fromCol, toRow, toCol },
           movingPiece: { fromRow, fromCol, toRow, toCol },
         });
 
@@ -82,7 +81,6 @@ export const useChessStore = create(
           set((state) => ({
             ...state,
             board: newBoard,
-            movingPiece: null,
             isKingInCheck: OpponentKingCheck
               ? currentPlayer === "white"
                 ? "k"
@@ -191,6 +189,20 @@ export const useChessStore = create(
         });
       },
       canPromotePawn: null,
+
+      refetchStore: () => {
+        set({
+          board: initialBoard,
+          currentPlayer: "white",
+          lastMove: null,
+          movingPiece: null,
+          kingCheckOrMoved: intitialkingCheckOrMoved,
+          rookMoved: initialRookMoved,
+          isKingInCheck: "noCheck",
+          isCheckMate: "noCheckMate",
+          eliminatedPieces: { white: [], black: [] },
+        });
+      },
     }),
     {
       name: "chess-store",

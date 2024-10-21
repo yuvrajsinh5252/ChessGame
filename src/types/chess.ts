@@ -17,6 +17,7 @@ export interface ChessState {
   eliminatedPieces: { white: PieceType[]; black: PieceType[] };
   canPromotePawn: typePromotePawn;
   promotePawn: (row: number, col: number, newPiece: PieceType) => void;
+  refetchStore: () => void;
 }
 
 export type typePromotePawn = {
@@ -49,12 +50,12 @@ export interface IsMoveValid {
 
 export interface Piece {
   type: PieceType | null;
-  movingPiece: NullableLastMove;
   position: { row: number; col: number };
   lastMove: NullableLastMove;
   currentPlayer: PieceColor;
   highlight: boolean;
   setSelectedPiece: any;
+  movingPiece: NullableLastMove;
 }
 
 export interface ValidState {

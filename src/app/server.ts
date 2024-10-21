@@ -269,6 +269,7 @@ export async function handlePlayerMove(
         isCheckMate(newBoard, newCurrentPlayer) === "noCheckMate"
           ? "none"
           : (isCheckMate(newBoard, newCurrentPlayer) as winner),
+      movingPiece: null,
     };
 
     if (gameState.canPromotePawn) {
@@ -346,6 +347,7 @@ export async function serverPawnPromote(
     lastMove: lastMove,
     kingCheckOrMoved: kingCheckOrMoved,
     rookMoved: rookMoved,
+    movingPiece: null,
   };
 
   await prisma.game.update({
@@ -397,7 +399,7 @@ export async function handlePlayerDraw(gameId: string, playerId: string) {
     if (!player) throw new Error("Player not found");
 
     await prisma.player.update({
-      where: { id: playerId },
+      where: { id: player.id },
       data: {
         drawRequest: true,
       },

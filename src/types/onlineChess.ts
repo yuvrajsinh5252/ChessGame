@@ -19,6 +19,7 @@ export interface Player {
 
 export interface GameState {
   board: Board;
+  movingPiece: NullableLastMove;
   currentPlayer: "white" | "black";
   winner: winner;
   status: "waiting" | "in-progress" | "finished" | "promote" | "resigned";
@@ -50,6 +51,7 @@ export interface OnlineChessStoreActions {
 
 export interface OnlinePiece {
   type: string;
+  movingPiece: NullableLastMove;
   position: { row: number; col: number };
   lastMove: NullableLastMove;
   highlight: boolean;

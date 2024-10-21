@@ -43,6 +43,7 @@ export function GameControl({
         Leave Game
       </Button>
       <Button
+        disabled={drawRequest}
         onClick={() => {
           setDrawRequest(true);
           handlePlayerDraw(roomId, playerId);

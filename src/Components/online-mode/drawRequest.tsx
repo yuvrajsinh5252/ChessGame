@@ -28,12 +28,12 @@ export function DrawRequest({
       <DialogContent className="w-fit p-5 rounded-lg">
         <DialogHeader>
           <DialogTitle>
-            <span className="text-2xl font-semibold text-center">
+            <span className="text-2xl flex justify-center items-center font-semibold text-center">
               Draw Request
             </span>
           </DialogTitle>
           <DialogDescription className="text-center pt-2 text-lg font-semibold">
-            {res.name} has requested a draw
+            {res.color === "white" ? "black" : "white"} has requested a draw
           </DialogDescription>
           <div className="flex justify-center gap-4 mt-4">
             <Button

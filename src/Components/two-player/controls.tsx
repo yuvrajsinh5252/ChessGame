@@ -3,8 +3,11 @@
 import { FaUndo, FaRedo, FaSyncAlt, FaArrowLeft } from "react-icons/fa";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useChessStore } from "@/store/useChessStore";
 
 export function Controls() {
+  const { refetchStore } = useChessStore();
+
   return (
     <div className="fixed bottom-0 flex justify-center space-x-4 pb-2">
       <Link href="/">
@@ -21,7 +24,7 @@ export function Controls() {
       <Button
         onClick={() => {
           localStorage.removeItem("chess-store");
-          window.location.reload();
+          refetchStore();
         }}
         className="btn flex items-center space-x-2"
       >

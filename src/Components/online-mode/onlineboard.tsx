@@ -60,6 +60,7 @@ export function OnlineBoard({
               ? null
               : JSON.parse(data.gameState.canPawnPromote),
           winner: data.gameState.winner as winner,
+          movingPiece: null,
         };
 
         const recievedPlayers: Player[] = data.players.map((player: any) => ({
@@ -96,14 +97,14 @@ export function OnlineBoard({
         winner: data.status,
       })
     );
-    channel.bind("drawDeclined", () =>
-      updatePlayersState(
-        players.map((player) => ({
-          ...player,
-          drawRequest: false,
-        }))
-      )
-    );
+    channel.bind("drawDeclined", (data: { status: "declined" }) => {
+      const newPlayers: Player[] = players.map((player) => ({
+        ...player,
+        drawRequest: false,
+      }));
+      console.log(newPlayers, players);
+      updatePlayersState(newPlayers);
+    });
 
     return () => {
       channel.unbind("promote");
@@ -118,11 +119,10 @@ export function OnlineBoard({
   useEffect(() => {
     const newChnanel = pusherClient.subscribe(`room-${playerId}`);
     newChnanel.bind("draw", (data: { status: "draw" }) => {
-      updatePlayersState(
-        players.map((player) =>
-          player.id === playerId ? { ...player, drawRequest: true } : player
-        )
+      const newPlayers: Player[] = players.map((player) =>
+        player.id === playerId ? { ...player, drawRequest: true } : player
       );
+      updatePlayersState(newPlayers);
     });
 
     return () => {
@@ -249,6 +249,7 @@ export function OnlineBoard({
             >
               <OnlineChessPiece
                 type={cell}
+                movingPiece={gameState.movingPiece}
                 position={{ row: rowIndex, col: colIndex }}
                 lastMove={gameState.lastMove}
                 currentPlayer={gameState.currentPlayer}

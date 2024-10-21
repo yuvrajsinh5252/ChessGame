@@ -13,6 +13,7 @@ export default function Room() {
   const [id, setId] = useState<string>("");
   const [roomid, setRoomid] = useState<string>("");
   const [playerId, setPlayerId] = useState<string>("");
+  const [joinLoading, setJoinLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function Room() {
   };
 
   const joinRoom = async (roomId: string) => {
+    setJoinLoading(true);
     if (playerId) {
       alert("You are already in a room");
       return;
@@ -59,6 +61,7 @@ export default function Room() {
 
     const OtherplayerId = data?.playerId;
     if (data?.playerId) {
+      setJoinLoading(false);
       router.push(
         `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
       );
@@ -74,12 +77,18 @@ export default function Room() {
           placeholder="Enter room name"
           className="w-full dark:bg-gray-600"
         />
-        <button
-          onClick={() => joinRoom(id)}
-          className="mt-2 w-full bg-blue-500 p-2 rounded"
-        >
-          Join Room
-        </button>
+        {joinLoading ? (
+          <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
+            <LoaderIcon className="animate-spin" />
+          </div>
+        ) : (
+          <button
+            onClick={() => joinRoom(id)}
+            className="mt-2 w-full bg-blue-500 p-2 rounded"
+          >
+            Join Room
+          </button>
+        )}
         {loading ? (
           <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
             <LoaderIcon className="animate-spin" />
