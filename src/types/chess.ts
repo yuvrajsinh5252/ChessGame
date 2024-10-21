@@ -7,6 +7,7 @@ export interface ChessState {
   board: Board;
   currentPlayer: "white" | "black";
   lastMove: NullableLastMove;
+  movingPiece: NullableLastMove;
   kingCheckOrMoved: kingCheckOrMoved;
   rookMoved: rookMoved;
   movePiece: MovePiece;
@@ -48,6 +49,7 @@ export interface IsMoveValid {
 
 export interface Piece {
   type: PieceType | null;
+  movingPiece: NullableLastMove;
   position: { row: number; col: number };
   lastMove: NullableLastMove;
   currentPlayer: PieceColor;

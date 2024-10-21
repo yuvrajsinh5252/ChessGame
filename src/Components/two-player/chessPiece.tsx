@@ -1,5 +1,6 @@
 import { Piece } from "@/types/chess";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 export function ChessPiece({
   type,
@@ -8,7 +9,22 @@ export function ChessPiece({
   currentPlayer,
   highlight,
   setSelectedPiece,
+  movingPiece,
 }: Piece) {
+  const [isMoving, setIsMoving] = useState(false);
+  const pieceRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (
+      movingPiece?.fromRow === position.row &&
+      movingPiece?.fromCol === position.col
+    ) {
+      setIsMoving(true);
+      const timeout = setTimeout(() => setIsMoving(false), 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [movingPiece, position, lastMove]);
+
   if (!type) {
     if (
       lastMove?.fromRow === position.row &&
@@ -23,7 +39,9 @@ export function ChessPiece({
       return (
         <div className="w-6 h-6 max-sm:h-4 max-sm:w-4 rounded-full bg-black bg-opacity-30" />
       );
-    } else return null;
+    } else {
+      return null;
+    }
   }
 
   const color = type === type.toUpperCase() ? "white" : "black";
@@ -36,27 +54,37 @@ export function ChessPiece({
 
   return (
     <div
+      ref={pieceRef}
       className={
         "w-16 h-16 cursor-pointer max-sm:h-10 max-sm:w-10 " +
         (highlight ? " bg-red-500/50 " : "") +
-        (lastMove?.fromRow == position.row && lastMove?.fromCol == position.col
+        (lastMove?.fromRow === position.row &&
+        lastMove?.fromCol === position.col
           ? " bg-blue-400/50 "
           : "") +
-        (lastMove?.toRow == position.row && lastMove?.toCol == position.col
+        (lastMove?.toRow === position.row && lastMove?.toCol === position.col
           ? " bg-blue-400/50 "
           : "")
       }
       draggable
       onDragStart={handleDragStart}
+      style={{
+        transition: isMoving ? "transform 0.3s ease" : "none",
+        transform: isMoving
+          ? `translate(${
+              ((movingPiece?.toCol ?? position.col) - position.col) * 100
+            }%, ${
+              ((movingPiece?.toRow ?? position.row) - position.row) * 100
+            }%)`
+          : "none",
+      }}
     >
       <Image
         src={pieceImage}
         alt={`${color} ${type}`}
         width={64}
         height={64}
-        className={
-          "w-full h-full " + (currentPlayer === "black" ? "rotate-180" : "")
-        }
+        className={"w-full h-full "}
       />
     </div>
   );

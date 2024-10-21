@@ -109,6 +109,8 @@ export function OnlineBoard({
       channel.unbind("promote");
       channel.unbind("resign");
       channel.unbind("move");
+      channel.unbind("drawAccepted");
+      channel.unbind("drawDeclined");
       pusherClient.unsubscribe(`room-${roomId}`);
     };
   }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);

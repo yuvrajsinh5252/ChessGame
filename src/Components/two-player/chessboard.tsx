@@ -17,6 +17,7 @@ export default function ChessBoard() {
     isKingInCheck,
     currentPlayer,
     lastMove,
+    movingPiece,
   } = store! || {
     board: initialBoard,
     movePiece: () => false,
@@ -40,7 +41,10 @@ export default function ChessBoard() {
       .getData("text")
       .split(",")
       .map(Number);
-    movePiece(fromRow, fromCol, toRow, toCol);
+    if (isValidMove(fromRow, fromCol, toRow, toCol)) {
+      movePiece(fromRow, fromCol, toRow, toCol);
+      setSelectedPiece(null);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -90,11 +94,7 @@ export default function ChessBoard() {
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
-      <div
-        className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative ${
-          currentPlayer === "black" ? " rotate-180 " : ""
-        }`}
-      >
+      <div className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative `}>
         {board.map((row, rowIndex) =>
           row.map((piece, colIndex) => (
             <div
@@ -127,6 +127,7 @@ export default function ChessBoard() {
             >
               {
                 <ChessPiece
+                  movingPiece={movingPiece}
                   type={piece}
                   currentPlayer={currentPlayer}
                   lastMove={lastMove}

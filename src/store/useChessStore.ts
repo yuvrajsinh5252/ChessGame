@@ -21,6 +21,7 @@ export const useChessStore = create(
       board: initialBoard,
       currentPlayer: "white",
       lastMove: null,
+      movingPiece: null,
       kingCheckOrMoved: intitialkingCheckOrMoved,
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
@@ -73,69 +74,76 @@ export const useChessStore = create(
         )
           OpponentKingCheck = true;
 
-        set((state) => ({
-          ...state,
-          board: newBoard,
-          isKingInCheck: OpponentKingCheck
-            ? currentPlayer === "white"
-              ? "k"
-              : "K"
-            : "noCheck",
-          kingCheckOrMoved:
-            (currentPlayer === "black" && toRow === 0) ||
-            (currentPlayer === "white" && toRow === 7) ||
-            (piece === "K" &&
-              fromRow === 7 &&
-              fromCol === 4 &&
-              toRow === 7 &&
-              toCol === 6) ||
-            (piece === "k" &&
-              fromRow === 0 &&
-              fromCol === 4 &&
-              toRow === 0 &&
-              toCol === 6) ||
-            OpponentKingCheck
-              ? OpponentKingCheck
-                ? {
-                    ...state.kingCheckOrMoved,
-                    [currentPlayer === "white" ? "black" : "white"]: true,
-                  }
-                : {
-                    ...state.kingCheckOrMoved,
-                    [currentPlayer]: true,
-                  }
-              : state.kingCheckOrMoved,
-          rookMoved: {
-            ...state.rookMoved,
-            [currentPlayer]: {
-              left: fromCol === 0 || fromCol === 4,
-              right: fromCol === 7 || fromCol === 4,
+        set({
+          movingPiece: { fromRow, fromCol, toRow, toCol },
+        });
+
+        setTimeout(() => {
+          set((state) => ({
+            ...state,
+            board: newBoard,
+            movingPiece: null,
+            isKingInCheck: OpponentKingCheck
+              ? currentPlayer === "white"
+                ? "k"
+                : "K"
+              : "noCheck",
+            kingCheckOrMoved:
+              (currentPlayer === "black" && toRow === 0) ||
+              (currentPlayer === "white" && toRow === 7) ||
+              (piece === "K" &&
+                fromRow === 7 &&
+                fromCol === 4 &&
+                toRow === 7 &&
+                toCol === 6) ||
+              (piece === "k" &&
+                fromRow === 0 &&
+                fromCol === 4 &&
+                toRow === 0 &&
+                toCol === 6) ||
+              OpponentKingCheck
+                ? OpponentKingCheck
+                  ? {
+                      ...state.kingCheckOrMoved,
+                      [currentPlayer === "white" ? "black" : "white"]: true,
+                    }
+                  : {
+                      ...state.kingCheckOrMoved,
+                      [currentPlayer]: true,
+                    }
+                : state.kingCheckOrMoved,
+            rookMoved: {
+              ...state.rookMoved,
+              [currentPlayer]: {
+                left: fromCol === 0 || fromCol === 4,
+                right: fromCol === 7 || fromCol === 4,
+              },
             },
-          },
-          currentPlayer: currentPlayer === "white" ? "black" : "white",
-          lastMove: { fromRow, fromCol, toRow, toCol },
-          isCheckMate: isCheckMate(
-            newBoard,
-            currentPlayer == "white" ? "black" : "white"
-          ),
-          canPromotePawn: promotePawn(
-            board,
-            fromRow,
-            fromCol,
-            toRow,
-            toCol,
-            currentPlayer
-          ),
-          eliminatedPieces: {
-            ...state.eliminatedPieces,
-            [currentPlayer === "white" ? "black" : "white"]: [
-              ...state.eliminatedPieces[
-                currentPlayer === "white" ? "black" : "white"
+            currentPlayer: currentPlayer === "white" ? "black" : "white",
+            lastMove: { fromRow, fromCol, toRow, toCol },
+            isCheckMate: isCheckMate(
+              newBoard,
+              currentPlayer == "white" ? "black" : "white"
+            ),
+            canPromotePawn: promotePawn(
+              board,
+              fromRow,
+              fromCol,
+              toRow,
+              toCol,
+              currentPlayer
+            ),
+            eliminatedPieces: {
+              ...state.eliminatedPieces,
+              [currentPlayer === "white" ? "black" : "white"]: [
+                ...state.eliminatedPieces[
+                  currentPlayer === "white" ? "black" : "white"
+                ],
+                EliminatedPiece,
               ],
-              EliminatedPiece,
-            ],
-          },
-        }));
+            },
+          }));
+        }, 300);
 
         return true;
       },
