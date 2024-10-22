@@ -52,12 +52,10 @@ export function ChessPiece({
     e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
   };
 
-  const translateX = movingPiece?.toCol
-    ? (movingPiece.toCol - position.col) * 100
-    : 0;
-  const translateY = movingPiece?.toRow
-    ? (movingPiece.toRow - position.row) * 100
-    : 0;
+  const translateX =
+    lastMove?.toCol !== undefined ? (lastMove.toCol - position.col) * 100 : 0;
+  const translateY =
+    lastMove?.toRow !== undefined ? (lastMove.toRow - position.row) * 100 : 0;
 
   return (
     <div
