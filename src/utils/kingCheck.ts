@@ -51,6 +51,8 @@ export const isCheckMate = (
     return "noCheckMate";
   }
 
+  let hasValidMove = false;
+
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
       if (
@@ -66,8 +68,9 @@ export const isCheckMate = (
               newBoard[toRow][toCol] = board[row][col];
               newBoard[row][col] = null;
 
-              if (!isKingInCheck(newBoard, player)) return "noCheckMate";
-              else return "draw";
+              if (!isKingInCheck(newBoard, player)) hasValidMove = true;
+              // hope it won't take longer...
+              // if (!isKingInCheck(newBoard, player)) return "noCheckMate";
             }
           }
         }
@@ -75,5 +78,6 @@ export const isCheckMate = (
     }
   }
 
+  if (!hasValidMove) return "draw";
   return player;
 };

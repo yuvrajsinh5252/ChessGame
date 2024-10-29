@@ -18,15 +18,19 @@ export const CheckEnpassant = (
   ) {
     const isWhitePawn = piece === "P";
     const isBlackPawn = piece === "p";
+
     const isMovingForward =
       (isWhitePawn && toRow < fromRow) || (isBlackPawn && toRow > fromRow);
+
+    const opponentPawn = isWhitePawn ? "p" : "P";
 
     if (
       isMovingForward &&
       lastMove &&
       lastMove.toRow === fromRow &&
       Math.abs(lastMove.fromRow - lastMove.toRow) === 2 &&
-      lastMove.toCol === toCol
+      lastMove.toCol === toCol &&
+      board[fromRow][toCol] === opponentPawn
     ) {
       board[lastMove.toRow][lastMove.toCol] = null;
       return true;
