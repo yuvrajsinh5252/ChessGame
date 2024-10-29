@@ -8,17 +8,57 @@ import {
   DialogTitle,
 } from "@/Components/ui/dialog";
 import { useChessStore } from "@/store/useChessStore";
+import JSConfetti from "js-confetti";
+import { useEffect, useState } from "react";
 
 export const CheckMate = () => {
   const { isCheckMate } = useChessStore((state) => state);
+  const [isClient, setIsClient] = useState(false);
 
-  if (isCheckMate !== "noCheckMate") {
-    return (
+  useEffect(() => {
+    if (typeof window !== "undefined" && isCheckMate !== "noCheckMate") {
+      setIsClient(true);
+      setTimeout(() => {
+        const confetti = new JSConfetti();
+        confetti.addConfetti({
+          confettiColors: [
+            "#f44336",
+            "#e91e63",
+            "#9c27b0",
+            "#673ab7",
+            "#3f51b5",
+            "#2196f3",
+            "#03a9f4",
+            "#00bcd4",
+            "#009688",
+            "#4caf50",
+            "#8bc34a",
+            "#cddc39",
+            "#ffeb3b",
+            "#ffc107",
+            "#ff9800",
+            "#ff5722",
+            "#795548",
+            "#607d8b",
+          ],
+          confettiRadius: 10,
+          confettiNumber: 20,
+        });
+      }, 1000);
+    }
+  }, [isCheckMate]);
+
+  if (!isClient) return null;
+
+  return (
+    <div>
       <Dialog open={true}>
         <DialogContent className="w-full max-w-md p-5 rounded-lg shadow-lg">
           <DialogHeader>
             <DialogTitle>
-              <h1 className="text-2xl font-semibold text-center">Checkmate</h1>
+              <span className="text-2xl font-semibold text-center">
+                Game Over
+              </span>
             </DialogTitle>
             <DialogDescription className="text-center pt-2 text-lg font-semibold">
               {isCheckMate === "black"
@@ -32,8 +72,8 @@ export const CheckMate = () => {
               {isCheckMate === "draw"
                 ? "1/2 - 1/2"
                 : isCheckMate === "white"
-                ? "1 - 0"
-                : "0 - 1"}
+                ? "0 - 1"
+                : "1 - 0"}
             </div>
             <div className="mt-4 flex justify-center">
               <button
@@ -49,8 +89,6 @@ export const CheckMate = () => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-    );
-  }
-
-  return null;
+    </div>
+  );
 };
