@@ -9,7 +9,7 @@ import {
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { Button } from "../ui/button";
-import { deleteGame } from "@/app/server";
+import { deleteGame } from "@/lib/db/game";
 import { useEffect, useState } from "react";
 import JSConfetti from "js-confetti";
 

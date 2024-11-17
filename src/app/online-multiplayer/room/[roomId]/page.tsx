@@ -6,7 +6,7 @@ import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
 import { Black } from "@/Components/online-mode/black";
 import { White } from "@/Components/online-mode/white";
 import { useEffect, useState } from "react";
-import { getPlayerColor } from "@/app/server";
+import { getPlayerColor } from "@/lib/db/game";
 import { Loader2 } from "lucide-react";
 import { Winner } from "@/Components/online-mode/winner";
 import { Promote } from "@/Components/online-mode/promote";

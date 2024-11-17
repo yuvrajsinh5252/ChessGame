@@ -1,7 +1,8 @@
-import { handlePlayerDraw, handlePlayerResign } from "@/app/server";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
+import { handlePlayerResign } from "@/lib/db/game";
+import { handlePlayerDraw } from "@/lib/db/draw";
 
 export function GameControl({
   playerId,

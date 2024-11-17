@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { serverPawnPromote } from "@/app/server";
+import { serverPawnPromote } from "@/lib/db/game";
 import Image from "next/image";
 
 export const Promote = ({
