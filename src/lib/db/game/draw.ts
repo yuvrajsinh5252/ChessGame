@@ -38,6 +38,14 @@ export async function drawAccepted(gameId: string) {
     },
   });
 
+  await prisma.stats.updateMany({
+    data: {
+      draws: {
+        increment: 1,
+      },
+    },
+  });
+
   await pusherServer.trigger(`room-${gameId}`, "drawAccepted", {
     status: "draw",
   });

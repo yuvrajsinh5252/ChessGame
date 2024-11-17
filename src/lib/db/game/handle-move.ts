@@ -180,6 +180,16 @@ export async function handlePlayerMove(
     const res = isCheckMate(newBoard, newCurrentPlayer);
     const winner = res === "noCheckMate" ? "none" : res;
 
+    if (winner !== "draw") {
+      await prisma.stats.updateMany({
+        data: {
+          draws: {
+            increment: 1,
+          },
+        },
+      });
+    }
+
     await prisma.game.update({
       where: { roomId: gameId },
       data: {

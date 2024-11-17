@@ -38,3 +38,10 @@ model player {
   gameId      String
   game        game    @relation(fields: [gameId], references: [roomId])
 }
+
+model stats {
+  id            String @id @default(cuid())
+  draws         Int    @default(0)
+  totalGames    Int    @default(0)
+  currentOnline Int    @default(0)
+}

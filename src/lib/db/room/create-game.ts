@@ -48,5 +48,22 @@ export async function CreateRoom() {
     },
   });
 
+  // TODO: Add more stats here, like currentOnlinePlayers etc.
+  const existingStats = await prisma.stats.findFirst();
+  if (!existingStats) {
+    await prisma.stats.create({
+      data: {
+        totalGames: 1,
+      },
+    });
+  } else {
+    await prisma.stats.update({
+      where: { id: existingStats.id },
+      data: {
+        totalGames: existingStats.totalGames + 1,
+      },
+    });
+  }
+
   return { roomId: createdRoom.roomId, playerId: player.id };
 }
