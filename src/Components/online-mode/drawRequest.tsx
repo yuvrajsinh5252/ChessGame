@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/Components/ui/dialog";
-import { drawAccepted, drawDeclined } from "@/lib/db/draw";
+import { drawAccepted, drawDeclined } from "@/lib/db/game/draw";
 
 export function DrawRequest({
   roomId,

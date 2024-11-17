@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { LoaderIcon } from "lucide-react";
-import { CreateRoom } from "@/lib/db/create-game";
-import { JoinGame } from "@/lib/db/join-game";
 import { ShareLink } from "./shareLink";
+import { CreateRoom } from "@/lib/db/room/create-game";
+import { JoinGame } from "@/lib/db/room/join-game";
 
 export default function Room() {
   const router = useRouter();

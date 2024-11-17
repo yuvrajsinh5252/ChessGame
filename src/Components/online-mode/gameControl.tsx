@@ -1,8 +1,8 @@
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { handlePlayerResign } from "@/lib/db/game";
-import { handlePlayerDraw } from "@/lib/db/draw";
+import { handlePlayerResign } from "@/lib/db/game/helper";
+import { handlePlayerDraw } from "@/lib/db/game/draw";
 
 export function GameControl({
   playerId,

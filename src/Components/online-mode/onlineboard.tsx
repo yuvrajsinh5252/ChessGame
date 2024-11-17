@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { pusherClient } from "@/lib/pusher";
-import { getGameState, getPlayerColor } from "@/lib/db/game";
+import { getGameState, getPlayerColor } from "@/lib/db/game/helper";
 import { OnlineChessPiece } from "./onlinechessPiece";
 import { LoadingBoard } from "../loadingBoard";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
 import { GameState, Player, winner } from "@/types/onlineChess";
-import { handlePlayerMove } from "@/lib/db/handle-move";
+import { handlePlayerMove } from "@/lib/db/game/handle-move";
 
 export function OnlineBoard({
   roomId,

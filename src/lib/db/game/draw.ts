@@ -1,7 +1,7 @@
 "use server";
 
-import { pusherServer } from "../pusher";
-import { prisma } from "./prisma";
+import { pusherServer } from "@/lib/pusher";
+import { prisma } from "../prisma";
 
 export async function handlePlayerDraw(gameId: string, playerId: string) {
   try {
