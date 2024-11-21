@@ -11,6 +11,7 @@ import {
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { serverPawnPromote } from "@/lib/db/game/helper";
 import Image from "next/image";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export const Promote = ({
   roomId,
@@ -21,6 +22,7 @@ export const Promote = ({
 }) => {
   const { gameState, promotePawn } = useOnlineChessStore((state) => state);
   const { currentPlayer, canPromotePawn } = gameState;
+  const { pieceTheme } = useThemeStore((state) => state);
 
   if (!canPromotePawn || playerColor !== gameState.currentPlayer) return null;
   return (
@@ -38,7 +40,7 @@ export const Promote = ({
                 return (
                   <button key={piece} className="btn">
                     <Image
-                      src={`/${currentPlayer}/${pieceImage}.png`}
+                      src={`/${pieceTheme}/${currentPlayer}/${pieceImage}.png`}
                       alt={piece}
                       width={64}
                       height={64}

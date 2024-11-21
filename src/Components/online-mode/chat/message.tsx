@@ -7,9 +7,13 @@ export function ChatMessage({
   messages: Message[];
   playerId: string;
 }) {
+  const sortedMessages = messages.sort(
+    (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+  );
+
   return (
     <div className="flex flex-col gap-4">
-      {messages.map((message, key) =>
+      {sortedMessages.map((message, key) =>
         playerId === message.user ? (
           <UserMessage key={key} message={message} />
         ) : (

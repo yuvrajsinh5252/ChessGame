@@ -1,3 +1,4 @@
+import { useThemeStore } from "@/store/useThemeStore";
 import Image from "next/image";
 
 export function EliminatedPieces({
@@ -7,6 +8,7 @@ export function EliminatedPieces({
   eliminatedPieces: { white: string[]; black: string[] };
   playerColour: "white" | "black" | null;
 }) {
+  const { pieceTheme } = useThemeStore((state) => state);
   const data =
     playerColour == "black" ? eliminatedPieces.black : eliminatedPieces.white;
 
@@ -26,7 +28,7 @@ export function EliminatedPieces({
             className="relative flex items-center p-0.5 px-1 rounded bg-gray-300"
           >
             <Image
-              src={`/${playerColour}/${piece}.png`}
+              src={`/${pieceTheme}/${playerColour}/${piece}.png`}
               alt={piece}
               width={24}
               height={24}

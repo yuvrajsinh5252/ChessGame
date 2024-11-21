@@ -1,3 +1,4 @@
+import { useThemeStore } from "@/store/useThemeStore";
 import { OnlinePiece } from "@/types/onlineChess";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +13,7 @@ export function OnlineChessPiece({
   playerColor,
   movingPiece,
 }: OnlinePiece) {
+  const { pieceTheme } = useThemeStore((state) => state);
   const [isMoving, setIsMoving] = useState(false);
   const pieceRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +48,7 @@ export function OnlineChessPiece({
   }
 
   const color = type === type.toUpperCase() ? "white" : "black";
-  const pieceImage = `/${color}/${type}.png`;
+  const pieceImage = `/${pieceTheme}/${color}/${type}.png`;
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (playerColor !== currentPlayer) return;

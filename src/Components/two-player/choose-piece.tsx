@@ -10,8 +10,10 @@ import {
   DialogTrigger,
 } from "@/Components/ui/dialog";
 import Image from "next/image";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export const ChoosePiece = () => {
+  const { pieceTheme } = useThemeStore((state) => state);
   const { currentPlayer, canPromotePawn, promotePawn } = useChessStore(
     (state) => state
   );
@@ -28,7 +30,7 @@ export const ChoosePiece = () => {
               {["Q", "R", "B", "N"].map((piece) => (
                 <button key={piece} className="btn">
                   <Image
-                    src={`/${
+                    src={`/${pieceTheme}/${
                       currentPlayer === "white" ? "black" : "white"
                     }/${piece}.png`}
                     alt={piece}
