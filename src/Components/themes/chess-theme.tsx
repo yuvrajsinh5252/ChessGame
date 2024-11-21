@@ -8,7 +8,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/Components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Palette } from "lucide-react";
 import { useThemeStore } from "@/store/useThemeStore";
