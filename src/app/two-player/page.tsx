@@ -9,8 +9,8 @@ import { Controls } from "@/Components/two-player/controls";
 export default function Home() {
   return (
     <MaxWidthWrapper>
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <div className="flex gap-2 flex-col justify-center items-center pt-10 min-h-screen max-sm:pb-10">
+      <div className="flex flex-col gap-2 justify-center items-center relative">
+        <div className="flex gap-2 flex-col justify-center items-center pt-10 min-h-screen max-sm:pb-10 z-0">
           <ChoosePiece />
           <CheckMate />
           <BlackPlayer />
