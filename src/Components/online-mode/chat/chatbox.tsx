@@ -1,19 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageSquare, MessageSquareMore } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
+import { pusherClient } from "@/lib/pusher";
+import { sendMessage } from "@/lib/db/chat/chat-server";
 
-export default function Chat() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Chat({
+  playerId,
+  roomId,
+}: {
+  playerId: string;
+  roomId: string;
+}) {
+  const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
-  if (!chatStore) return null;
 
-  const { messages, addMessage } = chatStore;
+  const { messages, addMessage } = chatStore! || {
+    messages: [],
+    addMessage: () => {},
+  };
+
+  useEffect(() => {
+    console.log("roomId", roomId);
+    const channel = pusherClient.subscribe(`${roomId}`);
+    channel.bind("chat", (data: string) => {
+      const message = {
+        id: roomId,
+        user: playerId,
+        content: data,
+        timestamp: new Date(),
+      };
+
+      addMessage(message);
+    });
+
+    return () => {
+      channel.unbind("chat");
+      pusherClient.unsubscribe(`${roomId}`);
+    };
+  }, [pusherClient, roomId, addMessage, playerId]);
 
   return (
     <div className="relative">
@@ -23,13 +53,13 @@ export default function Chat() {
         variant="ghost"
       >
         <MessageSquare />
-        {messages.length > 0 && (
+        {messages && messages.length > 0 && (
           <span className="absolute top-1 right-1 inline-block w-2 h-2 bg-red-600 rounded-full"></span>
         )}
       </Button>
       <div
         className={`fixed bottom-0 left-1/2 transform -translate-x-[53%] translate-y-1/2 m-4 w-[600px] bg-white shadow-lg rounded-lg transition-transform ${
-          isOpen ? "-translate-y-28" : "translate-y-full"
+          isOpen ? "-translate-y-40" : "translate-y-full"
         }`}
         style={{ transitionDuration: "300ms" }}
       >
@@ -37,11 +67,11 @@ export default function Chat() {
           <h2 className="text-lg font-bold">Chat</h2>
         </div>
         <div className="p-4 overflow-y-auto h-96">
-          {messages.length > 0 ? (
+          {messages && messages.length > 0 ? (
             messages.map((msg, i) => (
               <div key={i} className="flex items-center mb-2">
                 <MessageSquareMore className="mr-2" />
-                <span>{msg.toString()}</span>
+                <span>{msg.content}</span>
               </div>
             ))
           ) : (
@@ -57,7 +87,15 @@ export default function Chat() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <Button className="mt-2 w-full">Send</Button>
+          <Button
+            className="mt-2 w-full"
+            onClick={async () => {
+              await sendMessage(roomId, message);
+              setMessage("");
+            }}
+          >
+            Send
+          </Button>
         </div>
       </div>
     </div>

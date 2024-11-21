@@ -1,9 +1,16 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ThemeToggle from "./themes/theme-toggle";
 import Chat from "./online-mode/chat/chatbox";
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const playerId = pathname.split("/").pop() || "";
+  const roomId = pathname.split("/").pop() || "";
+
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">
       <MaxWidthWrapper className="w-full flex justify-between p-4 rounded-lg">
@@ -14,7 +21,9 @@ export default function Navbar() {
           </a>
         </div>
         <div className="flex gap-2 justify-center items-center">
-          <Chat />
+          {pathname.startsWith("/online-multiplayer/room/") && (
+            <Chat playerId={playerId} roomId={roomId} />
+          )}
           <ThemeToggle />
         </div>
       </MaxWidthWrapper>

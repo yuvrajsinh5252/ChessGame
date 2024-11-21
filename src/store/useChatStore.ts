@@ -16,7 +16,7 @@ interface ChatStore {
 
 const useChatStore = create(
   persist<ChatStore>(
-    (set) => ({
+    (set, get) => ({
       messages: [],
       addMessage: (message) =>
         set((state) => ({ messages: [...state.messages, message] })),
