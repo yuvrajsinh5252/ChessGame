@@ -1,3 +1,4 @@
+import { getDB, STORE_NAME } from "@/lib/indexdb/initial";
 import { ChessState } from "@/types/chess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
@@ -11,7 +12,6 @@ import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
 export type Piece = string | null;
 export type Board = Piece[][];
 
@@ -27,9 +27,12 @@ export const useChessStore = create(
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
       eliminatedPieces: { white: [], black: [] },
+      historyIndex: -1,
 
+      // Action to move a piece
       movePiece: (fromRow, fromCol, toRow, toCol) => {
         const { board, currentPlayer, isValidMove, lastMove } = get();
+        const state = get();
         if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
 
         const newBoard = board.map((row) => [...row]);
@@ -77,75 +80,80 @@ export const useChessStore = create(
           movingPiece: { fromRow, fromCol, toRow, toCol },
         });
 
-        setTimeout(() => {
-          set((state) => ({
-            ...state,
-            board: newBoard,
-            isKingInCheck: OpponentKingCheck
-              ? currentPlayer === "white"
-                ? "k"
-                : "K"
-              : "noCheck",
-            kingCheckOrMoved:
-              (currentPlayer === "black" && toRow === 0) ||
-              (currentPlayer === "white" && toRow === 7) ||
-              (piece === "K" &&
-                fromRow === 7 &&
-                fromCol === 4 &&
-                toRow === 7 &&
-                toCol === 6) ||
-              (piece === "k" &&
-                fromRow === 0 &&
-                fromCol === 4 &&
-                toRow === 0 &&
-                toCol === 6) ||
-              OpponentKingCheck
-                ? OpponentKingCheck
-                  ? {
-                      ...state.kingCheckOrMoved,
-                      [currentPlayer === "white" ? "black" : "white"]: true,
-                    }
-                  : {
-                      ...state.kingCheckOrMoved,
-                      [currentPlayer]: true,
-                    }
-                : state.kingCheckOrMoved,
-            rookMoved: {
-              ...state.rookMoved,
-              [currentPlayer]: {
-                left: fromCol === 0 || fromCol === 4,
-                right: fromCol === 7 || fromCol === 4,
-              },
+        let nextState: ChessState = {
+          ...state,
+          board: newBoard,
+          isKingInCheck: OpponentKingCheck
+            ? currentPlayer === "white"
+              ? "k"
+              : "K"
+            : "noCheck",
+          kingCheckOrMoved:
+            (currentPlayer === "black" && toRow === 0) ||
+            (currentPlayer === "white" && toRow === 7) ||
+            (piece === "K" &&
+              fromRow === 7 &&
+              fromCol === 4 &&
+              toRow === 7 &&
+              toCol === 6) ||
+            (piece === "k" &&
+              fromRow === 0 &&
+              fromCol === 4 &&
+              toRow === 0 &&
+              toCol === 6) ||
+            OpponentKingCheck
+              ? OpponentKingCheck
+                ? {
+                    ...state.kingCheckOrMoved,
+                    [currentPlayer === "white" ? "black" : "white"]: true,
+                  }
+                : {
+                    ...state.kingCheckOrMoved,
+                    [currentPlayer]: true,
+                  }
+              : state.kingCheckOrMoved,
+          rookMoved: {
+            ...state.rookMoved,
+            [currentPlayer]: {
+              left: fromCol === 0 || fromCol === 4,
+              right: fromCol === 7 || fromCol === 4,
             },
-            currentPlayer: currentPlayer === "white" ? "black" : "white",
-            lastMove: { fromRow, fromCol, toRow, toCol },
-            isCheckMate: isCheckMate(
-              newBoard,
-              currentPlayer == "white" ? "black" : "white"
-            ),
-            canPromotePawn: promotePawn(
-              board,
-              fromRow,
-              fromCol,
-              toRow,
-              toCol,
-              currentPlayer
-            ),
-            eliminatedPieces: {
-              ...state.eliminatedPieces,
-              [currentPlayer === "white" ? "black" : "white"]: [
-                ...state.eliminatedPieces[
-                  currentPlayer === "white" ? "black" : "white"
-                ],
-                EliminatedPiece,
+          },
+          currentPlayer: currentPlayer === "white" ? "black" : "white",
+          lastMove: { fromRow, fromCol, toRow, toCol },
+          isCheckMate: isCheckMate(
+            newBoard,
+            currentPlayer == "white" ? "black" : "white"
+          ),
+          canPromotePawn: promotePawn(
+            board,
+            fromRow,
+            fromCol,
+            toRow,
+            toCol,
+            currentPlayer
+          ),
+          eliminatedPieces: {
+            ...state.eliminatedPieces,
+            [currentPlayer === "white" ? "black" : "white"]: [
+              ...state.eliminatedPieces[
+                currentPlayer === "white" ? "black" : "white"
               ],
-            },
-          }));
-        }, 300);
+              EliminatedPiece,
+            ],
+          },
+          historyIndex: state.historyIndex + 1,
+        };
 
+        setTimeout(() => {
+          set(nextState);
+        }, 350);
+
+        get().saveMove(JSON.stringify(nextState));
         return true;
       },
 
+      // Check if the move is valid
       isValidMove: (fromRow, fromCol, toRow, toCol) => {
         const { board, currentPlayer, kingCheckOrMoved, rookMoved } = get();
         const newBoard = board.map((row) => [...row]);
@@ -172,6 +180,7 @@ export const useChessStore = create(
         );
       },
 
+      // Promote Pawn
       promotePawn: (row, col, newPiece) => {
         const { board, currentPlayer } = get();
         const newBoard = board.map((row) => [...row]);
@@ -190,6 +199,51 @@ export const useChessStore = create(
       },
       canPromotePawn: null,
 
+      // Save state of the board
+      saveMove: async (nextState: string) => {
+        const state = JSON.parse(nextState);
+        const db = await getDB();
+        const serializedState = JSON.stringify(state);
+
+        db.add(STORE_NAME, {
+          id: state.historyIndex,
+          state: serializedState,
+          timestamp: Date.now(),
+        });
+      },
+
+      undoMove: async () => {
+        const { historyIndex } = get();
+        if (historyIndex < 0) {
+          console.log("No more moves to undo");
+          return;
+        }
+
+        const db = await getDB();
+        const transaction = db.transaction(STORE_NAME, "readonly");
+        const store = transaction.objectStore(STORE_NAME);
+
+        const previousMove = await store.get(historyIndex - 1);
+        if (!previousMove) return;
+
+        const previousState = JSON.parse(previousMove.state);
+        set(previousState);
+      },
+
+      redoMove: async () => {
+        const { historyIndex } = get();
+
+        const db = await getDB();
+        const transaction = db.transaction(STORE_NAME, "readonly");
+        const store = transaction.objectStore(STORE_NAME);
+
+        const nextMove = await store.get(historyIndex + 1);
+        if (!nextMove) return;
+
+        const nextState = JSON.parse(nextMove.state);
+        set(nextState);
+      },
+
       refetchStore: () => {
         set({
           board: initialBoard,
@@ -201,6 +255,7 @@ export const useChessStore = create(
           isKingInCheck: "noCheck",
           isCheckMate: "noCheckMate",
           eliminatedPieces: { white: [], black: [] },
+          historyIndex: -1,
         });
       },
     }),

@@ -16,6 +16,10 @@ export interface ChessState {
   isCheckMate: typeCheckMate;
   eliminatedPieces: { white: PieceType[]; black: PieceType[] };
   canPromotePawn: typePromotePawn;
+  historyIndex: number;
+  saveMove: (nextState: string) => void;
+  undoMove: () => void;
+  redoMove: () => void;
   promotePawn: (row: number, col: number, newPiece: PieceType) => void;
   refetchStore: () => void;
 }

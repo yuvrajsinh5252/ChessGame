@@ -4,9 +4,10 @@ import { FaUndo, FaRedo, FaSyncAlt, FaArrowLeft } from "react-icons/fa";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { useChessStore } from "@/store/useChessStore";
+import { clearObjectStore } from "@/lib/indexdb/clear";
 
 export function Controls() {
-  const { refetchStore } = useChessStore();
+  const { refetchStore, undoMove, redoMove } = useChessStore();
 
   return (
     <div className="fixed bottom-0 flex justify-center space-x-4 pb-2">
@@ -15,14 +16,15 @@ export function Controls() {
           <FaArrowLeft />
         </Button>
       </Link>
-      <Button className="btn flex items-center space-x-2">
+      <Button onClick={undoMove} className="btn flex items-center space-x-2">
         <FaUndo />
       </Button>
-      <Button className="btn flex items-center space-x-2">
+      <Button onClick={redoMove} className="btn flex items-center space-x-2">
         <FaRedo />
       </Button>
       <Button
         onClick={() => {
+          clearObjectStore();
           localStorage.removeItem("chess-store");
           refetchStore();
         }}
