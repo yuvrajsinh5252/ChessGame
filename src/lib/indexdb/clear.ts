@@ -5,7 +5,7 @@ export const clearObjectStore = async () => {
   const transaction = db.transaction(STORE_NAME, "readwrite");
   const store = transaction.objectStore(STORE_NAME);
 
-  await store.clear(); // Clears all entries from the store
+  await store.clear();
 
   console.log(`${STORE_NAME} cleared successfully.`);
 };

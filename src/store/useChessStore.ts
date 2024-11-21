@@ -147,7 +147,7 @@ export const useChessStore = create(
 
         setTimeout(() => {
           set(nextState);
-        }, 350);
+        }, 300);
 
         get().saveMove(JSON.stringify(nextState));
         return true;
@@ -214,8 +214,8 @@ export const useChessStore = create(
 
       undoMove: async () => {
         const { historyIndex } = get();
-        if (historyIndex < 0) {
-          console.log("No more moves to undo");
+        if (historyIndex - 1 < 0) {
+          get().refetchStore();
           return;
         }
 
