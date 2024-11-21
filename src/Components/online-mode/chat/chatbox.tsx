@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquare, MessageSquareMore } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import useStore from "@/lib/hooks/useStore";
@@ -17,7 +17,7 @@ export default function Chat({
   playerId: string;
   roomId: string;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
 
@@ -65,15 +65,17 @@ export default function Chat({
         )}
       </Button>
       <div
-        className={`fixed bg-white dark:bg-gray-800 bottom-0 left-1/2 transform -translate-x-[53%] translate-y-1/2 m-4 w-[600px] shadow-lg rounded-lg transition-transform ${
-          isOpen ? "translate-y-full" : "-translate-y-[200%]"
+        className={`fixed bg-white dark:bg-gray-800 bottom-0 left-1/2 transform -translate-x-[53%] max-sm:-translate-x-[55%] translate-y-1/2 m-4 w-[600px] shadow-lg max-sm:w-[340px] rounded-lg transition-transform ${
+          isOpen
+            ? "-translate-y-28"
+            : "translate-y-full max-sm:translate-y-[120%]"
         }`}
         style={{ transitionDuration: "300ms" }}
       >
         <div className="p-4 border-b">
           <h2 className="text-lg font-bold">Chat</h2>
         </div>
-        <div className="p-4 overflow-y-auto no-scrollbar h-96">
+        <div className="p-4 overflow-y-auto no-scrollbar h-96 max-sm:h-64">
           {messages && messages.length > 0 ? (
             <ChatMessage messages={messages} playerId={playerId} />
           ) : (

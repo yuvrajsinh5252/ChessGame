@@ -23,8 +23,8 @@ export function ChatMessage({
 function UserMessage({ message }: { message: Message }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-      <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-3 rounded-lg w-96">
+      <div className="max-sm:hidden w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+      <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
         <span className="font-semibold text-gray-700 dark:text-gray-300">
           {message.user}
         </span>
@@ -39,8 +39,8 @@ function UserMessage({ message }: { message: Message }) {
 function OpponentsMessage({ message }: { message: Message }) {
   return (
     <div className="flex items-center gap-3 justify-end">
-      <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-      <div className="flex flex-col bg-blue-100 dark:bg-blue-800 p-3 rounded-lg w-96">
+      <div className="max-sm:hidden w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+      <div className="flex flex-col bg-blue-100 dark:bg-blue-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
         <span className="font-semibold text-blue-700 dark:text-blue-300">
           {message.user}
         </span>
