@@ -8,6 +8,7 @@ import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
 import { pusherClient } from "@/lib/pusher";
 import { sendMessage } from "@/lib/db/chat/chat-server";
+import { ChatMessage } from "./message";
 
 export default function Chat({
   playerId,
@@ -16,27 +17,33 @@ export default function Chat({
   playerId: string;
   roomId: string;
 }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
 
-  const { messages, addMessage } = chatStore! || {
+  const {
+    messages,
+    addMessage,
+    setRoomId,
+    roomId: chatRoomid,
+  } = chatStore! || {
     messages: [],
+    setRoomId(roomId) {},
     addMessage: () => {},
   };
 
   useEffect(() => {
-    console.log("roomId", roomId);
     const channel = pusherClient.subscribe(`${roomId}`);
-    channel.bind("chat", (data: string) => {
-      const message = {
+    channel.bind("chat", (data: { message: string; playerId: string }) => {
+      const newMessage = {
         id: roomId,
-        user: playerId,
-        content: data,
+        user: data.playerId,
+        content: data.message,
         timestamp: new Date(),
       };
 
-      addMessage(message);
+      if (!chatRoomid) setRoomId(roomId);
+      addMessage(newMessage);
     });
 
     return () => {
@@ -58,22 +65,17 @@ export default function Chat({
         )}
       </Button>
       <div
-        className={`fixed bottom-0 left-1/2 transform -translate-x-[53%] translate-y-1/2 m-4 w-[600px] bg-white shadow-lg rounded-lg transition-transform ${
-          isOpen ? "-translate-y-40" : "translate-y-full"
+        className={`fixed bg-white dark:bg-gray-800 bottom-0 left-1/2 transform -translate-x-[53%] translate-y-1/2 m-4 w-[600px] shadow-lg rounded-lg transition-transform ${
+          isOpen ? "translate-y-full" : "-translate-y-[200%]"
         }`}
         style={{ transitionDuration: "300ms" }}
       >
         <div className="p-4 border-b">
           <h2 className="text-lg font-bold">Chat</h2>
         </div>
-        <div className="p-4 overflow-y-auto h-96">
+        <div className="p-4 overflow-y-auto no-scrollbar h-96">
           {messages && messages.length > 0 ? (
-            messages.map((msg, i) => (
-              <div key={i} className="flex items-center mb-2">
-                <MessageSquareMore className="mr-2" />
-                <span>{msg.content}</span>
-              </div>
-            ))
+            <ChatMessage messages={messages} playerId={playerId} />
           ) : (
             <div className="flex items-center justify-center h-full">
               <span>No messages yet</span>
@@ -90,7 +92,7 @@ export default function Chat({
           <Button
             className="mt-2 w-full"
             onClick={async () => {
-              await sendMessage(roomId, message);
+              await sendMessage(roomId, message, playerId);
               setMessage("");
             }}
           >

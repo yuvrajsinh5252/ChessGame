@@ -1,15 +1,29 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ThemeToggle from "./themes/theme-toggle";
 import Chat from "./online-mode/chat/chatbox";
+import { useStore } from "zustand";
+import useChatStore from "@/store/useChatStore";
+import { useEffect } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const playerId = pathname.split("/").pop() || "";
+  const searchParams = useSearchParams();
+  const playerId = searchParams.get("playerId") || "";
   const roomId = pathname.split("/").pop() || "";
+
+  const chatStore = useStore(useChatStore, (state) => state);
+  const { roomId: gameId, clearMessages } = chatStore! || {};
+
+  useEffect(() => {
+    if (gameId && gameId !== roomId) {
+      clearMessages();
+    }
+  }, [gameId, roomId, clearMessages]);
 
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">

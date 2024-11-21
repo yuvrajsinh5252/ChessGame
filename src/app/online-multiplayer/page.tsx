@@ -1,4 +1,4 @@
-import Room from "@/Components/online-mode/room";
+import Room from "@/Components/online-mode/room/room";
 
 export default function Page() {
   return (

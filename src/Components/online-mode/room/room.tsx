@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";

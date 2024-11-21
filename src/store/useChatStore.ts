@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface Message {
+export interface Message {
   id: string;
   user: string;
   content: string;
@@ -9,15 +9,18 @@ interface Message {
 }
 
 interface ChatStore {
+  roomId?: string;
   messages: Message[];
+  setRoomId: (roomId: string) => void;
   addMessage: (message: Message) => void;
   clearMessages: () => void;
 }
 
 const useChatStore = create(
   persist<ChatStore>(
-    (set, get) => ({
+    (set) => ({
       messages: [],
+      setRoomId: (roomId: string) => set({ roomId }),
       addMessage: (message) =>
         set((state) => ({ messages: [...state.messages, message] })),
       clearMessages: () => set({ messages: [] }),
