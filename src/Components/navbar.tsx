@@ -9,6 +9,8 @@ import Chat from "./online-mode/chat/chatbox";
 import { useStore } from "zustand";
 import useChatStore from "@/store/useChatStore";
 import { useEffect, Suspense } from "react";
+import { Palette } from "lucide-react";
+import { ChessTheme } from "./themes/chess-theme";
 
 function Navbar() {
   const pathname = usePathname();
@@ -42,6 +44,7 @@ function Navbar() {
           {pathname?.startsWith("/online-multiplayer/room/") && (
             <Chat playerId={playerId} roomId={roomId} />
           )}
+          <ChessTheme />
           <ThemeToggle />
         </div>
       </MaxWidthWrapper>

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-type pieceThemes = "default";
-type boardThemes = "default";
+export type pieceThemes = "default" | "classic";
+export type boardThemes = "default" | "classic";
 
 interface ThemeStore {
   boardTheme: boardThemes;
@@ -13,6 +13,6 @@ interface ThemeStore {
 export const useThemeStore = create<ThemeStore>((set) => ({
   boardTheme: "default",
   pieceTheme: "default",
-  setBoardTheme: (theme: "default") => set({ boardTheme: theme }),
-  setPieceTheme: (theme: "default") => set({ pieceTheme: theme }),
+  setBoardTheme: (theme) => set({ boardTheme: theme }),
+  setPieceTheme: (theme) => set({ pieceTheme: theme }),
 }));

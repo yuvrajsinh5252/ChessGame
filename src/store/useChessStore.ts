@@ -8,6 +8,7 @@ import {
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
+import { playMoveSound } from "@/utils/playSound";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
 import { create } from "zustand";
@@ -144,6 +145,8 @@ export const useChessStore = create(
           },
           historyIndex: state.historyIndex + 1,
         };
+
+        playMoveSound();
 
         setTimeout(() => {
           set(nextState);
