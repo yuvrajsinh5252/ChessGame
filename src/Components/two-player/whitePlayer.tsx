@@ -26,7 +26,7 @@ export function WhitePlayer() {
       </div>
       <div>
         <EliminatedPieces
-          playerColour={"black"}
+          playerColour={"white"}
           eliminatedPieces={eliminatedPieces}
         />
       </div>
