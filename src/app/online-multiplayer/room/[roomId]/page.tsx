@@ -12,6 +12,7 @@ import { Winner } from "@/Components/online-mode/winner";
 import { Promote } from "@/Components/online-mode/promote";
 import { GameControl } from "@/Components/online-mode/gameControl";
 import { DrawRequest } from "@/Components/online-mode/drawRequest";
+import { Suspense } from "react";
 
 interface PageProps {
   params: {
@@ -19,11 +20,15 @@ interface PageProps {
   };
 }
 
-export default function Page({ params }: PageProps) {
+function PageContent({ params }: PageProps) {
   const [color, setColor] = useState<"white" | "black" | null>(null);
   const searchParams = useSearchParams();
+  const [playerId, setPlayerId] = useState<string | null>(null);
 
-  const playerId = searchParams.get("playerId");
+  useEffect(() => {
+    setPlayerId(searchParams.get("playerId"));
+  }, [searchParams]);
+
   const { roomId } = params;
 
   useEffect(() => {
@@ -73,5 +78,13 @@ export default function Page({ params }: PageProps) {
         </div>
       </div>
     </MaxWidthWrapper>
+  );
+}
+
+export default function PageWrapper(props: PageProps) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent {...props} />
+    </Suspense>
   );
 }

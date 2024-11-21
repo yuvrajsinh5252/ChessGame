@@ -65,12 +65,9 @@ export default function Chat({
         )}
       </Button>
       <div
-        className={`fixed bg-white dark:bg-gray-800 bottom-0 left-1/2 transform -translate-x-[53%] max-sm:-translate-x-[55%] translate-y-1/2 m-4 w-[600px] shadow-lg max-sm:w-[340px] rounded-lg transition-transform ${
-          isOpen
-            ? "-translate-y-28"
-            : "translate-y-full max-sm:translate-y-[120%]"
-        }`}
-        style={{ transitionDuration: "300ms" }}
+        className={`fixed bottom-0 -translate-y-20 left-1/2 transform -translate-x-1/2 ${
+          isOpen ? "-translate-y-20" : "translate-y-[120%]"
+        } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-lg rounded-lg transition-transform duration-300`}
       >
         <div className="p-4 border-b">
           <h2 className="text-lg font-bold">Chat</h2>

@@ -8,16 +8,20 @@ import ThemeToggle from "./themes/theme-toggle";
 import Chat from "./online-mode/chat/chatbox";
 import { useStore } from "zustand";
 import useChatStore from "@/store/useChatStore";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
-export default function Navbar() {
+function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const playerId = searchParams.get("playerId") || "";
-  const roomId = pathname.split("/").pop() || "";
+
+  const playerId = searchParams?.get("playerId") || "";
+  const roomId = pathname?.split("/").pop() || "";
 
   const chatStore = useStore(useChatStore, (state) => state);
-  const { roomId: gameId, clearMessages } = chatStore! || {};
+  const { roomId: gameId, clearMessages } = chatStore || {
+    roomId: "",
+    clearMessages: () => {},
+  };
 
   useEffect(() => {
     if (gameId && gameId !== roomId) {
@@ -35,12 +39,20 @@ export default function Navbar() {
           </a>
         </div>
         <div className="flex gap-2 justify-center items-center">
-          {pathname.startsWith("/online-multiplayer/room/") && (
+          {pathname?.startsWith("/online-multiplayer/room/") && (
             <Chat playerId={playerId} roomId={roomId} />
           )}
           <ThemeToggle />
         </div>
       </MaxWidthWrapper>
     </div>
+  );
+}
+
+export default function NavbarWrapper() {
+  return (
+    <Suspense fallback={<div>Loading navbar...</div>}>
+      <Navbar />
+    </Suspense>
   );
 }
