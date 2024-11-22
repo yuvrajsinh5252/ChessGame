@@ -9,6 +9,7 @@ import useChatStore from "@/store/useChatStore";
 import { pusherClient } from "@/lib/pusher";
 import { sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
+import { toast } from "sonner";
 
 export default function Chat({
   playerId,
@@ -43,6 +44,12 @@ export default function Chat({
       };
 
       if (!chatRoomid) setRoomId(roomId);
+      if (data.playerId !== playerId) {
+        toast(`New message`, {
+          duration: 5000,
+          description: data.message,
+        });
+      }
       addMessage(newMessage);
     });
 
@@ -72,7 +79,14 @@ export default function Chat({
         <div className="p-4 border-b">
           <h2 className="text-lg font-bold">Chat</h2>
         </div>
-        <div className="p-4 overflow-y-auto no-scrollbar h-96 max-sm:h-64">
+        <div
+          className="p-4 overflow-y-auto no-scrollbar h-96 max-sm:h-64"
+          ref={(el) => {
+            if (el) {
+              el.scrollTop = el.scrollHeight;
+            }
+          }}
+        >
           {messages && messages.length > 0 ? (
             <ChatMessage messages={messages} playerId={playerId} />
           ) : (

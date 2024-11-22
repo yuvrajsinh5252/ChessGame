@@ -8,7 +8,10 @@ export function ChatMessage({
   playerId: string;
 }) {
   const sortedMessages = messages.sort(
-    (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+    (a, b) =>
+      a.timestamp &&
+      b.timestamp &&
+      a.timestamp.getTime() - b.timestamp.getTime()
   );
 
   return (
