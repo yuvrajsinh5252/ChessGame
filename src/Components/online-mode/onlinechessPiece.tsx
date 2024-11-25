@@ -13,7 +13,7 @@ export function OnlineChessPiece({
   playerColor,
   movingPiece,
 }: OnlinePiece) {
-  const { pieceTheme } = useThemeStore((state) => state);
+  const { pieceTheme, boardTheme } = useThemeStore((state) => state);
   const [isMoving, setIsMoving] = useState(false);
   const pieceRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +34,9 @@ export function OnlineChessPiece({
       lastMove?.fromCol === position.col
     ) {
       return (
-        <div className="w-16 h-16 max-sm:h-10 max-sm:w-10 bg-blue-400/50" />
+        <div
+          className={`w-16 h-16 max-sm:h-10 max-sm:w-10 ${boardTheme.lastMove}`}
+        />
       );
     }
 

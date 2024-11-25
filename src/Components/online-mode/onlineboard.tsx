@@ -9,6 +9,7 @@ import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
 import { GameState, Player, winner } from "@/types/onlineChess";
 import { handlePlayerMove } from "@/lib/db/game/handle-move";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export function OnlineBoard({
   roomId,
@@ -17,6 +18,7 @@ export function OnlineBoard({
   roomId: string;
   playerId: string;
 }) {
+  const { boardTheme } = useThemeStore((state) => state);
   const {
     players,
     gameState,
@@ -226,7 +228,11 @@ export function OnlineBoard({
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`h-16 w-16 max-sm:h-10 max-sm:w-10 flex justify-center items-center
-              ${(rowIndex + colIndex) % 2 === 0 ? "bg-gray-300" : "bg-gray-500"}
+              ${
+                (rowIndex + colIndex) % 2 === 0
+                  ? `${boardTheme.light}`
+                  : `${boardTheme.dark}`
+              }
               ${rowIndex === 0 && colIndex === 0 ? "rounded-tl-lg" : ""}
               ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
               ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}
@@ -234,7 +240,7 @@ export function OnlineBoard({
               ${
                 selectedPiece?.row === rowIndex &&
                 selectedPiece?.col === colIndex
-                  ? "bg-gradient-to-br from-blue-300 to-blue-600"
+                  ? ` bg-gradient-to-br ${boardTheme.selected} `
                   : ""
               }
               ${

@@ -31,7 +31,7 @@ export function ChessTheme() {
           <Palette />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-44 bg-black/50 backdrop-blur-md rounded-lg p-2 shadow-lg">
+      <DropdownMenuContent className="w-44 dark:bg-black/50 bg-white backdrop-blur-md rounded-lg p-2 shadow-lg">
         <DropdownMenuLabel>
           <h2 className="text-lg font-semibold">Chess Theme</h2>
         </DropdownMenuLabel>
