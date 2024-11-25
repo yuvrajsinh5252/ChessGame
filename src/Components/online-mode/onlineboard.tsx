@@ -227,7 +227,6 @@ export function OnlineBoard({
               key={`${rowIndex}-${colIndex}`}
               className={`h-16 w-16 max-sm:h-10 max-sm:w-10 flex justify-center items-center
               ${(rowIndex + colIndex) % 2 === 0 ? "bg-gray-300" : "bg-gray-500"}
-              ${(rowIndex + colIndex) % 2 === 0 ? "bg-gray-300" : "bg-gray-500"}
               ${rowIndex === 0 && colIndex === 0 ? "rounded-tl-lg" : ""}
               ${rowIndex === 0 && colIndex === 7 ? "rounded-tr-lg" : ""}
               ${rowIndex === 7 && colIndex === 0 ? "rounded-bl-lg" : ""}

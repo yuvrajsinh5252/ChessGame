@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import useStore from "@/lib/hooks/useStore";
 import { initialBoard } from "@/utils/initialSetup";
 import { LoadingBoard } from "../loadingBoard";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export default function ChessBoard() {
+  const { boardTheme } = useThemeStore((state) => state);
   const store = useStore(useChessStore, (state) => state);
   const isLoading = !store;
   const {
@@ -36,7 +38,7 @@ export default function ChessBoard() {
     toRow: number,
     toCol: number
   ) => {
-    e.preventDefault();
+    // e.preventDefault();
     const [fromRow, fromCol] = e.dataTransfer
       .getData("text")
       .split(",")
@@ -49,6 +51,7 @@ export default function ChessBoard() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   };
 
   // remove selected piece if the current player changes
@@ -102,8 +105,8 @@ export default function ChessBoard() {
               className={`w-16 h-16 max-sm:h-10 max-sm:w-10 flex items-center justify-center
               ${
                 (rowIndex + colIndex) % 2 === 0
-                  ? " bg-gray-300 "
-                  : " bg-gray-500 "
+                  ? ` ${boardTheme.light} `
+                  : ` ${boardTheme.dark} `
               }
               ${rowIndex === 0 && colIndex === 0 ? " rounded-tl-lg " : ""}
               ${rowIndex === 0 && colIndex === 7 ? " rounded-tr-lg " : ""}
@@ -112,7 +115,7 @@ export default function ChessBoard() {
               ${
                 selectedPiece?.row === rowIndex &&
                 selectedPiece?.col === colIndex
-                  ? " bg-gradient-to-br from-blue-300 to-blue-600"
+                  ? ` bg-gradient-to-br ${boardTheme.selected} `
                   : ""
               }
               ${

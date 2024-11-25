@@ -12,10 +12,11 @@ export function ChessPiece({
   setSelectedPiece,
   movingPiece,
 }: Piece) {
-  const { pieceTheme } = useThemeStore((state) => state);
+  const { pieceTheme, boardTheme } = useThemeStore((state) => state);
 
   const [isMoving, setIsMoving] = useState(false);
   const pieceRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (
@@ -34,7 +35,9 @@ export function ChessPiece({
       lastMove?.fromCol === position.col
     ) {
       return (
-        <div className="w-16 h-16 max-sm:h-10 max-sm:w-10 bg-blue-400/50" />
+        <div
+          className={`w-16 h-16 max-sm:h-10 max-sm:w-10 ${boardTheme.lastMove}`}
+        />
       );
     }
 
@@ -51,8 +54,19 @@ export function ChessPiece({
   const pieceImage = `/${pieceTheme}/${color}/${type}.png`;
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    if (color === currentPlayer) setSelectedPiece(position);
+    if (color === currentPlayer) {
+      setSelectedPiece(position);
+    }
     e.dataTransfer.setData("text/plain", `${position.row},${position.col}`);
+
+    if (imgRef.current) {
+      const dragImage = imgRef.current.cloneNode(true) as HTMLImageElement;
+      dragImage.style.width = "80px";
+      dragImage.style.height = "80px";
+      document.body.appendChild(dragImage);
+      e.dataTransfer.setDragImage(dragImage, 48, 48);
+      setTimeout(() => document.body.removeChild(dragImage), 0);
+    }
   };
 
   const translateX =
@@ -96,6 +110,7 @@ export function ChessPiece({
       }}
     >
       <Image
+        ref={imgRef}
         src={pieceImage}
         alt={`${color} ${type}`}
         width={64}
