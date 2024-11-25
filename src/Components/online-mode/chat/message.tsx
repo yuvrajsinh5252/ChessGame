@@ -1,4 +1,5 @@
 import { Message } from "@/store/useChatStore";
+import useOnlineChessStore from "@/store/useOnlineChessStore";
 
 export function ChatMessage({
   messages,
@@ -7,30 +8,39 @@ export function ChatMessage({
   messages: Message[];
   playerId: string;
 }) {
+  const { players } = useOnlineChessStore((state) => state);
+  const userColor = players.find((player) => player.id === playerId)?.color;
+
   const sortedMessages = messages.sort(
     (a, b) =>
       a.timestamp &&
       b.timestamp &&
-      a.timestamp.getTime() - b.timestamp.getTime()
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
 
   return (
     <div className="flex flex-col gap-4">
       {sortedMessages.map((message, key) =>
         playerId === message.user ? (
-          <UserMessage key={key} message={message} />
+          <UserMessage color={userColor || ""} key={key} message={message} />
         ) : (
-          <OpponentsMessage key={key} message={message} />
+          <OpponentsMessage
+            color={userColor == "white" ? "black" : "white"}
+            key={key}
+            message={message}
+          />
         )
       )}
     </div>
   );
 }
 
-function UserMessage({ message }: { message: Message }) {
+function UserMessage({ message, color }: { message: Message; color: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="max-sm:hidden w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+      <div
+        className={`max-sm:hidden w-10 h-10 bg-${color} rounded-full border-2`}
+      ></div>
       <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
         <span className="font-semibold text-gray-700 dark:text-gray-300">
           {message.user}
@@ -43,10 +53,18 @@ function UserMessage({ message }: { message: Message }) {
   );
 }
 
-function OpponentsMessage({ message }: { message: Message }) {
+function OpponentsMessage({
+  message,
+  color,
+}: {
+  message: Message;
+  color: string;
+}) {
   return (
     <div className="flex items-center gap-3 justify-end">
-      <div className="max-sm:hidden w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+      <div
+        className={`max-sm:hidden w-10 h-10 bg-${color} border-2 rounded-full`}
+      ></div>
       <div className="flex flex-col bg-blue-100 dark:bg-blue-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
         <span className="font-semibold text-blue-700 dark:text-blue-300">
           {message.user}

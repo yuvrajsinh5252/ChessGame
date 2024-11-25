@@ -16,7 +16,6 @@ import {
   blueWhiteBoardTheme,
   defaultBoardTheme,
   greenWhiteBoardTheme,
-  marbleBoardTheme,
   woodBoardTheme,
 } from "@/utils/boardThemes/board-themes";
 
@@ -56,7 +55,6 @@ export function ChessTheme() {
               setBoardTheme(greenWhiteBoardTheme);
             else if (value === "blue-white") setBoardTheme(blueWhiteBoardTheme);
             else if (value === "wood") setBoardTheme(woodBoardTheme);
-            else if (value === "marble") setBoardTheme(marbleBoardTheme);
           }}
         >
           <DropdownMenuRadioItem value="default">default</DropdownMenuRadioItem>
@@ -67,7 +65,6 @@ export function ChessTheme() {
             blue-white
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="wood">wood</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="marble">marble</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

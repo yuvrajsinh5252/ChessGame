@@ -35,12 +35,3 @@ export const woodBoardTheme: boardThemes = {
   highlight: "#cda67f",
   lastMove: "bg-amber-600/50",
 };
-
-export const marbleBoardTheme: boardThemes = {
-  name: "marble",
-  light: "bg-gray-200",
-  dark: "bg-gray-500",
-  selected: "from-gray-300 to-gray-600",
-  highlight: "#c0c0c0",
-  lastMove: "bg-gray-500/50",
-};

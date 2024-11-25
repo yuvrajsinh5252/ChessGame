@@ -105,7 +105,6 @@ export function OnlineBoard({
         ...player,
         drawRequest: false,
       }));
-      console.log(newPlayers, players);
       updatePlayersState(newPlayers);
     });
 

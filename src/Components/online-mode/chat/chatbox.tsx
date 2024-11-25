@@ -47,6 +47,10 @@ export default function Chat({
       if (data.playerId !== playerId) {
         toast(`New message`, {
           duration: 5000,
+          action: {
+            label: "View",
+            onClick: () => setIsOpen(!isOpen),
+          },
           description: data.message,
         });
       }
