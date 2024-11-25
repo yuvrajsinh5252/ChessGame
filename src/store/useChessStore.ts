@@ -208,7 +208,21 @@ export const useChessStore = create(
         const db = await getDB();
         const serializedState = JSON.stringify(state);
 
-        db.add(STORE_NAME, {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const store = transaction.objectStore(STORE_NAME);
+
+        const existingMove = await store.get(state.historyIndex);
+        if (existingMove) {
+          const allMoves = await store.getAll();
+          const movesToDelete = allMoves.filter(
+            (move) => move.id >= state.historyIndex
+          );
+          for (const move of movesToDelete) {
+            await store.delete(move.id);
+          }
+        }
+
+        await store.put({
           id: state.historyIndex,
           state: serializedState,
           timestamp: Date.now(),
