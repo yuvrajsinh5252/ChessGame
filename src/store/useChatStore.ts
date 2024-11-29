@@ -11,6 +11,8 @@ export interface Message {
 interface ChatStore {
   roomId?: string;
   messages: Message[];
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
   setRoomId: (roomId: string) => void;
   addMessage: (message: Message) => void;
   clearMessages: () => void;
@@ -20,6 +22,8 @@ const useChatStore = create(
   persist<ChatStore>(
     (set) => ({
       messages: [],
+      isOpen: true,
+      setIsOpen: (isOpen: boolean) => set({ isOpen }),
       setRoomId: (roomId: string) => set({ roomId }),
       addMessage: (message) =>
         set((state) => ({ messages: [...state.messages, message] })),

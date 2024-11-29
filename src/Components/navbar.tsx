@@ -9,7 +9,6 @@ import Chat from "./online-mode/chat/chatbox";
 import { useStore } from "zustand";
 import useChatStore from "@/store/useChatStore";
 import { useEffect, Suspense } from "react";
-import { Palette } from "lucide-react";
 import { ChessTheme } from "./themes/chess-theme";
 
 function Navbar() {
@@ -26,7 +25,6 @@ function Navbar() {
   };
 
   useEffect(() => {
-    console.log("current_game_id: ", gameId, "roomId: ", roomID);
     if (gameId && gameId !== roomID) {
       clearMessages();
     }

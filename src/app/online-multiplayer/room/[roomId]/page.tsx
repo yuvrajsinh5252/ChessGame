@@ -13,6 +13,7 @@ import { Promote } from "@/Components/online-mode/promote";
 import { GameControl } from "@/Components/online-mode/gameControl";
 import { DrawRequest } from "@/Components/online-mode/drawRequest";
 import { Suspense } from "react";
+import useChatStore from "@/store/useChatStore";
 
 interface PageProps {
   params: {
@@ -21,6 +22,7 @@ interface PageProps {
 }
 
 function PageContent({ params }: PageProps) {
+  const { isOpen: chatBoxOpen } = useChatStore((state) => state);
   const [color, setColor] = useState<"white" | "black" | null>(null);
   const searchParams = useSearchParams();
   const [playerId, setPlayerId] = useState<string | null>(null);
@@ -56,7 +58,11 @@ function PageContent({ params }: PageProps) {
 
   return (
     <MaxWidthWrapper>
-      <div className="flex flex-col gap-2 justify-center items-center">
+      <div
+        className={`flex flex-col gap-2 justify-center items-center transition-all duration-500 ${
+          chatBoxOpen ? " blur-0 " : " blur-sm "
+        }`}
+      >
         <div className="flex gap-2 flex-col justify-center items-center pt-10 min-h-screen max-sm:pb-10">
           <Promote playerColor={color} roomId={roomId} />
           <Winner />
