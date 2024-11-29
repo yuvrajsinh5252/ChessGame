@@ -23,7 +23,7 @@ const useChatStore = create(
       setRoomId: (roomId: string) => set({ roomId }),
       addMessage: (message) =>
         set((state) => ({ messages: [...state.messages, message] })),
-      clearMessages: () => set({ messages: [] }),
+      clearMessages: () => set({ messages: [], roomId: undefined }),
     }),
     { name: "chat-store", getStorage: () => localStorage }
   )

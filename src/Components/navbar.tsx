@@ -17,7 +17,7 @@ function Navbar() {
   const searchParams = useSearchParams();
 
   const playerId = searchParams?.get("playerId") || "";
-  const roomId = pathname?.split("/").pop() || "";
+  const roomID = pathname?.split("/").pop() || "";
 
   const chatStore = useStore(useChatStore, (state) => state);
   const { roomId: gameId, clearMessages } = chatStore || {
@@ -26,10 +26,11 @@ function Navbar() {
   };
 
   useEffect(() => {
-    if (gameId && gameId !== roomId) {
+    console.log("current_game_id: ", gameId, "roomId: ", roomID);
+    if (gameId && gameId !== roomID) {
       clearMessages();
     }
-  }, [gameId, roomId, clearMessages]);
+  }, [gameId, roomID, clearMessages]);
 
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">
@@ -42,7 +43,7 @@ function Navbar() {
         </div>
         <div className="flex gap-2 justify-center items-center">
           {pathname?.startsWith("/online-multiplayer/room/") && (
-            <Chat playerId={playerId} roomId={roomId} />
+            <Chat playerId={playerId} roomId={roomID} />
           )}
           <ChessTheme />
           <ThemeToggle />

@@ -47,10 +47,11 @@ export default function Chat({
       if (data.playerId !== playerId) {
         toast(`New message`, {
           duration: 5000,
-          action: {
-            label: "View",
-            onClick: () => setIsOpen(!isOpen),
-          },
+          action: (
+            <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
+              Undo
+            </Button>
+          ),
           description: data.message,
         });
       }
@@ -61,7 +62,7 @@ export default function Chat({
       channel.unbind("chat");
       pusherClient.unsubscribe(`${roomId}`);
     };
-  }, [pusherClient, roomId, addMessage, playerId]);
+  }, [pusherClient, roomId, addMessage, playerId, setIsOpen]);
 
   return (
     <div className="relative">

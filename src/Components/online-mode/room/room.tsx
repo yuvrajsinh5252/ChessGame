@@ -8,8 +8,11 @@ import { LoaderIcon } from "lucide-react";
 import { ShareLink } from "./shareLink";
 import { CreateRoom } from "@/lib/db/room/create-game";
 import { JoinGame } from "@/lib/db/room/join-game";
+import useChatStore from "@/store/useChatStore";
 
 export default function Room() {
+  const { setRoomId: setRoomChatId } = useChatStore((state) => state);
+
   const router = useRouter();
   const [id, setId] = useState<string>("");
   const [roomid, setRoomid] = useState<string>("");
@@ -23,6 +26,7 @@ export default function Room() {
     const channel = pusherClient.subscribe(`room-${roomid}`);
     channel.bind("player-joined", () => {
       setLoading(false);
+      setRoomChatId(roomid);
       router.push(`/online-multiplayer/room/${roomid}?playerId=${playerId}`);
     });
 
@@ -62,6 +66,7 @@ export default function Room() {
 
     const OtherplayerId = data?.playerId;
     if (data?.playerId) {
+      setRoomChatId(roomId);
       setJoinLoading(false);
       router.push(
         `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
