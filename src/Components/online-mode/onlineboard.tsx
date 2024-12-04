@@ -20,7 +20,7 @@ export function OnlineBoard({
 }) {
   const { boardTheme } = useThemeStore((state) => state);
   const {
-    players,
+    players: gameStatePlayers,
     gameState,
     updateGameState,
     updatePlayersState,
@@ -101,9 +101,10 @@ export function OnlineBoard({
       })
     );
     channel.bind("drawDeclined", (data: { status: "declined" }) => {
-      const newPlayers: Player[] = players.map((player) => ({
+      const currentPlayers = useOnlineChessStore.getState().players;
+      const newPlayers: Player[] = currentPlayers.map((player) => ({
         ...player,
-        drawRequest: false,
+        drawRequest: data.status === "declined" ? false : true,
       }));
       updatePlayersState(newPlayers);
     });
@@ -116,14 +117,23 @@ export function OnlineBoard({
       channel.unbind("drawDeclined");
       pusherClient.unsubscribe(`room-${roomId}`);
     };
-  }, [roomId, getGameState, updateGameState, setisLoading, pusherClient]);
+  }, [
+    roomId,
+    getGameState,
+    updateGameState,
+    setisLoading,
+    pusherClient,
+    updatePlayersState,
+  ]);
 
   useEffect(() => {
     const newChnanel = pusherClient.subscribe(`room-${playerId}`);
-    newChnanel.bind("draw", (data: { status: "draw" }) => {
-      const newPlayers: Player[] = players.map((player) =>
+    newChnanel.bind("draw", () => {
+      const currentPlayers = useOnlineChessStore.getState().players;
+      const newPlayers: Player[] = currentPlayers.map((player) =>
         player.id === playerId ? { ...player, drawRequest: true } : player
       );
+
       updatePlayersState(newPlayers);
     });
 
@@ -131,7 +141,7 @@ export function OnlineBoard({
       newChnanel.unbind("draw");
       pusherClient.unsubscribe(`room-${playerId}`);
     };
-  }, [pusherClient, updatePlayersState, players]);
+  }, [pusherClient, updatePlayersState]);
 
   const handleDrop = async (
     e: React.DragEvent<HTMLDivElement>,

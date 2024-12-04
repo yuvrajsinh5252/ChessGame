@@ -197,7 +197,9 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       );
     },
 
-    updatePlayersState: (players) => set({ players: players }),
+    updatePlayersState: (players) => {
+      if (players && players.length > 0) set({ players: players });
+    },
   })
 );
 
