@@ -19,6 +19,7 @@ export default function Room() {
   const [playerId, setPlayerId] = useState<string>("");
   const [joinLoading, setJoinLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [roomEnterLoading, setRoomEnterLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!roomid || !playerId) return;
@@ -76,52 +77,63 @@ export default function Room() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="mb-4">
-        <Input
-          type="text"
-          onChange={(e) => setId(e.target.value)}
-          placeholder="Enter room name"
-          className="w-full dark:bg-gray-600"
-        />
-        {joinLoading ? (
-          <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
-            <LoaderIcon className="animate-spin" />
+      {!roomEnterLoading ? (
+        <div>
+          <div className="mb-4">
+            <Input
+              type="text"
+              onChange={(e) => setId(e.target.value)}
+              placeholder="Enter room name"
+              className="w-full dark:bg-gray-600"
+            />
+            {joinLoading ? (
+              <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
+                <LoaderIcon className="animate-spin" />
+              </div>
+            ) : (
+              <button
+                onClick={() => joinRoom(id)}
+                className="mt-2 w-full bg-blue-500 p-2 rounded"
+              >
+                Join Room
+              </button>
+            )}
+            {loading ? (
+              <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
+                <LoaderIcon className="animate-spin" />
+              </div>
+            ) : (
+              <button
+                onClick={() => createRoom()}
+                className="mt-2 w-full bg-blue-500 p-2 rounded"
+              >
+                Create Room
+              </button>
+            )}
           </div>
-        ) : (
-          <button
-            onClick={() => joinRoom(id)}
-            className="mt-2 w-full bg-blue-500 p-2 rounded"
-          >
-            Join Room
-          </button>
-        )}
-        {loading ? (
-          <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
-            <LoaderIcon className="animate-spin" />
-          </div>
-        ) : (
-          <button
-            onClick={() => createRoom()}
-            className="mt-2 w-full bg-blue-500 p-2 rounded"
-          >
-            Create Room
-          </button>
-        )}
-      </div>
 
-      <div className="mt-4 p-4 border rounded bg-gray-100 dark:bg-gray-700">
-        <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
-          {roomid ? (
-            <ShareLink roomid={roomid} />
-          ) : (
-            <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Click &quot;Create Room&quot; or enter a room ID to join.
-              </p>
+          <div className="mt-4 p-4 border rounded bg-gray-100 dark:bg-gray-700">
+            <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
+              {roomid ? (
+                <ShareLink roomid={roomid} />
+              ) : (
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Click &quot;Create Room&quot; or enter a room ID to join.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          <div className="flex justify-center items-center h-full">
+            <LoaderIcon className="animate-spin" />
+            <span className="ml-2">Entering the game...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

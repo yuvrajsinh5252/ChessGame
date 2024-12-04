@@ -4,7 +4,7 @@ export function ShareLink({ roomid }: { roomid: string }) {
   return (
     <div className="text-center flex flex-col gap-2">
       <div className="flex justify-center items-center gap-2">
-        <p className="text-lg font-semibold text-blue-500 dark:text-blue-300">
+        <p className="text-lg max-sm:text-sm font-semibold text-blue-500 dark:text-blue-300">
           {roomid}
         </p>
         <CopyIcon

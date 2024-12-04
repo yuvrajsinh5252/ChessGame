@@ -20,8 +20,6 @@ export async function handlePlayerDraw(gameId: string, playerId: string) {
       },
     });
 
-    console.log(`Player ${player.id} requested draw`);
-
     await pusherServer.trigger(`room-${player.id}`, "draw", { status: "draw" });
     return "Player requested draw";
   } catch (error) {

@@ -73,13 +73,13 @@ export function OnlineChessPiece({
         lastMove?.fromRow === position.row &&
         lastMove?.fromCol === position.col &&
         !isMoving
-          ? "bg-blue-400/50"
+          ? ` ${boardTheme.lastMove} `
           : ""
       } ${
         lastMove?.toRow === position.row &&
         lastMove?.toCol === position.col &&
         !isMoving
-          ? "bg-blue-400/50"
+          ? ` ${boardTheme.lastMove} `
           : ""
       }`}
       draggable
