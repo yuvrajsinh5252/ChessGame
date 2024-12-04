@@ -14,6 +14,7 @@ import { GameControl } from "@/Components/online-mode/gameControl";
 import { DrawRequest } from "@/Components/online-mode/drawRequest";
 import { Suspense } from "react";
 import useChatStore from "@/store/useChatStore";
+import { ConfirmationDialog } from "@/Components/confirmation";
 
 interface PageProps {
   params: {
@@ -26,6 +27,7 @@ function PageContent({ params }: PageProps) {
   const [color, setColor] = useState<"white" | "black" | null>(null);
   const searchParams = useSearchParams();
   const [playerId, setPlayerId] = useState<string | null>(null);
+  const [exit, setExit] = useState(false);
 
   useEffect(() => {
     setPlayerId(searchParams.get("playerId"));
@@ -44,6 +46,20 @@ function PageContent({ params }: PageProps) {
     fetchPlayerColor();
   }, [playerId, roomId]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+      setExit(true);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   if (!playerId || !roomId) return <div>Invalid URL</div>;
 
   if (!color)
@@ -58,6 +74,7 @@ function PageContent({ params }: PageProps) {
 
   return (
     <MaxWidthWrapper>
+      {/* {exit ? <ConfirmationDialog /> : null} */}
       <div
         className={`flex flex-col gap-2 justify-center items-center transition-all duration-500 ${
           chatBoxOpen ? " blur-0 " : " blur-sm "
