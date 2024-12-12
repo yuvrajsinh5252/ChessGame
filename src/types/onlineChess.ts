@@ -39,7 +39,7 @@ export interface OnlineChessStore {
   gameState: GameState;
 }
 
-export type winner = "white" | "black" | "draw" | "none";
+export type winner = "white" | "black" | "stalemate" | "draw" | "none";
 
 export interface OnlineChessStoreActions {
   updateGameState: (gameState: Partial<GameState>) => void;

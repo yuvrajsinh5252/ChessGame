@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { MessageSquare } from "lucide-react";
-import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
@@ -10,6 +9,7 @@ import { pusherClient } from "@/lib/pusher";
 import { sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function Chat({
   playerId,

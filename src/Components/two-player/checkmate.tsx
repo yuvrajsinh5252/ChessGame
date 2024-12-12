@@ -65,11 +65,13 @@ export const CheckMate = () => {
                 ? "White"
                 : isCheckMate === "draw"
                 ? "It's a Draw"
+                : isCheckMate === "stalemate"
+                ? "Stalemate"
                 : "Black"}{" "}
               wins!
             </DialogDescription>
             <div className="text-center text-lg font-semibold">
-              {isCheckMate === "draw"
+              {isCheckMate === "draw" || isCheckMate === "stalemate"
                 ? "1/2 - 1/2"
                 : isCheckMate === "white"
                 ? "0 - 1"

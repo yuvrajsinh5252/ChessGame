@@ -20,6 +20,8 @@ export interface ChessState {
   historyIndex: number;
   fiftyMoveRuleCounter: number;
   numberOfFullMoves: number;
+
+  updateComputer: (color: PieceColor | null) => void;
   saveMove: (nextState: string) => void;
   undoMove: () => void;
   redoMove: () => void;
@@ -34,7 +36,12 @@ export type typePromotePawn = {
   piece: PieceType | null;
 } | null;
 
-export type typeCheckMate = "white" | "black" | "draw" | "noCheckMate";
+export type typeCheckMate =
+  | "white"
+  | "black"
+  | "draw"
+  | "noCheckMate"
+  | "stalemate";
 
 export type kingCheckOrMoved = {
   white: boolean;

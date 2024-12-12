@@ -1,5 +1,5 @@
 import { getDB, STORE_NAME } from "@/lib/indexdb/initial";
-import { ChessState } from "@/types/chess";
+import { ChessState, PieceColor } from "@/types/chess";
 import { checkCastling } from "@/utils/castle";
 import { CheckEnpassant } from "@/utils/enpassant";
 import {
@@ -131,10 +131,13 @@ export const useChessStore = create(
           },
           currentPlayer: currentPlayer === "white" ? "black" : "white",
           lastMove: { fromRow, fromCol, toRow, toCol },
-          isCheckMate: isCheckMate(
-            newBoard,
-            currentPlayer == "white" ? "black" : "white"
-          ),
+          isCheckMate:
+            fiftyMoves == 50
+              ? "draw"
+              : isCheckMate(
+                  newBoard,
+                  currentPlayer == "white" ? "black" : "white"
+                ),
           canPromotePawn: promotePawn(
             board,
             fromRow,
@@ -309,6 +312,10 @@ export const useChessStore = create(
         get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
       },
 
+      updateComputer: (color: PieceColor | null) => {
+        set({ computer: color });
+      },
+
       refetchStore: () => {
         set({
           board: initialBoard,
@@ -321,6 +328,7 @@ export const useChessStore = create(
           isCheckMate: "noCheckMate",
           eliminatedPieces: { white: [], black: [] },
           historyIndex: -1,
+          computer: null,
           fiftyMoveRuleCounter: 0,
           numberOfFullMoves: 0,
         });

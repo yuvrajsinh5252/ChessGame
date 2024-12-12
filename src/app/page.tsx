@@ -1,3 +1,6 @@
+"use client";
+
+import { useChessStore } from "@/store/useChessStore";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -51,8 +54,15 @@ interface GameModeCardProps {
 }
 
 function GameModeCard({ href, title, description, color }: GameModeCardProps) {
+  const { updateComputer } = useChessStore((state) => state);
+
   return (
     <Link
+      onClick={() => {
+        if (href === "/two-player") {
+          updateComputer(null);
+        }
+      }}
       href={href}
       className={`${color} rounded-lg p-6 text-center transition-transform transform hover:scale-105`}
     >

@@ -70,12 +70,14 @@ export const Winner = () => {
               ? "White wins"
               : winner === "draw"
               ? "Draw"
+              : winner === "stalemate"
+              ? "Stalemate"
               : "Black wins"}{" "}
           </DialogDescription>
           <div className="text-center mt-2">
             <span className="text-lg font-medium">
               Score:{" "}
-              {winner === "draw"
+              {winner === "draw" || winner === "stalemate"
                 ? "1/2 - 1/2"
                 : winner === "black"
                 ? "0 - 1"

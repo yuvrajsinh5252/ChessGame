@@ -4,7 +4,7 @@ import { typeCheckMate } from "@/types/chess";
 import { isMovePossible } from "./possibleMove";
 
 export const isKingInCheck = (
-  Board: Board,
+  board: Board,
   player: "white" | "black"
 ): boolean => {
   const king = player === "white" ? "K" : "k";
@@ -12,9 +12,9 @@ export const isKingInCheck = (
   let kingCol = -1;
 
   // Find the king's position
-  for (let row = 0; row < Board.length; row++) {
-    for (let col = 0; col < Board[row].length; col++) {
-      if (Board[row][col] === king) {
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      if (board[row][col] === king) {
         kingRow = row;
         kingCol = col;
         break;
@@ -24,16 +24,16 @@ export const isKingInCheck = (
   }
 
   // Check for threats to the king
-  for (let row = 0; row < Board.length; row++) {
-    for (let col = 0; col < Board[row].length; col++) {
-      const piece = Board[row][col];
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      const piece = board[row][col];
       if (
         piece &&
         (player === "white"
           ? piece === piece.toLowerCase()
           : piece === piece.toUpperCase())
       ) {
-        if (isMoveValid(Board, row, col, kingRow, kingCol)) {
+        if (isMoveValid(board, row, col, kingRow, kingCol)) {
           return true;
         }
       }
@@ -47,17 +47,23 @@ export const isCheckMate = (
   board: Board,
   player: "white" | "black"
 ): typeCheckMate => {
-  if (!isKingInCheck(board, player)) {
-    return "noCheckMate";
+  if (isInsufficientMaterial(board)) {
+    return "draw";
   }
 
-  for (let row = 0; row < board.length; row++) {
+  const inCheck = isKingInCheck(board, player);
+  let hasLegalMove = false;
+
+  hasLegalMove = false;
+
+  outerLoop: for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
+      const piece = board[row][col];
       if (
-        board[row][col] &&
+        piece &&
         (player === "white"
-          ? board[row][col] === board[row][col]?.toUpperCase()
-          : board[row][col] === board[row][col]?.toLowerCase())
+          ? piece === piece.toUpperCase()
+          : piece === piece.toLowerCase())
       ) {
         for (let toRow = 0; toRow < board.length; toRow++) {
           for (let toCol = 0; toCol < board[toRow].length; toCol++) {
@@ -66,7 +72,10 @@ export const isCheckMate = (
               newBoard[toRow][toCol] = board[row][col];
               newBoard[row][col] = null;
 
-              if (!isKingInCheck(newBoard, player)) return "noCheckMate";
+              if (!isKingInCheck(newBoard, player)) {
+                hasLegalMove = true;
+                break outerLoop;
+              }
             }
           }
         }
@@ -74,5 +83,35 @@ export const isCheckMate = (
     }
   }
 
-  return player;
+  if (hasLegalMove) {
+    return "noCheckMate";
+  } else {
+    if (inCheck) {
+      return player; // The player is checkmated
+    } else {
+      return "stalemate";
+    }
+  }
+};
+
+const isInsufficientMaterial = (board: Board): boolean => {
+  const pieces = board.flat().filter((piece) => piece !== null);
+
+  // Remove kings from the list
+  const nonKingPieces = pieces.filter((piece) => piece.toLowerCase() !== "k");
+
+  // If there are no non-king pieces, it's a draw
+  if (nonKingPieces.length === 0) {
+    return true;
+  }
+
+  // If only one minor piece is left, it's a draw
+  if (nonKingPieces.length === 1) {
+    const piece = nonKingPieces[0].toLowerCase();
+    if (piece === "b" || piece === "n") {
+      return true;
+    }
+  }
+
+  return false;
 };

@@ -3,10 +3,11 @@
 import useStore from "@/lib/hooks/useStore";
 import { useChessStore } from "@/store/useChessStore";
 import { EliminatedPieces } from "../eliminated";
+import { GrRobot } from "react-icons/gr";
 
 export function BlackPlayer() {
   const store = useStore(useChessStore, (state) => state);
-  const { eliminatedPieces, currentPlayer } = store! || {
+  const { eliminatedPieces, currentPlayer, computer } = store! || {
     eliminatedPieces: { white: [], black: [] },
     currentPlayer: "white",
   };
@@ -22,7 +23,10 @@ export function BlackPlayer() {
     >
       <div className="flex items-center justify-center">
         <span className="inline-block w-4 h-4 bg-black rounded-full mr-2"></span>
-        <span>Black</span>
+        <div className="flex justify-center items-center gap-2">
+          <span>Black</span>
+          <span>{computer == "black" ? <GrRobot size={20} /> : null}</span>
+        </div>
       </div>
       <div>
         <EliminatedPieces
