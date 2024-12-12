@@ -14,9 +14,10 @@ import { useThemeStore } from "@/store/useThemeStore";
 
 export const ChoosePiece = () => {
   const { pieceTheme } = useThemeStore((state) => state);
-  const { currentPlayer, canPromotePawn, promotePawn } = useChessStore(
-    (state) => state
-  );
+  const { currentPlayer, canPromotePawn, promotePawn, computer } =
+    useChessStore((state) => state);
+
+  if (currentPlayer === computer) return null;
 
   if (!canPromotePawn) return null;
   return (

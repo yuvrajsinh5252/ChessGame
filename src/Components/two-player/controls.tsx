@@ -1,10 +1,10 @@
 "use client";
 
 import { FaUndo, FaRedo, FaSyncAlt, FaArrowLeft } from "react-icons/fa";
-import { Button } from "../ui/button";
 import Link from "next/link";
 import { useChessStore } from "@/store/useChessStore";
 import { clearObjectStore } from "@/lib/indexdb/clear";
+import { Button } from "@/components/ui/button";
 
 export function Controls() {
   const { refetchStore, undoMove, redoMove } = useChessStore();

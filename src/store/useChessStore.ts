@@ -27,6 +27,7 @@ export const useChessStore = create(
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
+      computer: null,
       eliminatedPieces: { white: [], black: [] },
       historyIndex: -1,
 

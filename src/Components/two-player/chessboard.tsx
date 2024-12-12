@@ -38,7 +38,6 @@ export default function ChessBoard() {
     toRow: number,
     toCol: number
   ) => {
-    // e.preventDefault();
     const [fromRow, fromCol] = e.dataTransfer
       .getData("text")
       .split(",")

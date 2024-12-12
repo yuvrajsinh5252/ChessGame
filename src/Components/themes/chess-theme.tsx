@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Palette } from "lucide-react";
 import { useThemeStore } from "@/store/useThemeStore";
 import {
