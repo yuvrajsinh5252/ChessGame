@@ -9,7 +9,7 @@ import { pusherClient } from "@/lib/pusher";
 import { sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 
 export default function Chat({
   playerId,
@@ -44,6 +44,7 @@ export default function Chat({
       };
 
       if (!chatRoomid) setRoomId(roomId);
+
       if (data.playerId !== playerId && !isOpen) {
         toast(`New message`, {
           duration: 5000,

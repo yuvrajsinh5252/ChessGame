@@ -11,7 +11,7 @@ import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { playMoveSound } from "@/utils/playSound";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
-import { ConverBoardToFEN } from "@/utils/stock-services/FENconverter";
+import { ConvertBoardToFEN } from "@/utils/stock-services/FENconverter";
 import { GetBestMove } from "@/utils/stock-services/service";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -125,8 +125,20 @@ export const useChessStore = create(
           rookMoved: {
             ...state.rookMoved,
             [currentPlayer]: {
-              left: fromCol === 0 || fromCol === 4,
-              right: fromCol === 7 || fromCol === 4,
+              left:
+                (fromCol === 0 &&
+                  fromRow === 0 &&
+                  board[fromCol][fromRow] == "r") ||
+                (fromCol === 0 &&
+                  fromRow === 7 &&
+                  board[fromCol][fromRow] == "R"),
+              right:
+                (fromCol === 7 &&
+                  fromRow === 0 &&
+                  board[fromCol][fromRow] == "r") ||
+                (fromCol === 7 &&
+                  fromRow === 7 &&
+                  board[fromCol][fromRow] == "R"),
             },
           },
           currentPlayer: currentPlayer === "white" ? "black" : "white",
@@ -191,13 +203,14 @@ export const useChessStore = create(
         if (!piece) return false;
 
         const isWhitePiece = piece === piece.toUpperCase();
+        console.log("over here", piece);
         if (
           (currentPlayer === "white" && !isWhitePiece) ||
           (currentPlayer === "black" && isWhitePiece)
         )
           return false;
 
-        return isMovePossible(
+        const temp = isMovePossible(
           newBoard,
           fromRow,
           fromCol,
@@ -208,6 +221,8 @@ export const useChessStore = create(
           rookMoved,
           kingCheckOrMoved
         );
+
+        return temp;
       },
 
       // Promote Pawn
@@ -291,16 +306,19 @@ export const useChessStore = create(
       computerMove: async (nextState) => {
         const {
           board,
-          currentPlayer,
           lastMove,
           rookMoved,
           kingCheckOrMoved,
           fiftyMoveRuleCounter,
           numberOfFullMoves,
+          computer,
         } = nextState;
-        const FEN = ConverBoardToFEN(
+        let compColor = computer;
+
+        if (!computer) compColor = "white";
+        const FEN = ConvertBoardToFEN(
           board,
-          currentPlayer,
+          compColor,
           lastMove,
           rookMoved,
           kingCheckOrMoved,
@@ -309,6 +327,7 @@ export const useChessStore = create(
         );
 
         const move = await GetBestMove(FEN);
+        console.log("moveDecided ", move);
         get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
       },
 

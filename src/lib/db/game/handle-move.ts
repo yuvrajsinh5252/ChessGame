@@ -136,8 +136,20 @@ export async function handlePlayerMove(
       rookMoved: {
         ...rookMoved,
         [currentPlayer]: {
-          left: from.col === 0 || from.col === 4,
-          right: from.col === 7 || from.col === 4,
+          left:
+            (from.col === 0 &&
+              from.row === 0 &&
+              board[from.col][from.row] == "r") ||
+            (from.col === 0 &&
+              from.row === 7 &&
+              board[from.col][from.row] == "R"),
+          right:
+            (from.col === 7 &&
+              from.row === 0 &&
+              board[from.col][from.row] == "r") ||
+            (from.col === 7 &&
+              from.row === 7 &&
+              board[from.col][from.row] == "R"),
         },
       },
       currentPlayer: newCurrentPlayer,

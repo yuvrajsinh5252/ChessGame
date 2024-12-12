@@ -4,9 +4,9 @@ export function getStockService() {}
 
 function moveFromStockfishString(move: string): ChessMove {
   const prevY = move.charCodeAt(0) - "a".charCodeAt(0);
-  const prevX = Number(move[1]) - 1;
+  const prevX = 8 - Number(move[1]);
   const newY = move.charCodeAt(2) - "a".charCodeAt(0);
-  const newX = Number(move[3]) - 1;
+  const newX = 8 - Number(move[3]);
   const promotedPiece = move[4] ? move[4] : null;
 
   return {
@@ -35,6 +35,7 @@ export async function GetBestMove(fen: string): Promise<ChessMove> {
   });
 
   const data = await response.json();
+  console.log(data);
 
   const bestMove: string = data.data.split(" ")[1];
   return moveFromStockfishString(bestMove);

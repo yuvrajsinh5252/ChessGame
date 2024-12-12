@@ -6,9 +6,9 @@ import {
   rookMoved,
 } from "@/types/chess";
 
-export function ConverBoardToFEN(
+export function ConvertBoardToFEN(
   board: Board,
-  playerColor: PieceColor,
+  computerColor: PieceColor,
   lastMove: NullableLastMove,
   rookMoved: rookMoved,
   kingCheckOrMoved: kingCheckOrMoved,
@@ -17,7 +17,7 @@ export function ConverBoardToFEN(
 ): string {
   let FEN: string = "";
 
-  for (let i = 7; i >= 0; i--) {
+  for (let i = 0; i < 8; i++) {
     let FENRow: string = "";
     let consecutiveEmptySquaresCounter = 0;
 
@@ -37,15 +37,17 @@ export function ConverBoardToFEN(
     if (consecutiveEmptySquaresCounter !== 0)
       FENRow += String(consecutiveEmptySquaresCounter);
 
-    FEN += i === 0 ? FENRow : FENRow + "/";
+    FEN += i === 7 ? FENRow : FENRow + "/";
   }
 
-  const player: string = playerColor === "white" ? "w" : "b";
+  const player: string = computerColor === "white" ? "w" : "b";
   FEN += " " + player;
   FEN += " " + castlingAvailability(rookMoved, kingCheckOrMoved);
-  FEN += " " + enPassantPosibility(lastMove, playerColor, board);
+  FEN += " " + enPassantPossibility(lastMove, computerColor, board);
   FEN += " " + fiftyMoveRuleCounter * 2;
   FEN += " " + numberOfFullMoves;
+
+  console.log("FEN ", FEN);
   return FEN;
 }
 
@@ -55,19 +57,19 @@ function castlingAvailability(
 ): string {
   let castlingAvailability: string = "";
 
-  if (rookMoved.white.right && !kingCheckOrMoved.white)
+  if (!rookMoved.white.right && !kingCheckOrMoved.white)
     castlingAvailability += "K";
-  if (rookMoved.white.left && !kingCheckOrMoved.white)
+  if (!rookMoved.white.left && !kingCheckOrMoved.white)
     castlingAvailability += "Q";
-  if (rookMoved.black.right && !kingCheckOrMoved.black)
+  if (!rookMoved.black.right && !kingCheckOrMoved.black)
     castlingAvailability += "k";
-  if (rookMoved.black.left && !kingCheckOrMoved.black)
+  if (!rookMoved.black.left && !kingCheckOrMoved.black)
     castlingAvailability += "q";
 
   return castlingAvailability === "" ? "-" : castlingAvailability;
 }
 
-function enPassantPosibility(
+function enPassantPossibility(
   lastMove: NullableLastMove,
   playerColor: PieceColor,
   board: Board

@@ -110,8 +110,20 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
           rookMoved: {
             ...get().gameState.rookMoved,
             [currentPlayer]: {
-              left: fromCol === 0 || fromCol === 4,
-              right: fromCol === 7 || fromCol === 4,
+              left:
+                (fromCol === 0 &&
+                  fromRow === 0 &&
+                  board[fromCol][fromRow] == "r") ||
+                (fromCol === 0 &&
+                  fromRow === 7 &&
+                  board[fromCol][fromRow] == "R"),
+              right:
+                (fromCol === 7 &&
+                  fromRow === 0 &&
+                  board[fromCol][fromRow] == "r") ||
+                (fromCol === 7 &&
+                  fromRow === 7 &&
+                  board[fromCol][fromRow] == "R"),
             },
           },
           currentPlayer: currentPlayer === "white" ? "black" : "white",
