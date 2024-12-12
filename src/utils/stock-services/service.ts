@@ -1,18 +1,12 @@
-import {
-  ChessMove,
-  StockfishQueryParams,
-  StockfishResponse,
-} from "@/types/stockfish";
-
-const stockfihsAPI = "https://stockfish.online/api/stockfish.php";
+import { ChessMove, StockfishQueryParams } from "@/types/stockfish";
 
 export function getStockService() {}
 
 function moveFromStockfishString(move: string): ChessMove {
-  const prevX = move.charCodeAt(0) - "a".charCodeAt(0);
-  const prevY = 8 - parseInt(move[1]);
-  const newX = move.charCodeAt(2) - "a".charCodeAt(0);
-  const newY = 8 - parseInt(move[3]);
+  const prevY = move.charCodeAt(0) - "a".charCodeAt(0);
+  const prevX = Number(move[1]) - 1;
+  const newY = move.charCodeAt(2) - "a".charCodeAt(0);
+  const newX = Number(move[3]) - 1;
   const promotedPiece = move[4] ? move[4] : null;
 
   return {
@@ -27,14 +21,21 @@ function moveFromStockfishString(move: string): ChessMove {
 export async function GetBestMove(fen: string): Promise<ChessMove> {
   const queryParams: StockfishQueryParams = {
     fen,
-    depth: 20,
-    mode: "hard",
+    depth: 13,
+    mode: "bestmove",
   };
 
-  let params = new URLSearchParams(queryParams as any);
+  let params = new URLSearchParams(queryParams as any).toString();
 
-  const response = await fetch(`${stockfihsAPI}?${params.toString()}`);
-  const data: StockfishResponse = await response.json();
-  const bestMove: string = data.bestmove.split(" ")[1];
+  const response = await fetch(`api/proxy?${params}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  const bestMove: string = data.data.split(" ")[1];
   return moveFromStockfishString(bestMove);
 }

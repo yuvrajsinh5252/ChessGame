@@ -10,10 +10,10 @@ export function ConverBoardToFEN(
   board: Board,
   playerColor: PieceColor,
   lastMove: NullableLastMove,
-  numberOfFullMoves: number,
-  fiftyMoveRuleCounter: number,
   rookMoved: rookMoved,
-  kingCheckOrMoved: kingCheckOrMoved
+  kingCheckOrMoved: kingCheckOrMoved,
+  numberOfFullMoves: number,
+  fiftyMoveRuleCounter: number
 ): string {
   let FEN: string = "";
 

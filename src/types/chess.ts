@@ -21,6 +21,7 @@ export interface ChessState {
   saveMove: (nextState: string) => void;
   undoMove: () => void;
   redoMove: () => void;
+  computerMove: (nextState: any) => void;
   promotePawn: (row: number, col: number, newPiece: PieceType) => void;
   refetchStore: () => void;
 }

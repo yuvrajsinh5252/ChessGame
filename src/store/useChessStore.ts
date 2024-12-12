@@ -11,6 +11,8 @@ import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { playMoveSound } from "@/utils/playSound";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
+import { ConverBoardToFEN } from "@/utils/stock-services/FENconverter";
+import { GetBestMove } from "@/utils/stock-services/service";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 export type Piece = string | null;
@@ -27,13 +29,13 @@ export const useChessStore = create(
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
-      computer: null,
+      computer: "black",
       eliminatedPieces: { white: [], black: [] },
       historyIndex: -1,
 
       // Action to move a piece
       movePiece: (fromRow, fromCol, toRow, toCol) => {
-        const { board, currentPlayer, isValidMove, lastMove } = get();
+        const { board, currentPlayer, isValidMove, lastMove, computer } = get();
         const state = get();
         if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
 
@@ -154,12 +156,22 @@ export const useChessStore = create(
         }, 300);
 
         get().saveMove(JSON.stringify(nextState));
+        if (computer == nextState.currentPlayer) get().computerMove(nextState);
+
         return true;
       },
 
       // Check if the move is valid
       isValidMove: (fromRow, fromCol, toRow, toCol) => {
         const { board, currentPlayer, kingCheckOrMoved, rookMoved } = get();
+        if (
+          !Number.isInteger(fromRow) ||
+          !Number.isInteger(fromCol) ||
+          !Number.isInteger(toRow) ||
+          !Number.isInteger(toCol)
+        )
+          return false;
+
         const newBoard = board.map((row) => [...row]);
         const piece = newBoard[fromRow][fromCol];
         if (!piece) return false;
@@ -260,6 +272,24 @@ export const useChessStore = create(
 
         const nextState = JSON.parse(nextMove.state);
         set(nextState);
+      },
+
+      computerMove: async (nextState) => {
+        const { board, currentPlayer, lastMove, rookMoved, kingCheckOrMoved } =
+          nextState;
+        const FEN = ConverBoardToFEN(
+          board,
+          currentPlayer,
+          lastMove,
+          rookMoved,
+          kingCheckOrMoved,
+          0,
+          0
+        );
+
+        const move = await GetBestMove(FEN);
+        console.log(move);
+        get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
       },
 
       refetchStore: () => {

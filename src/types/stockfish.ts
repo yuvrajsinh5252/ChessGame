@@ -1,7 +1,7 @@
 export type StockfishQueryParams = {
   fen: string;
   depth: number;
-  mode: "easy" | "medium" | "hard";
+  mode: "easy" | "medium" | "hard" | "bestmove";
 };
 
 export type ChessMove = {

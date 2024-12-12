@@ -154,9 +154,7 @@ export default function ChessBoard() {
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={`row-${index}`}
-              className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                currentPlayer === "black" ? " rotate-180" : ""
-              }`}
+              className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black `}
               style={{ top: `${index * 12.5 - 4}%` }}
             >
               {8 - index}
@@ -165,9 +163,7 @@ export default function ChessBoard() {
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={`col-${index}`}
-              className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
-                currentPlayer === "black" ? " rotate-180" : ""
-              }`}
+              className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black `}
               style={{ left: `${index * 12.5 - 5}%` }}
             >
               {String.fromCharCode(97 + index)}
