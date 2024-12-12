@@ -17,6 +17,7 @@ export interface ChessState {
   eliminatedPieces: { white: PieceType[]; black: PieceType[] };
   canPromotePawn: typePromotePawn;
   computer: PieceColor | null;
+  stockfishLevel: number;
   historyIndex: number;
   fiftyMoveRuleCounter: number;
   numberOfFullMoves: number;
@@ -26,6 +27,7 @@ export interface ChessState {
   undoMove: () => void;
   redoMove: () => void;
   computerMove: (nextState: any) => void;
+  updateStockfishLevel: (level: number) => void;
   promotePawn: (row: number, col: number, newPiece: PieceType) => void;
   refetchStore: () => void;
 }

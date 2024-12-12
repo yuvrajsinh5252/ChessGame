@@ -30,6 +30,7 @@ export const useChessStore = create(
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
       computer: null,
+      stockfishLevel: 1,
       fiftyMoveRuleCounter: 0,
       numberOfFullMoves: 0,
       eliminatedPieces: { white: [], black: [] },
@@ -326,13 +327,16 @@ export const useChessStore = create(
           fiftyMoveRuleCounter
         );
 
-        const move = await GetBestMove(FEN);
-        console.log("moveDecided ", move);
+        const move = await GetBestMove(FEN, get().stockfishLevel);
         get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
       },
 
       updateComputer: (color: PieceColor | null) => {
         set({ computer: color });
+      },
+
+      updateStockfishLevel: (level: number) => {
+        set({ stockfishLevel: level });
       },
 
       refetchStore: () => {

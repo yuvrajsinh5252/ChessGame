@@ -54,14 +54,14 @@ interface GameModeCardProps {
 }
 
 function GameModeCard({ href, title, description, color }: GameModeCardProps) {
-  const { updateComputer } = useChessStore((state) => state);
+  const { updateComputer, refetchStore } = useChessStore((state) => state);
 
   return (
     <Link
       onClick={() => {
         if (href === "/two-player") {
           updateComputer(null);
-        }
+        } else if (href === "/computer") refetchStore();
       }}
       href={href}
       className={`${color} rounded-lg p-6 text-center transition-transform transform hover:scale-105`}

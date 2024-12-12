@@ -41,6 +41,9 @@ export function ChessTheme() {
         >
           <DropdownMenuRadioItem value="default">default</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="classic">classic</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="crownforge">
+            crownforge
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>

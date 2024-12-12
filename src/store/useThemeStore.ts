@@ -1,7 +1,7 @@
 import { defaultBoardTheme } from "@/utils/boardThemes/board-themes";
 import { create } from "zustand";
 
-export type pieceThemes = "default" | "classic";
+export type pieceThemes = "default" | "classic" | "crownforge";
 export type boardThemes = {
   name: "default" | "wood" | "marble" | "blue-white" | "green-white";
   light: string;

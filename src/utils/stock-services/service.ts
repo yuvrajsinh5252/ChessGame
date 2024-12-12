@@ -1,4 +1,8 @@
-import { ChessMove, StockfishQueryParams } from "@/types/stockfish";
+import {
+  ChessMove,
+  mapStockfishLevel,
+  StockfishQueryParams,
+} from "@/types/stockfish";
 
 export function getStockService() {}
 
@@ -18,10 +22,13 @@ function moveFromStockfishString(move: string): ChessMove {
   };
 }
 
-export async function GetBestMove(fen: string): Promise<ChessMove> {
+export async function GetBestMove(
+  fen: string,
+  stockfishLevel: number
+): Promise<ChessMove> {
   const queryParams: StockfishQueryParams = {
     fen,
-    depth: 13,
+    depth: mapStockfishLevel(stockfishLevel),
     mode: "bestmove",
   };
 
