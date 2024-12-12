@@ -18,6 +18,8 @@ export interface ChessState {
   canPromotePawn: typePromotePawn;
   computer: PieceColor | null;
   historyIndex: number;
+  fiftyMoveRuleCounter: number;
+  numberOfFullMoves: number;
   saveMove: (nextState: string) => void;
   undoMove: () => void;
   redoMove: () => void;

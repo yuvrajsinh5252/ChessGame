@@ -29,7 +29,9 @@ export const useChessStore = create(
       rookMoved: initialRookMoved,
       isKingInCheck: "noCheck",
       isCheckMate: "noCheckMate",
-      computer: "black",
+      computer: null,
+      fiftyMoveRuleCounter: 0,
+      numberOfFullMoves: 0,
       eliminatedPieces: { white: [], black: [] },
       historyIndex: -1,
 
@@ -43,6 +45,7 @@ export const useChessStore = create(
         const piece = newBoard[fromRow][fromCol];
 
         let EliminatedPiece = null;
+        let fiftyMoves = get().fiftyMoveRuleCounter;
 
         if (
           lastMove &&
@@ -51,6 +54,9 @@ export const useChessStore = create(
           EliminatedPiece = newBoard[lastMove.toRow][lastMove.toCol];
           newBoard[lastMove.toRow][lastMove.toCol] = null;
         }
+
+        if (EliminatedPiece || piece?.toLowerCase() === "p") fiftyMoves = 0;
+        else fiftyMoves++;
 
         const data = checkCastling(
           fromRow,
@@ -147,6 +153,11 @@ export const useChessStore = create(
             ],
           },
           historyIndex: state.historyIndex + 1,
+          fiftyMoveRuleCounter: fiftyMoves,
+          numberOfFullMoves:
+            currentPlayer == "black"
+              ? state.numberOfFullMoves + 1
+              : state.numberOfFullMoves,
         };
 
         playMoveSound();
@@ -275,20 +286,26 @@ export const useChessStore = create(
       },
 
       computerMove: async (nextState) => {
-        const { board, currentPlayer, lastMove, rookMoved, kingCheckOrMoved } =
-          nextState;
+        const {
+          board,
+          currentPlayer,
+          lastMove,
+          rookMoved,
+          kingCheckOrMoved,
+          fiftyMoveRuleCounter,
+          numberOfFullMoves,
+        } = nextState;
         const FEN = ConverBoardToFEN(
           board,
           currentPlayer,
           lastMove,
           rookMoved,
           kingCheckOrMoved,
-          0,
-          0
+          numberOfFullMoves,
+          fiftyMoveRuleCounter
         );
 
         const move = await GetBestMove(FEN);
-        console.log(move);
         get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
       },
 
@@ -304,6 +321,8 @@ export const useChessStore = create(
           isCheckMate: "noCheckMate",
           eliminatedPieces: { white: [], black: [] },
           historyIndex: -1,
+          fiftyMoveRuleCounter: 0,
+          numberOfFullMoves: 0,
         });
       },
     }),
