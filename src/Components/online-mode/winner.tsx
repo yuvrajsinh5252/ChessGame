@@ -8,10 +8,10 @@ import {
   DialogTitle,
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { Button } from "@/components/ui/button";
 import { deleteGame } from "@/lib/db/game/helper";
 import { useEffect, useState } from "react";
 import JSConfetti from "js-confetti";
+import { Button } from "../ui/button";
 
 export const Winner = () => {
   const { gameState, players } = useOnlineChessStore((state) => state);

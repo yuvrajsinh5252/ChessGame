@@ -9,7 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Palette } from "lucide-react";
 import { useThemeStore } from "@/store/useThemeStore";
 import {
@@ -18,6 +17,7 @@ import {
   greenWhiteBoardTheme,
   woodBoardTheme,
 } from "@/utils/boardThemes/board-themes";
+import { Button } from "../ui/button";
 
 export function ChessTheme() {
   const { setPieceTheme, pieceTheme, boardTheme, setBoardTheme } =

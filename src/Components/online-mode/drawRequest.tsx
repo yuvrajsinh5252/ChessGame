@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
 } from "@/Components/ui/dialog";
 import { drawAccepted, drawDeclined } from "@/lib/db/game/draw";
+import { Button } from "../ui/button";
 
 export function DrawRequest({
   roomId,

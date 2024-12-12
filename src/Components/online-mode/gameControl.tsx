@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { handlePlayerResign } from "@/lib/db/game/helper";
