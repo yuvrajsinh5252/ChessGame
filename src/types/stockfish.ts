@@ -1,7 +1,6 @@
 export type StockfishQueryParams = {
   fen: string;
   depth: number;
-  mode: "easy" | "medium" | "hard" | "bestmove";
 };
 
 export type ChessMove = {
@@ -13,8 +12,12 @@ export type ChessMove = {
 };
 
 export type StockfishResponse = {
-  success: boolean;
-  data: string;
+  eval: number;
+  depth: number;
+  winChance: number;
+  move: string;
+  continuationArr: string[];
+  mate: number | null;
 };
 
 export type Stockfish = {

@@ -157,7 +157,7 @@ export function OnlineBoard({
     if (playerColor !== gameState.currentPlayer) return;
     const OriginalGameState = { ...gameState };
 
-    movePiece(fromRow, fromCol, toRow, toCol);
+    movePiece(fromRow, fromCol, toRow, toCol, false);
     handlePlayerMove(
       roomId,
       { row: fromRow, col: fromCol },
@@ -195,7 +195,7 @@ export function OnlineBoard({
       if (!prev) return { row, col };
       if (prev.row === row && prev.col === col) return null;
       if (isValidMove(prev.row, prev.col, row, col)) {
-        movePiece(prev.row, prev.col, row, col);
+        movePiece(prev.row, prev.col, row, col, false);
         return null;
       }
       return { row, col };
@@ -209,7 +209,7 @@ export function OnlineBoard({
     ) {
       const OriginalGameState = { ...gameState };
 
-      movePiece(selectedPiece.row, selectedPiece.col, row, col);
+      movePiece(selectedPiece.row, selectedPiece.col, row, col, false);
       setSelectedPiece(null);
 
       const res = await handlePlayerMove(

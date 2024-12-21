@@ -47,7 +47,6 @@ export function ConvertBoardToFEN(
   FEN += " " + fiftyMoveRuleCounter * 2;
   FEN += " " + numberOfFullMoves;
 
-  console.log("FEN ", FEN);
   return FEN;
 }
 
@@ -76,13 +75,13 @@ function enPassantPossibility(
 ): string {
   if (!lastMove) return "-";
 
-  const { fromRow, toRow, toCol } = lastMove;
-  const piece = board[toRow][toCol];
+  const { fromRow, fromCol, toRow, toCol } = lastMove;
 
-  if (piece?.toLowerCase() === "p" && Math.abs(fromRow - toRow) === 2) {
-    if (playerColor === "white") return `${String.fromCharCode(toCol + 97)}3`;
-    if (playerColor === "black") return `${String.fromCharCode(toCol + 97)}6`;
-  }
+  if (board[fromRow][fromCol] !== playerColor + "P") return "-";
+  if (Math.abs(fromRow - toRow) !== 2) return "-";
+  if (toCol === 0 || toCol === 7) return "-";
+  if (toRow === 2 && playerColor === "white") return String(toCol);
+  if (toRow === 5 && playerColor === "black") return String(toCol);
 
   return "-";
 }

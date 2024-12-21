@@ -43,7 +43,7 @@ export default function ChessBoard() {
       .split(",")
       .map(Number);
     if (isValidMove(fromRow, fromCol, toRow, toCol)) {
-      movePiece(fromRow, fromCol, toRow, toCol);
+      movePiece(fromRow, fromCol, toRow, toCol, false);
       setSelectedPiece(null);
     }
   };
@@ -75,7 +75,7 @@ export default function ChessBoard() {
       if (!prev) return { row, col };
       if (prev.row === row && prev.col === col) return null;
       if (isValidMove(prev.row, prev.col, row, col)) {
-        movePiece(prev.row, prev.col, row, col);
+        movePiece(prev.row, prev.col, row, col, false);
         return null;
       }
       return { row, col };
@@ -87,7 +87,7 @@ export default function ChessBoard() {
       selectedPiece &&
       isValidMove(selectedPiece.row, selectedPiece.col, row, col)
     ) {
-      movePiece(selectedPiece.row, selectedPiece.col, row, col);
+      movePiece(selectedPiece.row, selectedPiece.col, row, col, false);
       setSelectedPiece(null);
     } else handlePieceClick(row, col);
   };

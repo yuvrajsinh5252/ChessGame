@@ -21,6 +21,7 @@ export function ChooseColor() {
     lastMove,
     kingCheckOrMoved,
     rookMoved,
+    stockfishLevel,
     updateStockfishLevel,
   } = useChessStore((state) => state);
   if (computer) return null;
@@ -36,11 +37,46 @@ export function ChooseColor() {
           <DialogDescription>
             <div className="flex gap-4 flex-col">
               <div className="flex gap-2">
-                <Button onClick={() => updateStockfishLevel(1)}>1</Button>
-                <Button onClick={() => updateStockfishLevel(2)}>2</Button>
-                <Button onClick={() => updateStockfishLevel(3)}>3</Button>
-                <Button onClick={() => updateStockfishLevel(4)}>4</Button>
-                <Button onClick={() => updateStockfishLevel(5)}>5</Button>
+                <Button
+                  className={
+                    stockfishLevel === 1 ? "bg-blue-500 text-white" : ""
+                  }
+                  onClick={() => updateStockfishLevel(1)}
+                >
+                  1
+                </Button>
+                <Button
+                  className={
+                    stockfishLevel === 2 ? "bg-blue-500 text-white" : ""
+                  }
+                  onClick={() => updateStockfishLevel(2)}
+                >
+                  2
+                </Button>
+                <Button
+                  className={
+                    stockfishLevel === 3 ? "bg-blue-500 text-white" : ""
+                  }
+                  onClick={() => updateStockfishLevel(3)}
+                >
+                  3
+                </Button>
+                <Button
+                  className={
+                    stockfishLevel === 4 ? "bg-blue-500 text-white" : ""
+                  }
+                  onClick={() => updateStockfishLevel(4)}
+                >
+                  4
+                </Button>
+                <Button
+                  className={
+                    stockfishLevel === 5 ? "bg-blue-500 text-white" : ""
+                  }
+                  onClick={() => updateStockfishLevel(5)}
+                >
+                  5
+                </Button>
               </div>
               <div className="flex gap-2 justify-center items-center">
                 <Button
@@ -66,7 +102,7 @@ export function ChooseColor() {
                       lastMove,
                       rookMoved,
                       kingCheckOrMoved,
-                      numberOfFullMoves: 0,
+                      numberOfFullMoves: 1,
                       fiftyMoveRuleCounter: 0,
                     });
                   }}

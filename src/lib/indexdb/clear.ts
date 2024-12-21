@@ -6,6 +6,4 @@ export const clearObjectStore = async () => {
   const store = transaction.objectStore(STORE_NAME);
 
   await store.clear();
-
-  console.log(`${STORE_NAME} cleared successfully.`);
 };

@@ -32,7 +32,7 @@ export const useChessStore = create(
       computer: null,
       stockfishLevel: 1,
       fiftyMoveRuleCounter: 0,
-      numberOfFullMoves: 0,
+      numberOfFullMoves: 1,
       eliminatedPieces: { white: [], black: [] },
       historyIndex: -1,
 
@@ -69,6 +69,7 @@ export const useChessStore = create(
           get().rookMoved,
           get().kingCheckOrMoved
         );
+
         if (data) {
           newBoard[fromRow][data.rookCol] = null;
           newBoard[fromRow][data.newRookCol] = data.rook;
@@ -180,10 +181,11 @@ export const useChessStore = create(
 
         setTimeout(() => {
           set(nextState);
+          if (computer == nextState.currentPlayer)
+            get().computerMove(nextState);
         }, 300);
 
         get().saveMove(JSON.stringify(nextState));
-        if (computer == nextState.currentPlayer) get().computerMove(nextState);
 
         return true;
       },
@@ -204,7 +206,6 @@ export const useChessStore = create(
         if (!piece) return false;
 
         const isWhitePiece = piece === piece.toUpperCase();
-        console.log("over here", piece);
         if (
           (currentPlayer === "white" && !isWhitePiece) ||
           (currentPlayer === "black" && isWhitePiece)
@@ -328,7 +329,12 @@ export const useChessStore = create(
         );
 
         const move = await GetBestMove(FEN, get().stockfishLevel);
-        get().movePiece(move.prevX, move.prevY, move.newX, move.newY);
+        const { promotedPiece } = move;
+
+        if (promotedPiece)
+          get().promotePawn(move.newX, move.newY, promotedPiece);
+
+        get().movePiece(move.prevX, move.prevY, move.newX, move.newY, true);
       },
 
       updateComputer: (color: PieceColor | null) => {

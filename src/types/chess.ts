@@ -80,7 +80,13 @@ export interface ValidState {
 }
 
 export interface MovePiece {
-  (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean;
+  (
+    fromRow: number,
+    fromCol: number,
+    toRow: number,
+    toCol: number,
+    isComputer: boolean
+  ): boolean;
 }
 
 export interface lastMove {
