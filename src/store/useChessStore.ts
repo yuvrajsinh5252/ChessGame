@@ -8,7 +8,7 @@ import {
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
-import { playMoveSound } from "@/utils/playSound";
+import { playSound, SoundType } from "@/utils/playSound";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
 import { ConvertBoardToFEN } from "@/utils/stock-services/FENconverter";
@@ -42,6 +42,8 @@ export const useChessStore = create(
         const state = get();
         if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
 
+        let sound: SoundType = "move";
+
         const newBoard = board.map((row) => [...row]);
         const piece = newBoard[fromRow][fromCol];
 
@@ -56,6 +58,7 @@ export const useChessStore = create(
           newBoard[lastMove.toRow][lastMove.toCol] = null;
         }
 
+        if (EliminatedPiece) sound = "capture";
         if (EliminatedPiece || piece?.toLowerCase() === "p") fiftyMoves = 0;
         else fiftyMoves++;
 
@@ -73,6 +76,7 @@ export const useChessStore = create(
         if (data) {
           newBoard[fromRow][data.rookCol] = null;
           newBoard[fromRow][data.newRookCol] = data.rook;
+          sound = "castle";
         }
 
         if (newBoard[toRow][toCol]) EliminatedPiece = newBoard[toRow][toCol];
@@ -84,8 +88,10 @@ export const useChessStore = create(
         let OpponentKingCheck = false;
         if (
           isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white")
-        )
+        ) {
           OpponentKingCheck = true;
+          sound = "check";
+        }
 
         set({
           lastMove: { fromRow, fromCol, toRow, toCol },
@@ -177,7 +183,7 @@ export const useChessStore = create(
               : state.numberOfFullMoves,
         };
 
-        playMoveSound();
+        playSound(sound);
 
         setTimeout(() => {
           set(nextState);
