@@ -139,17 +139,19 @@ export async function handlePlayerMove(
           left:
             (from.col === 0 &&
               from.row === 0 &&
-              board[from.col][from.row] == "r") ||
+              board[from.row][from.col] == "r") ||
             (from.col === 0 &&
               from.row === 7 &&
-              board[from.col][from.row] == "R"),
+              board[from.row][from.col] == "R") ||
+            rookMoved[currentPlayer].left,
           right:
             (from.col === 7 &&
               from.row === 0 &&
-              board[from.col][from.row] == "r") ||
+              board[from.row][from.col] == "r") ||
             (from.col === 7 &&
               from.row === 7 &&
-              board[from.col][from.row] == "R"),
+              board[from.row][from.col] == "R") ||
+            rookMoved[currentPlayer].right,
         },
       },
       currentPlayer: newCurrentPlayer,

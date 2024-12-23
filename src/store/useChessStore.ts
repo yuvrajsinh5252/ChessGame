@@ -136,17 +136,19 @@ export const useChessStore = create(
               left:
                 (fromCol === 0 &&
                   fromRow === 0 &&
-                  board[fromCol][fromRow] == "r") ||
+                  board[fromRow][fromCol] == "r") ||
                 (fromCol === 0 &&
                   fromRow === 7 &&
-                  board[fromCol][fromRow] == "R"),
+                  board[fromRow][fromCol] == "R") ||
+                state.rookMoved[currentPlayer].left,
               right:
                 (fromCol === 7 &&
                   fromRow === 0 &&
-                  board[fromCol][fromRow] == "r") ||
+                  board[fromRow][fromCol] == "r") ||
                 (fromCol === 7 &&
                   fromRow === 7 &&
-                  board[fromCol][fromRow] == "R"),
+                  board[fromRow][fromCol] == "R") ||
+                state.rookMoved[currentPlayer].right,
             },
           },
           currentPlayer: currentPlayer === "white" ? "black" : "white",
