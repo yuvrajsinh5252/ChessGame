@@ -4,9 +4,10 @@ A simple multiplayer chess game. A simple implementation of the classic chess ga
 
 ## Features
 
-- implemented chess rules
+- Real-time multiplayer gameplay
+- Online multiplayer mode with chat functionality
 - Two-player mode
-- online multiplayer mode
+- Single-player mode against AI
 
 ## Installation
 
