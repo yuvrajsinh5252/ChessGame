@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquare } from "lucide-react";
+import { CircleX, MessageSquare } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
@@ -92,6 +92,10 @@ export default function Chat({
               : "translate-y-[120%] max-sm:translate-y-[100%]"
           } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-lg rounded-lg transition-transform duration-300`}
         >
+          <CircleX
+            className="absolute top-2 right-2 cursor-pointer"
+            onClick={() => setIsOpen(true)}
+          />
           <div className="p-4 border-b">
             <h2 className="text-lg font-bold">Chat</h2>
           </div>

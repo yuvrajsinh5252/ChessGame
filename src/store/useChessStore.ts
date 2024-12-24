@@ -367,7 +367,7 @@ export const useChessStore = create(
           historyIndex: -1,
           computer: null,
           fiftyMoveRuleCounter: 0,
-          numberOfFullMoves: 0,
+          numberOfFullMoves: 1,
         });
       },
     }),
