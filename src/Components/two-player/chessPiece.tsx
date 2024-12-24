@@ -1,3 +1,4 @@
+import { useChessStore } from "@/store/useChessStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { Piece } from "@/types/chess";
 import Image from "next/image";
@@ -13,6 +14,7 @@ export function ChessPiece({
   movingPiece,
 }: Piece) {
   const { pieceTheme, boardTheme } = useThemeStore((state) => state);
+  const { computer } = useChessStore((state) => state);
 
   const [isMoving, setIsMoving] = useState(false);
   const pieceRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export function ChessPiece({
         alt={`${color} ${type}`}
         width={64}
         height={64}
-        className="w-full h-full"
+        className={`w-full h-full ${computer === "white" ? "rotate-180" : ""}`}
       />
     </div>
   );

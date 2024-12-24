@@ -20,6 +20,7 @@ export default function ChessBoard() {
     currentPlayer,
     lastMove,
     movingPiece,
+    computer,
   } = store! || {
     board: initialBoard,
     movePiece: () => false,
@@ -96,7 +97,11 @@ export default function ChessBoard() {
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
-      <div className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative `}>
+      <div
+        className={`grid grid-cols-8 gap-0 border-2 rounded-lg relative ${
+          computer === "white" ? "rotate-180" : ""
+        }`}
+      >
         {board.map((row, rowIndex) =>
           row.map((piece, colIndex) => (
             <div
@@ -154,19 +159,25 @@ export default function ChessBoard() {
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={`row-${index}`}
-              className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black `}
+              className={`absolute left-0 w-4 h-16 max-sm:h-11 max-sm:w-3 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
+                computer === "white" ? "rotate-180" : ""
+              }`}
               style={{ top: `${index * 12.5 - 4}%` }}
             >
-              {8 - index}
+              {computer === "white" ? index + 1 : 8 - index}
             </div>
           ))}
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={`col-${index}`}
-              className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black `}
+              className={`absolute bottom-0 w-16 h-4 max-sm:h-3 max-sm:w-11 flex items-center justify-center text-[8px] max-sm:text-[6px] text-black ${
+                computer === "white" ? "rotate-180" : ""
+              }`}
               style={{ left: `${index * 12.5 - 5}%` }}
             >
-              {String.fromCharCode(97 + index)}
+              {computer === "white"
+                ? String.fromCharCode(104 - index)
+                : String.fromCharCode(97 + index)}
             </div>
           ))}
         </div>
