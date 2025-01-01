@@ -77,12 +77,14 @@ export default function Chat({
       <div className="relative z-50">
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 relative"
+          className="p-2 relative hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           variant="ghost"
         >
-          <MessageSquare />
+          <MessageSquare className="h-6 w-6" />
           {messages && messages.length > 0 && (
-            <span className="absolute top-1 right-1 inline-block w-2 h-2 bg-red-600 rounded-full"></span>
+            <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
+              {messages.length}
+            </span>
           )}
         </Button>
         <div
@@ -90,17 +92,19 @@ export default function Chat({
             isOpen
               ? "-translate-y-20"
               : "translate-y-[120%] max-sm:translate-y-[100%]"
-          } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-lg rounded-lg transition-transform duration-300`}
+          } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-xl rounded-lg transition-all duration-300 border border-gray-200 dark:border-gray-700`}
         >
-          <CircleX
-            className="absolute top-2 right-2 cursor-pointer"
-            onClick={() => setIsOpen(true)}
-          />
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-bold">Chat</h2>
+          <div className="p-4 border-b dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-t-lg">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold">Chat Room</h2>
+            </div>
+            <CircleX
+              className="cursor-pointer hover:text-red-500 transition-colors"
+              onClick={() => setIsOpen(true)}
+            />
           </div>
           <div
-            className="p-4 overflow-y-auto no-scrollbar h-96 max-sm:h-64"
+            className="p-4 overflow-y-auto h-96 max-sm:h-64 no-scrollbar"
             ref={(el) => {
               if (el) {
                 el.scrollTop = el.scrollHeight;
@@ -110,27 +114,39 @@ export default function Chat({
             {messages && messages.length > 0 ? (
               <ChatMessage messages={messages} playerId={playerId} />
             ) : (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                <MessageSquare className="h-12 w-12 mb-2 opacity-50" />
                 <span>No messages yet</span>
               </div>
             )}
           </div>
-          <div className="p-4 flex gap-2 items-center">
-            <Input
-              className="dark:border-gray-200"
-              placeholder="Type a message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <Button
-              className="mt-0 w-1/4"
-              onClick={async () => {
-                await sendMessage(roomId, message, playerId);
-                setMessage("");
-              }}
-            >
-              Send
-            </Button>
+          <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-b-lg border-t dark:border-gray-700">
+            <div className="flex gap-2 items-center">
+              <Input
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && message.trim()) {
+                    sendMessage(roomId, message, playerId);
+                    setMessage("");
+                  }
+                }}
+              />
+              <Button
+                className="mt-0 px-6"
+                variant="default"
+                disabled={!message.trim()}
+                onClick={async () => {
+                  if (message.trim()) {
+                    await sendMessage(roomId, message, playerId);
+                    setMessage("");
+                  }
+                }}
+              >
+                Send
+              </Button>
+            </div>
           </div>
         </div>
       </div>

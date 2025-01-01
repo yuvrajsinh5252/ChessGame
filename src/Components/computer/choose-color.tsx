@@ -4,7 +4,6 @@ import { useChessStore } from "@/store/useChessStore";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -29,70 +28,55 @@ export function ChooseColor() {
   return (
     <Dialog open={true}>
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="w-54">
+      <DialogContent className="w-[90vw] max-w-[400px] p-4 sm:p-6 rounded-md">
         <DialogHeader>
-          <DialogTitle className="flex text-gray-400 justify-center mb-5">
-            Computer strength
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-center">
+            VS Computer
           </DialogTitle>
-          <DialogDescription>
-            <div className="flex gap-4 flex-col">
-              <div className="flex gap-2">
+        </DialogHeader>
+
+        <div className="mt-4 sm:mt-6 space-y-6">
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-center">Difficulty</h3>
+            <div className="flex gap-2 sm:gap-3 justify-center">
+              {[1, 2, 3, 4, 5].map((level) => (
                 <Button
-                  className={
-                    stockfishLevel === 1 ? "bg-blue-500 text-white" : ""
-                  }
-                  onClick={() => updateStockfishLevel(1)}
+                  key={level}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${
+                    stockfishLevel === level
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                  onClick={() => updateStockfishLevel(level)}
                 >
-                  1
+                  {level}
                 </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-center">Color</h3>
+            <div className="flex gap-4 sm:gap-6 justify-center">
+              <div className="text-center">
                 <Button
-                  className={
-                    stockfishLevel === 2 ? "bg-blue-500 text-white" : ""
-                  }
-                  onClick={() => updateStockfishLevel(2)}
-                >
-                  2
-                </Button>
-                <Button
-                  className={
-                    stockfishLevel === 3 ? "bg-blue-500 text-white" : ""
-                  }
-                  onClick={() => updateStockfishLevel(3)}
-                >
-                  3
-                </Button>
-                <Button
-                  className={
-                    stockfishLevel === 4 ? "bg-blue-500 text-white" : ""
-                  }
-                  onClick={() => updateStockfishLevel(4)}
-                >
-                  4
-                </Button>
-                <Button
-                  className={
-                    stockfishLevel === 5 ? "bg-blue-500 text-white" : ""
-                  }
-                  onClick={() => updateStockfishLevel(5)}
-                >
-                  5
-                </Button>
-              </div>
-              <div className="flex gap-2 justify-center items-center">
-                <Button
-                  className="py-8"
+                  className="p-4 sm:p-6 hover:bg-gray-100"
                   variant={"outline"}
                   onClick={() => updateComputer("black")}
                 >
                   <Image
                     src="/default/white/K.png"
-                    alt="computer"
+                    alt="White"
                     width={40}
                     height={40}
+                    className="w-8 h-8 sm:w-10 sm:h-10"
                   />
                 </Button>
+                <p className="text-xs sm:text-sm mt-1">White</p>
+              </div>
+              <div className="text-center">
                 <Button
-                  className="py-8"
+                  className="p-4 sm:p-6 hover:bg-gray-100"
                   variant={"outline"}
                   onClick={() => {
                     updateComputer("white");
@@ -109,15 +93,17 @@ export function ChooseColor() {
                 >
                   <Image
                     src="/default/black/k.png"
-                    alt="computer"
+                    alt="Black"
                     width={40}
                     height={40}
+                    className="w-8 h-8 sm:w-10 sm:h-10"
                   />
                 </Button>
+                <p className="text-xs sm:text-sm mt-1">Black</p>
               </div>
             </div>
-          </DialogDescription>
-        </DialogHeader>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

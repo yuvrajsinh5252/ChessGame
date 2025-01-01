@@ -19,7 +19,7 @@ export function ChatMessage({
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5 p-2">
       {sortedMessages.map((message, key) =>
         playerId === message.user ? (
           <UserMessage color={userColor || ""} key={key} message={message} />
@@ -37,16 +37,25 @@ export function ChatMessage({
 
 function UserMessage({ message, color }: { message: Message; color: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-start gap-3">
       <div
-        className={`max-sm:hidden w-10 h-10 bg-${color} rounded-full border-2`}
+        className={`max-sm:hidden w-12 h-12 bg-${color} rounded-full border-2 flex items-center justify-center`}
       ></div>
-      <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
-        <span className="font-semibold text-gray-700 dark:text-gray-300">
-          {message.user}
-        </span>
-        <span className="text-gray-600 dark:text-gray-400">
-          {message.content}
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-col bg-gray-200 dark:bg-gray-700 p-4 rounded-2xl rounded-tl-none w-80 max-sm:w-[270px]">
+          <span className="font-semibold text-gray-700 dark:text-gray-300 mb-1">
+            {message.user}
+          </span>
+          <span className="text-gray-600 dark:text-gray-400 break-words">
+            {message.content}
+          </span>
+        </div>
+        <span className="text-xs text-gray-500 ml-2">
+          {message.timestamp &&
+            new Date(message.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
         </span>
       </div>
     </div>
@@ -61,18 +70,27 @@ function OpponentsMessage({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 justify-end">
-      <div
-        className={`max-sm:hidden w-10 h-10 bg-${color} border-2 rounded-full`}
-      ></div>
-      <div className="flex flex-col bg-blue-100 dark:bg-blue-800 p-3 rounded-lg w-80 max-sm:w-[270px] truncate">
-        <span className="font-semibold text-blue-700 dark:text-blue-300">
-          {message.user}
-        </span>
-        <span className="text-blue-600 dark:text-blue-400">
-          {message.content}
+    <div className="flex items-start gap-3 justify-end">
+      <div className="flex flex-col gap-1 items-end">
+        <div className="flex flex-col bg-blue-100 dark:bg-blue-900/60 p-4 rounded-2xl rounded-tr-none w-80 max-sm:w-[270px]">
+          <span className="font-semibold text-blue-700 dark:text-blue-300 mb-1">
+            {message.user}
+          </span>
+          <span className="text-blue-600 dark:text-blue-400 break-words">
+            {message.content}
+          </span>
+        </div>
+        <span className="text-xs text-gray-500 mr-2">
+          {message.timestamp &&
+            new Date(message.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
         </span>
       </div>
+      <div
+        className={`max-sm:hidden w-12 h-12 bg-${color} rounded-full border-2 flex items-center justify-center`}
+      ></div>
     </div>
   );
 }

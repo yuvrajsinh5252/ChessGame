@@ -27,9 +27,9 @@ export const Promote = ({
   if (!canPromotePawn || playerColor !== gameState.currentPlayer) return null;
   return (
     <Dialog open={true}>
-      <DialogContent>
+      <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-center">
+          <DialogTitle className="text-center max-sm:text-sm">
             Choose a piece to promote your pawn to
           </DialogTitle>
           <DialogDescription>
@@ -42,8 +42,8 @@ export const Promote = ({
                     <Image
                       src={`/${pieceTheme}/${currentPlayer}/${pieceImage}.png`}
                       alt={piece}
-                      width={64}
-                      height={64}
+                      width={60}
+                      height={60}
                       className="mt-5 hover:scale-110 transform transition-transform hover:bg-gray-200 rounded-lg"
                       onClick={async () => {
                         promotePawn(

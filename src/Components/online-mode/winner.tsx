@@ -56,14 +56,14 @@ export const Winner = () => {
 
   return (
     <Dialog open={true}>
-      <DialogContent className="w-full max-w-md p-5 rounded-lg mx-auto">
-        <DialogHeader>
+      <DialogContent className="w-full max-w-sm py-12 rounded-lg mx-auto">
+        <DialogHeader className="flex gap-3">
           <DialogTitle>
             <span className="text-2xl font-semibold text-center block">
               Game Over
             </span>
           </DialogTitle>
-          <DialogDescription className="text-center pt-2 text-lg font-semibold block">
+          <DialogDescription className="text-center pt-2 text-lg font-semibold">
             {gameState?.status === "resigned"
               ? `${winner === "black" ? "White" : "Black"} wins by resignation`
               : winner === "black"

@@ -76,61 +76,71 @@ export default function Room() {
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md mx-auto p-8">
       {!roomEnterLoading ? (
-        <div>
-          <div className="mb-4">
-            <Input
-              type="text"
-              onChange={(e) => setId(e.target.value)}
-              placeholder="Enter room name"
-              className="w-full dark:bg-gray-600"
-            />
-            {joinLoading ? (
-              <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
-                <LoaderIcon className="animate-spin" />
-              </div>
-            ) : (
-              <button
-                onClick={() => joinRoom(id)}
-                className="mt-2 w-full bg-blue-500 p-2 rounded"
-              >
-                Join Room
-              </button>
-            )}
-            {loading ? (
-              <div className="mt-2 w-full opacity-50 flex justify-center bg-blue-500 p-2 rounded ">
-                <LoaderIcon className="animate-spin" />
-              </div>
-            ) : (
-              <button
-                onClick={() => createRoom()}
-                className="mt-2 w-full bg-blue-500 p-2 rounded"
-              >
-                Create Room
-              </button>
-            )}
+        <div className="space-y-8">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+            <h2 className="text-xl font-medium text-center mb-8 text-gray-900 dark:text-gray-100">
+              Join or Create a Room
+            </h2>
+            <div className="space-y-6">
+              <Input
+                type="text"
+                onChange={(e) => setId(e.target.value)}
+                placeholder="Enter room ID"
+                className="w-full h-12 px-4 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              {joinLoading ? (
+                <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
+                  <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
+                  <span className="text-gray-500">Joining...</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => joinRoom(id)}
+                  className="w-full h-12 bg-gray-900 dark:bg-gray-100 rounded-lg text-white dark:text-gray-900 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200"
+                >
+                  Join Room
+                </button>
+              )}
+              {loading ? (
+                <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
+                  <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
+                  <span className="text-gray-500">Creating...</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => createRoom()}
+                  className="w-full h-12 border border-gray-900 dark:border-gray-100 rounded-lg text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-900 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-900 transition-all duration-200"
+                >
+                  Create Room
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="mt-4 p-4 border rounded bg-gray-100 dark:bg-gray-700">
-            <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+            <div className="text-center">
               {roomid ? (
                 <ShareLink roomid={roomid} />
               ) : (
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Click &quot;Create Room&quot; or enter a room ID to join.
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Enter a room ID or create a new room to start playing
                   </p>
+                  <div className="w-16 h-[1px] bg-gray-200 dark:bg-gray-700 mx-auto"></div>
                 </div>
               )}
             </div>
           </div>
         </div>
       ) : (
-        <div>
-          <div className="flex justify-center items-center h-full">
-            <LoaderIcon className="animate-spin" />
-            <span className="ml-2">Entering the game...</span>
+        <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <LoaderIcon className="animate-spin h-6 w-6 text-gray-900 dark:text-gray-100" />
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Entering the game...
+            </span>
           </div>
         </div>
       )}

@@ -339,10 +339,9 @@ export const useChessStore = create(
         const move = await GetBestMove(FEN, get().stockfishLevel);
         const { promotedPiece } = move;
 
+        get().movePiece(move.prevX, move.prevY, move.newX, move.newY, true);
         if (promotedPiece)
           get().promotePawn(move.newX, move.newY, promotedPiece);
-
-        get().movePiece(move.prevX, move.prevY, move.newX, move.newY, true);
       },
 
       updateComputer: (color: PieceColor | null) => {

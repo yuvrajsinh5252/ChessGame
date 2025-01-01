@@ -53,33 +53,48 @@ export const CheckMate = () => {
   return (
     <div>
       <Dialog open={true}>
-        <DialogContent className="w-full max-w-md p-5 rounded-lg shadow-lg">
-          <DialogHeader>
+        <DialogContent className="w-full max-w-md p-6 rounded-xl shadow-2xl ">
+          <DialogHeader className="space-y-4">
             <DialogTitle>
-              <span className="text-2xl font-semibold text-center">
+              <span className="text-4xl font-bold text-center block bg-clip-text">
                 Game Over
               </span>
             </DialogTitle>
-            <DialogDescription className="text-center pt-2 text-lg font-semibold">
-              {isCheckMate === "black"
-                ? "White"
-                : isCheckMate === "draw"
-                ? "It's a Draw"
-                : isCheckMate === "stalemate"
-                ? "Stalemate"
-                : "Black"}{" "}
-              wins!
+            <DialogDescription className="text-center space-y-4">
+              <div
+                className={`text-2xl font-bold ${
+                  isCheckMate === "draw" || isCheckMate === "stalemate"
+                    ? "text-gray-600"
+                    : isCheckMate === "black"
+                    ? "text-green-600"
+                    : "text-blue-600"
+                }`}
+              >
+                {isCheckMate === "black"
+                  ? "White"
+                  : isCheckMate === "draw"
+                  ? "It's a Draw!"
+                  : isCheckMate === "stalemate"
+                  ? "Stalemate!"
+                  : "Black"}{" "}
+                {isCheckMate !== "draw" &&
+                  isCheckMate !== "stalemate" &&
+                  "Wins!"}
+              </div>
+              <div className="text-3xl font-mono font-bold tracking-wider">
+                {isCheckMate === "draw" || isCheckMate === "stalemate"
+                  ? "½ - ½"
+                  : isCheckMate === "white"
+                  ? "0 - 1"
+                  : "1 - 0"}
+              </div>
             </DialogDescription>
-            <div className="text-center text-lg font-semibold">
-              {isCheckMate === "draw" || isCheckMate === "stalemate"
-                ? "1/2 - 1/2"
-                : isCheckMate === "white"
-                ? "0 - 1"
-                : "1 - 0"}
-            </div>
-            <div className="mt-4 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-semibold rounded-lg
+                          hover:from-blue-600 hover:to-purple-600 transition-all duration-300 ease-in-out
+                          transform hover:scale-105 hover:shadow-lg
+                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 onClick={() => {
                   localStorage.removeItem("chess-store");
                   window.location.href = "/";
