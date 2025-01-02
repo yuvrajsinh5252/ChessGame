@@ -3,13 +3,14 @@
 import { usePathname } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import MaxWidthWrapper from "./MaxWidthWrapper";
-import ThemeToggle from "./themes/theme-toggle";
-import Chat from "./online-mode/chat/chatbox";
 import { useStore } from "zustand";
 import useChatStore from "@/store/useChatStore";
 import { useEffect, Suspense } from "react";
-import { ChessTheme } from "./themes/chess-theme";
+import MaxWidthWrapper from "./MaxWidthWrapper";
+import Chat from "../online-mode/chat/chatbox";
+import { ChessTheme } from "../themes/chess-theme";
+import ThemeToggle from "../themes/theme-toggle";
+import Link from "next/link";
 
 function Navbar() {
   const pathname = usePathname();
@@ -35,9 +36,9 @@ function Navbar() {
       <MaxWidthWrapper className="w-full flex justify-between p-4 rounded-lg">
         <div className="flex items-center space-x-2">
           <Image src="/logo.png" width={40} height={40} alt="logo" />
-          <a href="/" className="text-lg font-bold">
+          <Link href="/" className="text-lg font-bold">
             ChessMate
-          </a>
+          </Link>
         </div>
         <div className="flex gap-2 justify-center items-center">
           {pathname?.startsWith("/online-multiplayer/room/") && (

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { pusherClient } from "@/lib/pusher";
 import { getGameState, getPlayerColor } from "@/lib/db/game/helper";
 import { OnlineChessPiece } from "./onlinechessPiece";
-import { LoadingBoard } from "../loadingBoard";
+import { LoadingBoard } from "../common/loadingBoard";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { PieceType } from "@/types/chess";
 import { GameState, Player, winner } from "@/types/onlineChess";

@@ -1,7 +1,7 @@
 import { BlackPlayer } from "@/Components/two-player/blackPlayer";
 import { CheckMate } from "@/Components/two-player/checkmate";
 import { ChoosePiece } from "@/Components/two-player/choose-piece";
-import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
+import MaxWidthWrapper from "@/Components/common/MaxWidthWrapper";
 import { WhitePlayer } from "@/Components/two-player/whitePlayer";
 import ChessBoard from "@/Components/two-player/chessboard";
 import { Controls } from "@/Components/two-player/controls";

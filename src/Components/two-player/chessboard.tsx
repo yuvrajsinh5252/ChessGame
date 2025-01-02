@@ -5,7 +5,7 @@ import { ChessPiece } from "./chessPiece";
 import { useEffect, useState } from "react";
 import useStore from "@/lib/hooks/useStore";
 import { initialBoard } from "@/utils/initialSetup";
-import { LoadingBoard } from "../loadingBoard";
+import { LoadingBoard } from "../common/loadingBoard";
 import { useThemeStore } from "@/store/useThemeStore";
 
 export default function ChessBoard() {

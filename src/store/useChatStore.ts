@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface Message {
   id: string;
@@ -29,7 +29,7 @@ const useChatStore = create(
         set((state) => ({ messages: [...state.messages, message] })),
       clearMessages: () => set({ messages: [], roomId: undefined }),
     }),
-    { name: "chat-store", getStorage: () => localStorage }
+    { name: "chat-store", storage: createJSONStorage(() => localStorage) }
   )
 );
 

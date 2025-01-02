@@ -1,7 +1,7 @@
 "use client";
 
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { EliminatedPieces } from "../eliminated";
+import { EliminatedPieces } from "../common/eliminated";
 
 export function White() {
   const { gameState } = useOnlineChessStore((state) => state);

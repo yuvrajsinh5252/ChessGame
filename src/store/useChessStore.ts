@@ -14,7 +14,7 @@ import { promotePawn } from "@/utils/promotePawn";
 import { ConvertBoardToFEN } from "@/utils/stock-services/FENconverter";
 import { GetBestMove } from "@/utils/stock-services/service";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 export type Piece = string | null;
 export type Board = Piece[][];
 
@@ -372,7 +372,7 @@ export const useChessStore = create(
     }),
     {
       name: "chess-store",
-      getStorage: () => localStorage,
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

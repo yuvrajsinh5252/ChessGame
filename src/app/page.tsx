@@ -7,7 +7,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-300 via-white to-slate-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="absolute inset-0 bg-[url('/chess-pattern.png')] opacity-[0.03] dark:opacity-5" />
       <div className="absolute -top-20 -left-20 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl" />
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl" />
 

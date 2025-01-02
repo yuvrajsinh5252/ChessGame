@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { OnlineBoard } from "@/Components/online-mode/onlineboard";
-import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
+import MaxWidthWrapper from "@/Components/common/MaxWidthWrapper";
 import { Black } from "@/Components/online-mode/black";
 import { White } from "@/Components/online-mode/white";
 import { useEffect, useState } from "react";
@@ -14,13 +14,12 @@ import { GameControl } from "@/Components/online-mode/gameControl";
 import { DrawRequest } from "@/Components/online-mode/drawRequest";
 import { Suspense } from "react";
 import useChatStore from "@/store/useChatStore";
-import { ConfirmationDialog } from "@/Components/confirmation";
 import ChatSidebar from "@/Components/online-mode/chat/chatBar";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     roomId: string;
-  };
+  }>;
 }
 
 function PageContent({ params }: PageProps) {
@@ -28,13 +27,20 @@ function PageContent({ params }: PageProps) {
   const [color, setColor] = useState<"white" | "black" | null>(null);
   const searchParams = useSearchParams();
   const [playerId, setPlayerId] = useState<string | null>(null);
-  const [exit, setExit] = useState(false);
+  const [roomId, setRoomId] = useState<string | null>(null);
 
   useEffect(() => {
     setPlayerId(searchParams.get("playerId"));
   }, [searchParams]);
 
-  const { roomId } = params;
+  useEffect(() => {
+    async function fetchRoomId() {
+      const { roomId } = await params;
+      setRoomId(roomId);
+    }
+
+    fetchRoomId();
+  }, [params]);
 
   useEffect(() => {
     if (!playerId || !roomId) return;
@@ -46,20 +52,6 @@ function PageContent({ params }: PageProps) {
 
     fetchPlayerColor();
   }, [playerId, roomId]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "";
-      setExit(true);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   if (!playerId || !roomId) return <div>Invalid URL</div>;
 
@@ -75,7 +67,6 @@ function PageContent({ params }: PageProps) {
 
   return (
     <MaxWidthWrapper>
-      {/* {exit ? <ConfirmationDialog /> : null} */}
       <div
         className={`flex flex-col gap-2 justify-center items-center transition-all duration-500 ${
           chatBoxOpen ? "blur-0" : "max-sm:blur-sm"
@@ -106,7 +97,7 @@ function PageContent({ params }: PageProps) {
   );
 }
 
-export default function PageWrapper(props: PageProps) {
+export default function PageWrapper({ params }: PageProps) {
   return (
     <Suspense
       fallback={
@@ -116,7 +107,7 @@ export default function PageWrapper(props: PageProps) {
         </div>
       }
     >
-      <PageContent {...props} />
+      <PageContent params={params} />
     </Suspense>
   );
 }

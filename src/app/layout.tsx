@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/Components/themes/provider";
-import Navbar from "@/Components/navbar";
 import { Toaster } from "@/Components/ui/sonner";
+import NavbarWrapper from "@/Components/common/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "chessmate",
+  title: "Chessmate",
   description: "A chess game built with Nextjs and TypeScript.",
 };
 
@@ -22,7 +22,7 @@ export default function RootLayout({
       <link rel="icon" href="/logo2.png" />
       <body className={inter.className}>
         <Provider>
-          <Navbar />
+          <NavbarWrapper />
           {children}
           <Toaster position="top-center" />
         </Provider>

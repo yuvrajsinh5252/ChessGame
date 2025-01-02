@@ -2,7 +2,7 @@
 
 import useStore from "@/lib/hooks/useStore";
 import { useChessStore } from "@/store/useChessStore";
-import { EliminatedPieces } from "../eliminated";
+import { EliminatedPieces } from "../common/eliminated";
 import { GrRobot } from "react-icons/gr";
 
 export function BlackPlayer() {

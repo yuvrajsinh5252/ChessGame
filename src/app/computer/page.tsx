@@ -1,5 +1,5 @@
 import { ChooseColor } from "@/Components/computer/choose-color";
-import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
+import MaxWidthWrapper from "@/Components/common/MaxWidthWrapper";
 import { BlackPlayer } from "@/Components/two-player/blackPlayer";
 import { CheckMate } from "@/Components/two-player/checkmate";
 import ChessBoard from "@/Components/two-player/chessboard";
