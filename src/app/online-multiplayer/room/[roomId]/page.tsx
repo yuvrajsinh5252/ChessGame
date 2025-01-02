@@ -15,6 +15,7 @@ import { DrawRequest } from "@/Components/online-mode/drawRequest";
 import { Suspense } from "react";
 import useChatStore from "@/store/useChatStore";
 import { ConfirmationDialog } from "@/Components/confirmation";
+import ChatSidebar from "@/Components/online-mode/chat/chatBar";
 
 interface PageProps {
   params: {
@@ -64,11 +65,11 @@ function PageContent({ params }: PageProps) {
 
   if (!color)
     return (
-      <div className="relative">
-        <Loader2
-          className="absolute animate-spin left-1/2 right-1/2 h-screen"
-          size={50}
-        />
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin mb-4" size={50} strokeWidth={3} />
+        <p className="text-gray-600 text-lg font-medium">
+          Connecting to game...
+        </p>
       </div>
     );
 
@@ -77,7 +78,7 @@ function PageContent({ params }: PageProps) {
       {/* {exit ? <ConfirmationDialog /> : null} */}
       <div
         className={`flex flex-col gap-2 justify-center items-center transition-all duration-500 ${
-          chatBoxOpen ? " blur-0 " : " blur-sm "
+          chatBoxOpen ? "blur-0" : "max-sm:blur-sm"
         }`}
       >
         <div className="flex gap-2 flex-col justify-center items-center pt-10 min-h-screen max-sm:pb-10">
@@ -97,6 +98,7 @@ function PageContent({ params }: PageProps) {
               <Black />
             </>
           )}
+          <ChatSidebar roomId={roomId} playerId={playerId} />
           <GameControl roomId={roomId} playerId={playerId} />
         </div>
       </div>
@@ -106,7 +108,14 @@ function PageContent({ params }: PageProps) {
 
 export default function PageWrapper(props: PageProps) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="h-screen flex flex-col items-center justify-center">
+          <Loader2 className="animate-spin mb-4" size={50} strokeWidth={3} />
+          <p className="text-gray-600 text-lg font-medium">Loading game...</p>
+        </div>
+      }
+    >
       <PageContent {...props} />
     </Suspense>
   );

@@ -38,15 +38,15 @@ export function ChatMessage({
 function UserMessage({ message, color }: { message: Message; color: string }) {
   return (
     <div className="flex items-start gap-3">
-      <div
-        className={`max-sm:hidden w-12 h-12 bg-${color} rounded-full border-2 flex items-center justify-center`}
-      ></div>
+      {/* <div
+        className={`max-sm:hidden w-12 h-12 sm:hidden bg-${color} rounded-full border-2 flex items-center justify-center`}
+      ></div> */}
       <div className="flex flex-col gap-1">
-        <div className="flex flex-col bg-gray-200 dark:bg-gray-700 p-4 rounded-2xl rounded-tl-none w-80 max-sm:w-[270px]">
-          <span className="font-semibold text-gray-700 dark:text-gray-300 mb-1">
-            {message.user}
+        <div className="flex flex-col bg-gray-200 dark:bg-gray-700 p-2 rounded-2xl rounded-tl-none w-56 max-sm:w-[270px]">
+          <span className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-1 truncate">
+            {message.user.slice(0, 10)}
           </span>
-          <span className="text-gray-600 dark:text-gray-400 break-words">
+          <span className="text-gray-600 text-sm dark:text-gray-400 break-words">
             {message.content}
           </span>
         </div>
@@ -72,11 +72,11 @@ function OpponentsMessage({
   return (
     <div className="flex items-start gap-3 justify-end">
       <div className="flex flex-col gap-1 items-end">
-        <div className="flex flex-col bg-blue-100 dark:bg-blue-900/60 p-4 rounded-2xl rounded-tr-none w-80 max-sm:w-[270px]">
-          <span className="font-semibold text-blue-700 dark:text-blue-300 mb-1">
-            {message.user}
+        <div className="flex flex-col bg-blue-100 dark:bg-blue-900/60 p-2 rounded-2xl rounded-tr-none w-56 max-sm:w-[270px]">
+          <span className="font-semibold text-blue-700 text-sm truncate dark:text-blue-300 mb-1">
+            {message.user.slice(0, 10)}
           </span>
-          <span className="text-blue-600 dark:text-blue-400 break-words">
+          <span className="text-blue-600 text-sm dark:text-blue-400 break-words">
             {message.content}
           </span>
         </div>
@@ -88,9 +88,9 @@ function OpponentsMessage({
             })}
         </span>
       </div>
-      <div
+      {/* <div
         className={`max-sm:hidden w-12 h-12 bg-${color} rounded-full border-2 flex items-center justify-center`}
-      ></div>
+      ></div> */}
     </div>
   );
 }

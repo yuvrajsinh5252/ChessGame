@@ -21,6 +21,7 @@ export default function Chat({
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
   const { isOpen, setIsOpen } = useChatStore((state) => state);
+  const [messageSeen, setMessageSeen] = useState([0, 0]);
 
   const {
     messages,
@@ -45,14 +46,18 @@ export default function Chat({
 
       if (!chatRoomid) setRoomId(roomId);
 
-      if (data.playerId !== playerId && !isOpen) {
+      if (data.playerId !== playerId && isOpen) {
+        setMessageSeen([messageSeen[0] + 1, messages.length]);
+
         toast(`New message`, {
           duration: 5000,
           className: "flex justify-between",
           action: (
             <Button
+              className="sm:hidden"
               variant="outline"
               onClick={() => {
+                setMessageSeen([0, messages.length]);
                 setIsOpen(false);
                 toast.dismiss();
               }}
@@ -70,20 +75,23 @@ export default function Chat({
       channel.unbind("chat");
       pusherClient.unsubscribe(`${roomId}`);
     };
-  }, [pusherClient, roomId, addMessage, playerId, setIsOpen]);
+  }, [pusherClient, roomId, addMessage, playerId, setIsOpen, setMessageSeen]);
 
   return (
     <>
-      <div className="relative z-50">
+      <div className="relative z-50 sm:hidden">
         <Button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            setIsOpen(!isOpen);
+            setMessageSeen([0, messages.length]);
+          }}
           className="p-2 relative hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           variant="ghost"
         >
           <MessageSquare className="h-6 w-6" />
-          {messages && messages.length > 0 && (
+          {messageSeen[0] > 0 && (
             <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
-              {messages.length}
+              {messageSeen[0]}
             </span>
           )}
         </Button>
@@ -120,7 +128,7 @@ export default function Chat({
               </div>
             )}
           </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-b-lg border-t dark:border-gray-700">
+          <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border-t dark:border-gray-700">
             <div className="flex gap-2 items-center">
               <Input
                 placeholder="Type a message..."

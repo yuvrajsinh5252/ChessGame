@@ -7,6 +7,7 @@ import {
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
 import { isKingInCheck } from "@/utils/kingCheck";
+import { playSound, SoundType } from "@/utils/playSound";
 import { isMovePossible } from "@/utils/possibleMove";
 import { create } from "zustand";
 
@@ -33,14 +34,18 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
 
       if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
 
+      let sound: SoundType = "move";
+
       const newBoard = board.map((row) => [...row]);
       const piece = newBoard[fromRow][fromCol];
 
       if (
         lastMove &&
         CheckEnpassant(newBoard, { fromRow, fromCol, toRow, toCol }, lastMove)
-      )
+      ) {
+        if (newBoard[lastMove.toRow][lastMove.toCol]) sound = "capture";
         newBoard[lastMove.toRow][lastMove.toCol] = null;
+      }
 
       const data = checkCastling(
         fromRow,
@@ -55,6 +60,7 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       if (data) {
         newBoard[fromRow][data.rookCol] = null;
         newBoard[fromRow][data.newRookCol] = data.rook;
+        sound = "castle";
       }
 
       newBoard[toRow][toCol] = piece;
@@ -64,8 +70,10 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
       let OpponentKingCheck = false;
       if (
         isKingInCheck(newBoard, currentPlayer === "white" ? "black" : "white")
-      )
+      ) {
         OpponentKingCheck = true;
+        sound = "check";
+      }
 
       set({
         gameState: {
@@ -74,6 +82,8 @@ const useOnlineChessStore = create<OnlineChessStore & OnlineChessStoreActions>(
           lastMove: { fromRow, fromCol, toRow, toCol },
         },
       });
+
+      playSound(sound);
 
       setTimeout(() => {
         updateGameState({

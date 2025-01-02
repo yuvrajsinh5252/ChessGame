@@ -28,50 +28,68 @@ export default function Room() {
     channel.bind("player-joined", () => {
       setLoading(false);
       setRoomChatId(roomid);
+      setRoomEnterLoading(true);
       router.push(`/online-multiplayer/room/${roomid}?playerId=${playerId}`);
     });
 
     return () => {
       channel.unbind_all();
-      pusherClient.unsubscribe(`room-${playerId}`);
+      pusherClient.unsubscribe(`room-${roomid}`);
     };
-  }, [roomid, playerId, pusherClient, router]);
+  }, [roomid, playerId, router, setRoomChatId]);
 
   const createRoom = async () => {
-    setLoading(true);
-    const data = await CreateRoom();
-    const roomId = data.roomId;
-    const CurrentplayerId = data.playerId;
+    try {
+      setLoading(true);
+      const data = await CreateRoom();
+      const roomId = data.roomId;
+      const CurrentplayerId = data.playerId;
 
-    if (roomId && CurrentplayerId) {
-      setRoomid(roomId);
-      setPlayerId(CurrentplayerId);
+      if (roomId && CurrentplayerId) {
+        setRoomid(roomId);
+        setPlayerId(CurrentplayerId);
+      } else {
+        throw new Error("Failed to create room");
+      }
+    } catch (error) {
+      setRoomid("Error");
+      setLoading(false);
     }
-
-    if (roomId) setRoomid(roomId);
-    else setRoomid("Error");
   };
 
   const joinRoom = async (roomId: string) => {
-    setJoinLoading(true);
-    if (playerId) {
-      alert("You are already in a room");
+    if (!roomId.trim()) {
+      alert("Please enter a room ID");
       return;
     }
 
-    const data = await JoinGame({ roomId });
-    if (data === "Error") {
-      setRoomid("Error");
-      return;
-    }
+    try {
+      setJoinLoading(true);
+      if (playerId) {
+        alert("You are already in a room");
+        setJoinLoading(false);
+        return;
+      }
 
-    const OtherplayerId = data?.playerId;
-    if (data?.playerId) {
-      setRoomChatId(roomId);
+      const data = await JoinGame({ roomId });
+      if (data === "Error") {
+        alert("Room not found or is full");
+        setRoomid("Error");
+        setJoinLoading(false);
+        return;
+      }
+
+      const OtherplayerId = data?.playerId;
+      if (data?.playerId) {
+        setRoomChatId(roomId);
+        setRoomEnterLoading(true);
+        router.push(
+          `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
+        );
+      }
+    } catch (error) {
+      alert("Failed to join room");
       setJoinLoading(false);
-      router.push(
-        `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
-      );
     }
   };
 
