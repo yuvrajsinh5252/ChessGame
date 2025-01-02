@@ -38,6 +38,8 @@ export default function Room() {
     };
   }, [roomid, playerId, router, setRoomChatId]);
 
+  const OnlineSearch = async () => {};
+
   const createRoom = async () => {
     try {
       setLoading(true);
@@ -151,6 +153,19 @@ export default function Room() {
               )}
             </div>
           </div>
+          {loading ? (
+            <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
+              <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
+              <span className="text-gray-500">Finding Players...</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => OnlineSearch()}
+              className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              Global search
+            </button>
+          )}
         </div>
       ) : (
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">

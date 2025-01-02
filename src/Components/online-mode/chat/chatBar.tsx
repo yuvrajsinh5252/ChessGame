@@ -9,12 +9,6 @@ import { useStore } from "zustand";
 import { ChatMessage } from "./message";
 import { MessageSquare, MessageCircle, Send } from "lucide-react";
 
-interface Message {
-  sender: string;
-  content: string;
-  timestamp: string;
-}
-
 const ChatSidebar = ({
   playerId,
   roomId,
@@ -79,26 +73,23 @@ const ChatSidebar = ({
   }, [pusherClient, roomId, addMessage, playerId, setMessageSeen]);
 
   return (
-    <div className="fixed right-[18%] top-50 w-80 bg-white/95 dark:bg-gray-900/95 text-gray-800 dark:text-white flex flex-col shadow-xl backdrop-blur-sm max-sm:hidden h-[38rem] rounded-lg border border-gray-200 dark:border-gray-700/50">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700/50 flex items-center gap-3">
+    <div className="fixed right-[350px] top-1/2 -translate-y-1/2 mt-4 w-80 bg-white/80 dark:bg-gray-900/80 text-gray-800 dark:text-white flex flex-col backdrop-blur-md max-sm:hidden h-[38rem] rounded-xl border border-gray-200/50 dark:border-gray-700/30 transition-all duration-300 hover:shadow-blue-500/10">
+      <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/30 flex items-center gap-3 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-800/50 rounded-t-xl">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-blue-500" />
-          <h2 className="text-lg font-semibold">Game Chat</h2>
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+            Game Chat
+          </h2>
         </div>
         <div className="flex items-center gap-2 ml-auto">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="w-2 h-2 bg-green-500 rounded-full shadow-green-500/30 animate-pulse"></div>
+          <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
             Online
           </span>
         </div>
       </div>
 
-      <div
-        className="flex-1 p-4 overflow-y-auto no-scrollbar bg-gray-50/50 dark:bg-gray-900/50"
-        ref={(el) => {
-          if (el) el.scrollTop = el.scrollHeight;
-        }}
-      >
+      <div className="flex-1 p-4 overflow-y-auto no-scrollbar bg-gradient-to-b from-gray-50/30 to-gray-50/10 dark:from-gray-900/30 dark:to-gray-900/10">
         {messages && messages.length > 0 ? (
           <ChatMessage messages={messages} playerId={playerId} />
         ) : (
@@ -112,7 +103,7 @@ const ChatSidebar = ({
         )}
       </div>
 
-      <div className="p-4 bg-gray-100/80 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700/50 rounded-lg">
+      <div className="p-4 bg-gradient-to-b from-gray-100/50 to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/50 border-t border-gray-200/50 dark:border-gray-700/30 rounded-b-xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -121,17 +112,17 @@ const ChatSidebar = ({
               setMessage("");
             }
           }}
-          className="flex gap-2 items-center"
+          className="flex gap-2 items-center group"
         >
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2 bg-white dark:bg-gray-700/50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition-all border border-gray-200 dark:border-gray-700"
+            className="flex-1 px-4 py-2 bg-white/80 dark:bg-gray-700/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder-gray-400 transition-all border border-gray-200/50 dark:border-gray-700/30 hover:border-blue-500/30 focus:border-blue-500/50"
           />
           <Button
-            className="rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-blue-600 transition-colors"
+            className="rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-blue-600 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 disabled:opacity-50 disabled:hover:shadow-none"
             variant="default"
             disabled={!message.trim()}
             type="submit"

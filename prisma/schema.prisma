@@ -45,3 +45,7 @@ model stats {
   totalGames    Int    @default(0)
   currentOnline Int    @default(0)
 }
+
+model playersOnline {
+  id String @id @default(cuid())
+}
