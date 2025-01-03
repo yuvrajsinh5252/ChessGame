@@ -9,6 +9,8 @@ import { ShareLink } from "./shareLink";
 import { CreateRoom } from "@/lib/db/room/create-game";
 import { JoinGame } from "@/lib/db/room/join-game";
 import useChatStore from "@/store/useChatStore";
+import { Button } from "@/Components/ui/button";
+import { FindingMatch, Matchmaking } from "./matchMaking";
 
 export default function Room() {
   const { setRoomId: setRoomChatId } = useChatStore((state) => state);
@@ -20,6 +22,7 @@ export default function Room() {
   const [joinLoading, setJoinLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [roomEnterLoading, setRoomEnterLoading] = useState<boolean>(false);
+  const [matchMaking, setMatchMaking] = useState<boolean>(false);
 
   useEffect(() => {
     if (!roomid || !playerId) return;
@@ -37,8 +40,6 @@ export default function Room() {
       pusherClient.unsubscribe(`room-${roomid}`);
     };
   }, [roomid, playerId, router, setRoomChatId]);
-
-  const OnlineSearch = async () => {};
 
   const createRoom = async () => {
     try {
@@ -97,7 +98,12 @@ export default function Room() {
 
   return (
     <div className="w-full max-w-md mx-auto p-8">
-      {!roomEnterLoading ? (
+      {matchMaking ? (
+        <FindingMatch
+          setMatchMaking={setMatchMaking}
+          matchMaking={matchMaking}
+        />
+      ) : !roomEnterLoading ? (
         <div className="space-y-8">
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
             <h2 className="text-xl font-medium text-center mb-8 text-gray-900 dark:text-gray-100">
@@ -111,17 +117,17 @@ export default function Room() {
                 className="w-full h-12 px-4 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
               {joinLoading ? (
-                <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
+                <Button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
                   <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
                   <span className="text-gray-500">Joining...</span>
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   onClick={() => joinRoom(id)}
-                  className="w-full h-12 bg-gray-900 dark:bg-gray-100 rounded-lg text-white dark:text-gray-900 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200"
+                  className="w-full h-12 font-medium rounded-lg transition-all duration-200"
                 >
                   Join Room
-                </button>
+                </Button>
               )}
               {loading ? (
                 <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
@@ -153,19 +159,10 @@ export default function Room() {
               )}
             </div>
           </div>
-          {loading ? (
-            <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
-              <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
-              <span className="text-gray-500">Finding Players...</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => OnlineSearch()}
-              className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              Global search
-            </button>
-          )}
+          <Matchmaking
+            setMatchMaking={setMatchMaking}
+            matchMaking={matchMaking}
+          />
         </div>
       ) : (
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">

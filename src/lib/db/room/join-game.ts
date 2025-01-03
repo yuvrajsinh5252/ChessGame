@@ -1,7 +1,7 @@
 "use server";
 
 import { pusherServer } from "@/lib/pusher";
-import { prisma } from "../prisma";
+import { prisma } from "../../prisma";
 
 export async function JoinGame({ roomId }: { roomId: string }) {
   try {

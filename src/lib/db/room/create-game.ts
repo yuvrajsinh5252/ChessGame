@@ -5,7 +5,7 @@ import {
   initialRookMoved,
   intitialkingCheckOrMoved,
 } from "@/utils/initialSetup";
-import { prisma } from "../prisma";
+import { prisma } from "../../prisma";
 
 export async function CreateRoom() {
   const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);

@@ -116,7 +116,7 @@ function GameModeCard({
             height={96}
             className="transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-xl scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-xl scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         <h2 className="text-2xl font-bold mb-3 text-slate-700 dark:text-white transition-colors duration-300">
           {title}

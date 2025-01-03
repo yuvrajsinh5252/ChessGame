@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
 import { Board } from "@/store/useChessStore";
 import { GameState, winner } from "@/types/onlineChess";

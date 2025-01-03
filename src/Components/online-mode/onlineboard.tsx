@@ -110,11 +110,7 @@ export function OnlineBoard({
     });
 
     return () => {
-      channel.unbind("promote");
-      channel.unbind("resign");
-      channel.unbind("move");
-      channel.unbind("drawAccepted");
-      channel.unbind("drawDeclined");
+      channel.unbind_all();
       pusherClient.unsubscribe(`room-${roomId}`);
     };
   }, [

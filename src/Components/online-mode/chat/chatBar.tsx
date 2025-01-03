@@ -48,18 +48,6 @@ const ChatSidebar = ({
 
         toast(`New message`, {
           duration: 5000,
-          className: "flex justify-between",
-          action: (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setMessageSeen([0, messages.length]);
-                toast.dismiss();
-              }}
-            >
-              View
-            </Button>
-          ),
           description: data.message,
         });
       }
@@ -70,10 +58,10 @@ const ChatSidebar = ({
       channel.unbind("chat");
       pusherClient.unsubscribe(`${roomId}`);
     };
-  }, [pusherClient, roomId, addMessage, playerId, setMessageSeen]);
+  }, [roomId, addMessage, playerId, setMessageSeen]);
 
   return (
-    <div className="fixed right-[350px] top-1/2 -translate-y-1/2 mt-4 w-80 bg-white/80 dark:bg-gray-900/80 text-gray-800 dark:text-white flex flex-col backdrop-blur-md max-sm:hidden h-[38rem] rounded-xl border border-gray-200/50 dark:border-gray-700/30 transition-all duration-300 hover:shadow-blue-500/10">
+    <div className="fixed right-[-50px] top-1/2 -translate-y-1/2 mt-4 w-80 bg-white/80 dark:bg-gray-900/80 text-gray-800 dark:text-white flex flex-col backdrop-blur-md max-sm:hidden h-[38rem] rounded-xl border border-gray-200/50 dark:border-gray-700/30 transition-all duration-300 hover:shadow-blue-500/10">
       <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/30 flex items-center gap-3 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-800/50 rounded-t-xl">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-blue-500" />
