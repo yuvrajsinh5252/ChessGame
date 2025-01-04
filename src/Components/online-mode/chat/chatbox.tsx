@@ -10,12 +10,11 @@ import { sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
 import { Button } from "@/Components/ui/button";
-import { useSearchParams } from "next/navigation";
 
 function Chat({ roomId }: { roomId: string }) {
-  const searchParams = useSearchParams();
-
-  const playerId = searchParams?.get("playerId") || "";
+  const { data: session } = useSession();
+  const playerId = session?.user?.id;
+  const playerName = session?.user?.name;
 
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
@@ -44,46 +43,52 @@ function Chat({ roomId }: { roomId: string }) {
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`${roomId}`);
-    channel.bind("chat", (data: { message: string; playerId: string }) => {
-      const newMessage = {
-        id: roomId,
-        user: data.playerId,
-        content: data.message,
-        timestamp: new Date(),
-      };
+    channel.bind(
+      "chat",
+      (data: { message: string; playerId: string; name: string }) => {
+        const newMessage = {
+          id: roomId,
+          user: data.playerId,
+          name: data.name,
+          content: data.message,
+          timestamp: new Date(),
+        };
 
-      if (!chatRoomId) setRoomId(roomId);
+        if (!chatRoomId) setRoomId(roomId);
 
-      if (data.playerId !== playerId && isOpen) {
-        setMessageSeen([messageSeen[0] + 1, messages.length]);
+        if (data.playerId !== playerId && isOpen) {
+          setMessageSeen([messageSeen[0] + 1, messages.length]);
 
-        toast(`New message`, {
-          duration: 5000,
-          className: "flex justify-between",
-          action: (
-            <Button
-              className="sm:hidden"
-              variant="outline"
-              onClick={() => {
-                setMessageSeen([0, messages.length]);
-                setIsOpen(false);
-                toast.dismiss();
-              }}
-            >
-              View
-            </Button>
-          ),
-          description: data.message,
-        });
+          toast(`New message`, {
+            duration: 5000,
+            className: "flex justify-between",
+            action: (
+              <Button
+                className="sm:hidden"
+                variant="outline"
+                onClick={() => {
+                  setMessageSeen([0, messages.length]);
+                  setIsOpen(false);
+                  toast.dismiss();
+                }}
+              >
+                View
+              </Button>
+            ),
+            description: data.message,
+          });
+        }
+        addMessage(newMessage);
       }
-      addMessage(newMessage);
-    });
+    );
 
     return () => {
       channel.unbind("chat");
       pusherClient.unsubscribe(`${roomId}`);
     };
   }, [pusherClient, roomId, addMessage, playerId, setIsOpen, setMessageSeen]);
+
+  if (!playerId || !playerName) return null;
 
   return (
     <>
@@ -144,7 +149,7 @@ function Chat({ roomId }: { roomId: string }) {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && message.trim()) {
-                    sendMessage(roomId, message, playerId);
+                    sendMessage(roomId, message, playerId, playerName);
                     setMessage("");
                   }
                 }}
@@ -155,7 +160,7 @@ function Chat({ roomId }: { roomId: string }) {
                 disabled={!message.trim()}
                 onClick={async () => {
                   if (message.trim()) {
-                    await sendMessage(roomId, message, playerId);
+                    await sendMessage(roomId, message, playerId, playerName);
                     setMessage("");
                   }
                 }}
@@ -171,6 +176,7 @@ function Chat({ roomId }: { roomId: string }) {
 }
 
 import { Suspense } from "react";
+import { useSession } from "next-auth/react";
 
 function ChatWrapper({ roomId }: { roomId: string }) {
   return (

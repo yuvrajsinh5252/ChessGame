@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export interface Message {
   id: string;
   user: string;
+  name: string;
   content: string;
   timestamp: Date;
 }

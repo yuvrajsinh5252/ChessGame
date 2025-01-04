@@ -50,7 +50,7 @@ function OpponentsMessage({
       <div className="flex flex-col gap-1">
         <div className="flex flex-col bg-gray-200 dark:bg-gray-700 p-2 rounded-2xl rounded-tl-none w-56 max-sm:w-[270px]">
           <span className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-1 truncate">
-            {message.user.slice(0, 10)}
+            {message.name}
           </span>
           <span className="text-gray-600 text-sm dark:text-gray-400 break-words">
             {message.content}
@@ -74,7 +74,7 @@ function UserMessage({ message, color }: { message: Message; color: string }) {
       <div className="flex flex-col gap-1 items-end">
         <div className="flex flex-col bg-blue-100 dark:bg-blue-900/60 p-2 rounded-2xl rounded-tr-none w-56 max-sm:w-[270px]">
           <span className="font-semibold text-blue-700 text-sm truncate dark:text-blue-300 mb-1">
-            {message.user.slice(0, 10)}
+            {message.name}
           </span>
           <span className="text-blue-600 text-sm dark:text-blue-400 break-words">
             {message.content}

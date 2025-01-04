@@ -40,7 +40,9 @@ export default function Room() {
       setLoading(false);
       setRoomChatId(roomid);
       setRoomEnterLoading(true);
-      router.push(`/online-multiplayer/room/${roomid}?playerId=${playerId}`);
+      router.push(
+        `/online-multiplayer/room/${roomid}?playerId=${session.user?.name}`
+      );
     });
 
     return () => {
@@ -60,10 +62,10 @@ export default function Room() {
         setCheckingGame(true);
         const game = await CheckGame(playerId);
 
-        if (game && game.roomId) {
+        if (game && game.roomId && !game.winner) {
           setRoomChatId(game.roomId);
           router.push(
-            `/online-multiplayer/room/${game.roomId}?playerId=${playerId}`
+            `/online-multiplayer/room/${game.roomId}?playerId=${session.user?.name}`
           );
         }
       } catch (error) {
@@ -76,35 +78,36 @@ export default function Room() {
     checkExistingGame();
   }, [playerId, router, setRoomChatId]);
 
-  if (status === "loading" || (status === "authenticated" && checkingGame)) {
+  if (
+    status === "loading" ||
+    (status === "authenticated" && checkingGame) ||
+    status !== "authenticated"
+  ) {
     return (
       <div className="w-full max-w-md mx-auto p-8">
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <LoaderIcon className="animate-spin h-6 w-6 text-gray-900 dark:text-gray-100" />
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Checking existing games...
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (status !== "authenticated") {
-    return (
-      <div className="w-full max-w-md mx-auto p-8">
-        <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              You need to be signed in to create or join a room
-            </span>
-            <Button
-              onClick={() => signIn()}
-              className="w-full h-12 font-medium rounded-lg transition-all duration-200"
-            >
-              Sign In
-            </Button>
+            {status === "loading" ||
+            (status === "authenticated" && checkingGame) ? (
+              <>
+                <LoaderIcon className="animate-spin h-6 w-6 text-gray-900 dark:text-gray-100" />
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Checking existing games...
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  You need to be signed in to create or join a room
+                </span>
+                <Button
+                  onClick={() => signIn()}
+                  className="w-full h-12 font-medium rounded-lg transition-all duration-200"
+                >
+                  Sign In
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

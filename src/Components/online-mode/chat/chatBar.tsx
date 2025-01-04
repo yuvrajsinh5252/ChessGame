@@ -11,9 +11,11 @@ import { MessageSquare, MessageCircle, Send } from "lucide-react";
 const ChatSidebar = ({
   playerId,
   roomId,
+  playerName,
 }: {
   playerId: string;
   roomId: string;
+  playerName: string;
 }) => {
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
@@ -32,20 +34,18 @@ const ChatSidebar = ({
     clearMessages: () => {},
   };
 
-  // Add cleanup logic when room changes
-  useEffect(() => {
-    if (chatRoomId && chatRoomId !== roomId) {
-      clearMessages();
-    }
-  }, [chatRoomId, roomId, clearMessages]);
-
   useEffect(() => {
     if (!roomId) return;
 
-    const messageHandler = (data: { message: string; playerId: string }) => {
+    const messageHandler = (data: {
+      message: string;
+      playerId: string;
+      name: string;
+    }) => {
       const newMessage = {
         id: roomId,
         user: data.playerId,
+        name: data.name,
         content: data.message,
         timestamp: new Date(),
       };
@@ -122,7 +122,7 @@ const ChatSidebar = ({
           onSubmit={(e) => {
             e.preventDefault();
             if (message.trim()) {
-              sendMessage(roomId, message, playerId);
+              sendMessage(roomId, message, playerId, playerName);
               setMessage("");
             }
           }}

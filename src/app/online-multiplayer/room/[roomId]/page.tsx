@@ -29,6 +29,7 @@ function PageContent({ params }: PageProps) {
 
   const { data: session, status } = useSession();
   const playerId = session?.user?.id;
+  const playerName = session?.user?.name;
 
   useEffect(() => {
     async function fetchRoomId() {
@@ -52,7 +53,7 @@ function PageContent({ params }: PageProps) {
 
   if (status === "loading") return null;
 
-  if (!color || !playerId || !roomId)
+  if (!color || !playerId || !roomId || !playerName)
     return (
       <div className="h-screen flex flex-col items-center justify-center">
         <Loader2 className="animate-spin mb-4" size={50} strokeWidth={3} />
@@ -86,7 +87,11 @@ function PageContent({ params }: PageProps) {
               <Black />
             </>
           )}
-          <ChatSidebar roomId={roomId} playerId={playerId} />
+          <ChatSidebar
+            roomId={roomId}
+            playerId={playerId}
+            playerName={playerName}
+          />
           <GameControl roomId={roomId} playerId={playerId} />
         </div>
       </div>
