@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Provider } from "@/Components/themes/provider";
+import { ThemeProvider } from "@/Components/themes/theme-provider";
 import { Toaster } from "@/Components/ui/sonner";
-import NavbarWrapper from "@/Components/common/navbar";
+import { Navbar } from "@/Components/common/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,11 +21,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <link rel="icon" href="/logo2.png" />
       <body className={inter.className}>
-        <Provider>
-          <NavbarWrapper />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
           {children}
           <Toaster position="top-center" />
-        </Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

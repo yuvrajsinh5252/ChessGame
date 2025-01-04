@@ -12,7 +12,7 @@ import { ChessTheme } from "../themes/chess-theme";
 import ThemeToggle from "../themes/theme-toggle";
 import Link from "next/link";
 
-function Navbar() {
+export function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -49,13 +49,5 @@ function Navbar() {
         </div>
       </MaxWidthWrapper>
     </div>
-  );
-}
-
-export default function NavbarWrapper() {
-  return (
-    <Suspense fallback={<div>Loading navbar...</div>}>
-      <Navbar />
-    </Suspense>
   );
 }
