@@ -1,27 +1,22 @@
 "use client";
 
-import { useRef } from "react";
 import { joinQueue } from "@/lib/db/online-players/search";
 import useMatchStore from "@/store/useMatchStore";
 import { useStore } from "zustand";
+import { useSession } from "next-auth/react";
 
 export function Matchmaking() {
-  const { setMatchMaking, playerId, setPlayerId } = useStore(
-    useMatchStore,
-    (state) => state
-  );
-  const playerIdRef = useRef(
-    crypto.randomUUID().replace(/-/g, "").slice(0, 16)
-  );
+  const { setMatchMaking } = useStore(useMatchStore, (state) => state);
+
+  const { data } = useSession();
+  const playerId = data?.user?.id;
 
   const handleSearch = async () => {
+    if (!playerId) return console.error("No player id found");
     setMatchMaking(true);
-    if (!playerId) setPlayerId(playerIdRef.current);
     const result = await joinQueue(playerId);
-    if (!result.success) {
-      console.error(result.error);
-      setMatchMaking(false);
-    }
+
+    if (!result.success) console.error(result.error);
     return result;
   };
 

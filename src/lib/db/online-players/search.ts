@@ -2,13 +2,13 @@
 
 import { pusherServer } from "@/lib/pusher";
 import { redis } from "@/lib/redis";
-import { createGame } from "../game/create-game";
+import { createGame } from "../room/create-global-game";
 
 const QUEUE_KEY = "matchmaking_queue";
 const MATCH_TTL = 60;
 
 export async function joinQueue(queueId: string) {
-  console.log("joining queue...");
+  console.log("joinQueue", queueId);
   try {
     await cleanQueue();
 
@@ -31,6 +31,8 @@ export async function joinQueue(queueId: string) {
       byScore: true,
     });
 
+    console.log("queueMembers", queueMembers);
+
     const availableOpponents = queueMembers.filter((id) => id !== queueId);
 
     if (availableOpponents.length > 0) {
@@ -52,9 +54,7 @@ export async function joinQueue(queueId: string) {
           return { success: false, error };
         }
 
-        console.log("match found!");
-
-        await pusherServer.trigger(
+        const res = await pusherServer.trigger(
           [`user-${queueId}`, `user-${opponent}`],
           "match-found",
           {
@@ -63,6 +63,9 @@ export async function joinQueue(queueId: string) {
             roomId: game.roomId,
           }
         );
+
+        console.log("pusher response", res);
+
         return { success: true, matched: true };
       }
     }

@@ -3,15 +3,19 @@ import { leaveQueue } from "@/lib/db/online-players/search";
 import { pusherClient } from "@/lib/pusher";
 import useMatchStore from "@/store/useMatchStore";
 import { LoaderIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export function FindingMatch() {
-  const { setMatchMaking, playerId } = useMatchStore((state) => state);
+  const { setMatchMaking } = useMatchStore((state) => state);
   const router = useRouter();
+  const { data } = useSession();
+  const playerId = data?.user?.id;
 
   useEffect(() => {
     if (!playerId) return;
+    console.log("Finding match for player:", playerId);
     const channel = pusherClient.subscribe(`user-${playerId}`);
 
     const handleMatchFound = async (data: {
@@ -38,6 +42,8 @@ export function FindingMatch() {
     channel.bind("match-found", handleMatchFound);
     channel.bind("queue-timeout", handleQueueTimeout);
   }, [playerId, router, setMatchMaking]);
+
+  if (!playerId) return null;
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm space-y-6">
