@@ -11,6 +11,9 @@ export async function CheckGame(playerId: string) {
         },
       },
     },
+    include: {
+      players: true,
+    },
   });
 
   return game;

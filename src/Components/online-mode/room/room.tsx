@@ -71,7 +71,7 @@ export default function Room() {
         if (game && game.roomId && (game.winner == "none" || !game.winner)) {
           setRoomChatId(game.roomId);
           setRoomid(game.roomId);
-          setIsGame(true);
+          if (game.players.length == 2) setIsGame(true);
         }
       } catch (error) {
         console.error("Failed to check existing game:", error);
@@ -211,6 +211,7 @@ export default function Room() {
               ) : (
                 <Button
                   onClick={() => joinRoom(id)}
+                  disabled={roomid !== ""}
                   className="w-full h-12 font-medium rounded-lg transition-all duration-200"
                 >
                   Join Room
@@ -224,6 +225,7 @@ export default function Room() {
               ) : (
                 <button
                   onClick={() => createRoom()}
+                  disabled={roomid !== ""}
                   className="w-full h-12 border border-gray-900 dark:border-gray-100 rounded-lg text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-900 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-900 transition-all duration-200"
                 >
                   Create Room
