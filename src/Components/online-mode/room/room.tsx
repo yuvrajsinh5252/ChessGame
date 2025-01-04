@@ -10,10 +10,17 @@ import { CreateRoom } from "@/lib/db/room/create-game";
 import { JoinGame } from "@/lib/db/room/join-game";
 import useChatStore from "@/store/useChatStore";
 import { Button } from "@/Components/ui/button";
-import { FindingMatch, Matchmaking } from "./matchMaking";
+import { Matchmaking } from "./matchMaking";
+import { useStore } from "zustand";
+import useMatchStore from "@/store/useMatchStore";
+import { FindingMatch } from "./findMatch";
 
 export default function Room() {
   const { setRoomId: setRoomChatId } = useChatStore((state) => state);
+  const { isMatchmaking, setPlayerId: setMyplayerId } = useStore(
+    useMatchStore,
+    (state) => state
+  );
 
   const router = useRouter();
   const [id, setId] = useState<string>("");
@@ -22,7 +29,6 @@ export default function Room() {
   const [joinLoading, setJoinLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [roomEnterLoading, setRoomEnterLoading] = useState<boolean>(false);
-  const [matchMaking, setMatchMaking] = useState<boolean>(false);
 
   useEffect(() => {
     if (!roomid || !playerId) return;
@@ -98,11 +104,8 @@ export default function Room() {
 
   return (
     <div className="w-full max-w-md mx-auto p-8">
-      {matchMaking ? (
-        <FindingMatch
-          setMatchMaking={setMatchMaking}
-          matchMaking={matchMaking}
-        />
+      {isMatchmaking ? (
+        <FindingMatch />
       ) : !roomEnterLoading ? (
         <div className="space-y-8">
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
@@ -159,10 +162,7 @@ export default function Room() {
               )}
             </div>
           </div>
-          <Matchmaking
-            setMatchMaking={setMatchMaking}
-            matchMaking={matchMaking}
-          />
+          <Matchmaking />
         </div>
       ) : (
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">

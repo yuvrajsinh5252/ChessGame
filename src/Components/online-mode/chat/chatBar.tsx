@@ -23,12 +23,21 @@ const ChatSidebar = ({
     messages,
     addMessage,
     setRoomId,
-    roomId: chatRoomid,
+    roomId: chatRoomId,
+    clearMessages,
   } = chatStore! || {
     messages: [],
     setRoomId() {},
     addMessage: () => {},
+    clearMessages: () => {},
   };
+
+  // Add cleanup logic when room changes
+  useEffect(() => {
+    if (chatRoomId && chatRoomId !== roomId) {
+      clearMessages();
+    }
+  }, [chatRoomId, roomId, clearMessages]);
 
   useEffect(() => {
     if (!roomId) return;
@@ -41,7 +50,7 @@ const ChatSidebar = ({
         timestamp: new Date(),
       };
 
-      if (!chatRoomid) setRoomId(roomId);
+      if (!chatRoomId) setRoomId(roomId);
 
       if (data.playerId !== playerId) {
         setMessageSeen([messageSeen[0] + 1, messages.length]);
@@ -65,7 +74,7 @@ const ChatSidebar = ({
     roomId,
     addMessage,
     playerId,
-    chatRoomid,
+    chatRoomId,
     messages.length,
     setMessageSeen,
   ]);
@@ -87,7 +96,14 @@ const ChatSidebar = ({
         </div>
       </div>
 
-      <div className="flex-1 p-4 overflow-y-auto no-scrollbar bg-gradient-to-b from-gray-50/30 to-gray-50/10 dark:from-gray-900/30 dark:to-gray-900/10">
+      <div
+        className="flex-1 p-4 overflow-y-auto no-scrollbar bg-gradient-to-b from-gray-50/30 to-gray-50/10 dark:from-gray-900/30 dark:to-gray-900/10"
+        ref={(el) => {
+          if (el) {
+            el.scrollTop = el.scrollHeight;
+          }
+        }}
+      >
         {messages && messages.length > 0 ? (
           <ChatMessage messages={messages} playerId={playerId} />
         ) : (

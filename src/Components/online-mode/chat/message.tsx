@@ -35,7 +35,13 @@ export function ChatMessage({
   );
 }
 
-function UserMessage({ message, color }: { message: Message; color: string }) {
+function OpponentsMessage({
+  message,
+  color,
+}: {
+  message: Message;
+  color: string;
+}) {
   return (
     <div className="flex items-start gap-3">
       {/* <div
@@ -62,13 +68,7 @@ function UserMessage({ message, color }: { message: Message; color: string }) {
   );
 }
 
-function OpponentsMessage({
-  message,
-  color,
-}: {
-  message: Message;
-  color: string;
-}) {
+function UserMessage({ message, color }: { message: Message; color: string }) {
   return (
     <div className="flex items-start gap-3 justify-end">
       <div className="flex flex-col gap-1 items-end">
