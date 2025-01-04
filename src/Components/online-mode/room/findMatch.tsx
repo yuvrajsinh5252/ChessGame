@@ -10,12 +10,11 @@ import { useEffect } from "react";
 export function FindingMatch() {
   const { setMatchMaking } = useMatchStore((state) => state);
   const router = useRouter();
-  const { data } = useSession();
-  const playerId = data?.user?.id;
+  const { data: session } = useSession();
+  const playerId = session?.user?.id;
 
   useEffect(() => {
     if (!playerId) return;
-    console.log("Finding match for player:", playerId);
     const channel = pusherClient.subscribe(`user-${playerId}`);
 
     const handleMatchFound = async (data: {
@@ -26,7 +25,7 @@ export function FindingMatch() {
       try {
         setMatchMaking(false);
         router.push(
-          `/online-multiplayer/room/${data.roomId}?playerId=${playerId}`
+          `/online-multiplayer/room/${data.roomId}?playerId=${session.user?.name}`
         );
       } catch (error) {
         console.error("Error creating game:", error);

@@ -1,5 +1,5 @@
 import { Button } from "@/Components/ui/button";
-import { sendMessage } from "@/lib/db/chat/chat-server";
+import { getMessages, sendMessage } from "@/lib/db/chat/chat-server";
 import { pusherClient } from "@/lib/pusher";
 import useChatStore from "@/store/useChatStore";
 import React, { useEffect, useState } from "react";
@@ -26,16 +26,32 @@ const ChatSidebar = ({
     addMessage,
     setRoomId,
     roomId: chatRoomId,
-    clearMessages,
+    setMessages,
   } = chatStore! || {
     messages: [],
     setRoomId() {},
     addMessage: () => {},
-    clearMessages: () => {},
+    setMessages: () => {},
   };
 
   useEffect(() => {
     if (!roomId) return;
+
+    const fetchMessages = async () => {
+      const messages = await getMessages(roomId);
+
+      const Message = messages.map((message) => ({
+        id: message.roomId,
+        user: message.userId,
+        name: message.userName,
+        content: message.content,
+        timestamp: message.createdAt,
+      }));
+
+      setMessages(Message);
+    };
+
+    fetchMessages();
 
     const messageHandler = (data: {
       message: string;

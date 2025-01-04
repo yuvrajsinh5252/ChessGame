@@ -6,7 +6,7 @@ import { Input } from "@/Components/ui/input";
 import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
 import { pusherClient } from "@/lib/pusher";
-import { sendMessage } from "@/lib/db/chat/chat-server";
+import { getMessages, sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
 import { Button } from "@/Components/ui/button";
@@ -17,7 +17,7 @@ function Chat({ roomId }: { roomId: string }) {
   const playerName = session?.user?.name;
 
   const [message, setMessage] = useState("");
-  const chatStore = useStore(useChatStore, (state) => state);
+  const chatStore = useChatStore((state) => state);
   const { isOpen, setIsOpen } = useChatStore((state) => state);
   const [messageSeen, setMessageSeen] = useState([0, 0]);
 
@@ -26,22 +26,31 @@ function Chat({ roomId }: { roomId: string }) {
     addMessage,
     setRoomId,
     roomId: chatRoomId,
-    clearMessages,
+    setMessages,
   } = chatStore! || {
     messages: [],
     setRoomId() {},
     addMessage: () => {},
-    clearMessages: () => {},
+    setMessages: () => {},
   };
 
-  // Add cleanup logic when room changes
   useEffect(() => {
-    if (chatRoomId && chatRoomId !== roomId) {
-      clearMessages();
-    }
-  }, [chatRoomId, roomId, clearMessages]);
+    const fetchMessages = async () => {
+      const messages = await getMessages(roomId);
 
-  useEffect(() => {
+      const Message = messages.map((message) => ({
+        id: message.roomId,
+        user: message.userId,
+        name: message.userName,
+        content: message.content,
+        timestamp: message.createdAt,
+      }));
+
+      setMessages(Message);
+    };
+
+    fetchMessages();
+
     const channel = pusherClient.subscribe(`${roomId}`);
     channel.bind(
       "chat",

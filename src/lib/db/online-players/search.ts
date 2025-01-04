@@ -5,32 +5,25 @@ import { redis } from "@/lib/redis";
 import { createGame } from "../room/create-global-game";
 
 const QUEUE_KEY = "matchmaking_queue";
-const MATCH_TTL = 60;
 
 export async function joinQueue(queueId: string) {
   console.log("joinQueue", queueId);
   try {
-    await cleanQueue();
-
-    // Check if player is already in queue
     const existing = await redis.zscore(QUEUE_KEY, queueId);
     if (existing) {
       return { success: false, error: "Already in queue" };
     }
 
-    // Add to queue with current timestamp
     await redis.zadd(QUEUE_KEY, {
       score: Date.now(),
       member: queueId,
     });
 
-    // Get queue members excluding stale entries
-    const currentTime = Date.now();
-    const validTime = currentTime - MATCH_TTL * 1000;
-    const queueMembers = await redis.zrange(QUEUE_KEY, validTime, "+inf", {
-      byScore: true,
-    });
-
+    const queueMembers = await redis.zrange(
+      QUEUE_KEY,
+      0,
+      Number.POSITIVE_INFINITY
+    );
     console.log("queueMembers", queueMembers);
 
     const availableOpponents = queueMembers.filter((id) => id !== queueId);
@@ -64,8 +57,6 @@ export async function joinQueue(queueId: string) {
           }
         );
 
-        console.log("pusher response", res);
-
         return { success: true, matched: true };
       }
     }
@@ -80,31 +71,12 @@ export async function joinQueue(queueId: string) {
 export async function leaveQueue(queueId: string) {
   try {
     await redis.zrem(QUEUE_KEY, queueId);
-
     await pusherServer.trigger("queue", "player-left", {
       playerId: queueId,
     });
-
     return { success: true };
   } catch (error) {
     return { success: false, error };
-  }
-}
-
-export async function cleanQueue() {
-  const staleTimeout = Date.now() - MATCH_TTL * 1000;
-  const staleMembers = await redis.zrange(QUEUE_KEY, 0, staleTimeout, {
-    byScore: true,
-  });
-
-  if (staleMembers.length > 0) {
-    await redis.zremrangebyscore(QUEUE_KEY, 0, staleTimeout);
-    // Notify removed players
-    for (const memberId of staleMembers) {
-      await pusherServer.trigger(`user-${memberId}`, "queue-timeout", {
-        message: "Queue timeout - please rejoin",
-      });
-    }
   }
 }
 

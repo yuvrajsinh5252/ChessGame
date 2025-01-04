@@ -14,20 +14,21 @@ datasource db {
 }
 
 model game {
-  roomId           String   @id @default(cuid())
-  winner           String?  @default("none")
+  roomId           String        @id @default(cuid())
+  winner           String?       @default("none")
   players          player[]
   board            String
   currentPlayer    String
   kingCheckOrMoved String
   rookMoved        String
   eliminatedPiece  String
-  isKingInCheck    String   @default("noCheck")
+  isKingInCheck    String        @default("noCheck")
   canPawnPromote   String
-  createdAt        DateTime @default(now())
-  whiteTime        Int      @default(600)
-  blackTime        Int      @default(600)
+  createdAt        DateTime      @default(now())
+  whiteTime        Int           @default(600)
+  blackTime        Int           @default(600)
   lastMove         String?
+  messages         ChatMessage[]
 }
 
 model player {
@@ -37,6 +38,19 @@ model player {
   name        String?
   gameId      String
   game        game    @relation(fields: [gameId], references: [roomId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  content   String   @db.VarChar(500)
+  userId    String   @db.VarChar(100)
+  userName  String   @db.VarChar(100)
+  roomId    String
+  game      game     @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([roomId])
+  @@index([createdAt])
 }
 
 model stats {

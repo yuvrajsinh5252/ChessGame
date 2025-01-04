@@ -24,10 +24,18 @@ export default function Room() {
   const router = useRouter();
   const [id, setId] = useState<string>("");
   const [roomid, setRoomid] = useState<string>("");
-  const [joinLoading, setJoinLoading] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [roomEnterLoading, setRoomEnterLoading] = useState<boolean>(false);
-  const [checkingGame, setCheckingGame] = useState<boolean>(true);
+  const [isGame, setIsGame] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<{
+    join: boolean;
+    create: boolean;
+    check: boolean;
+    enter: boolean;
+  }>({
+    join: false,
+    create: false,
+    check: true,
+    enter: false,
+  });
 
   const { data: session, status } = useSession();
   const playerId = session?.user?.id;
@@ -37,9 +45,8 @@ export default function Room() {
 
     const channel = pusherClient.subscribe(`room-${roomid}`);
     channel.bind("player-joined", () => {
-      setLoading(false);
+      setIsLoading((prev) => ({ ...prev, enter: true }));
       setRoomChatId(roomid);
-      setRoomEnterLoading(true);
       router.push(
         `/online-multiplayer/room/${roomid}?playerId=${session.user?.name}`
       );
@@ -54,41 +61,63 @@ export default function Room() {
   useEffect(() => {
     const checkExistingGame = async () => {
       if (!playerId) {
-        setCheckingGame(false);
+        setIsLoading((prev) => ({ ...prev, check: false }));
         return;
       }
 
       try {
-        setCheckingGame(true);
         const game = await CheckGame(playerId);
 
-        if (game && game.roomId && !game.winner) {
+        if (game && game.roomId && (game.winner == "none" || !game.winner)) {
           setRoomChatId(game.roomId);
-          router.push(
-            `/online-multiplayer/room/${game.roomId}?playerId=${session.user?.name}`
-          );
+          setRoomid(game.roomId);
+          setIsGame(true);
         }
       } catch (error) {
         console.error("Failed to check existing game:", error);
       } finally {
-        setCheckingGame(false);
+        setIsLoading((prev) => ({ ...prev, check: false }));
       }
     };
 
     checkExistingGame();
   }, [playerId, router, setRoomChatId]);
 
+  if (isGame && roomid) {
+    return (
+      <div className="w-full max-w-md mx-auto p-8">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              You are already in a game
+            </span>
+            <Button
+              onClick={() =>
+                router.push(
+                  `/online-multiplayer/room/${roomid}?playerId=${playerId}`
+                )
+              }
+              className="w-full h-12 font-medium rounded-lg transition-all duration-200"
+            >
+              Go to Game
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (
     status === "loading" ||
-    (status === "authenticated" && checkingGame) ||
-    status !== "authenticated"
+    (status === "authenticated" && isLoading.check) ||
+    status === "unauthenticated"
   ) {
     return (
       <div className="w-full max-w-md mx-auto p-8">
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center space-y-4">
             {status === "loading" ||
-            (status === "authenticated" && checkingGame) ? (
+            (status === "authenticated" && isLoading.check) ? (
               <>
                 <LoaderIcon className="animate-spin h-6 w-6 text-gray-900 dark:text-gray-100" />
                 <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -116,7 +145,7 @@ export default function Room() {
 
   const createRoom = async () => {
     try {
-      setLoading(true);
+      setIsLoading((prev) => ({ ...prev, create: true }));
       const data = await CreateRoom(playerId!);
       const roomId = data.roomId;
 
@@ -127,7 +156,8 @@ export default function Room() {
       }
     } catch (error) {
       setRoomid("Error");
-      setLoading(false);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, create: false }));
     }
   };
 
@@ -138,21 +168,21 @@ export default function Room() {
     }
 
     try {
-      setJoinLoading(true);
+      setIsLoading((prev) => ({ ...prev, join: true }));
       const data = await JoinGame({ roomId, playerId: playerId! });
       if (data === "Error") {
         alert("Room not found, full, or you are already in a room");
         setRoomid("Error");
-        setJoinLoading(false);
         return;
       }
 
       setRoomChatId(roomId);
-      setRoomEnterLoading(true);
+      setIsLoading((prev) => ({ ...prev, enter: true }));
       router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
     } catch (error) {
       alert("Failed to join room");
-      setJoinLoading(false);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, join: false }));
     }
   };
 
@@ -160,7 +190,7 @@ export default function Room() {
     <div className="w-full max-w-md mx-auto p-8">
       {isMatchmaking ? (
         <FindingMatch />
-      ) : !roomEnterLoading ? (
+      ) : !isLoading.enter ? (
         <div className="space-y-8">
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
             <h2 className="text-xl font-medium text-center mb-8 text-gray-900 dark:text-gray-100">
@@ -173,10 +203,10 @@ export default function Room() {
                 placeholder="Enter room ID"
                 className="w-full h-12 px-4 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
-              {joinLoading ? (
-                <Button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
-                  <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
-                  <span className="text-gray-500">Joining...</span>
+              {isLoading.join ? (
+                <Button disabled className="w-full h-12">
+                  <LoaderIcon className="animate-spin h-4 w-4 mr-2" />
+                  Joining...
                 </Button>
               ) : (
                 <Button
@@ -186,11 +216,11 @@ export default function Room() {
                   Join Room
                 </Button>
               )}
-              {loading ? (
-                <button className="w-full h-12 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed bg-gray-50 dark:bg-gray-800 transition-all duration-200">
-                  <LoaderIcon className="animate-spin h-4 w-4 text-gray-500" />
-                  <span className="text-gray-500">Creating...</span>
-                </button>
+              {isLoading.create ? (
+                <Button disabled className="w-full h-12">
+                  <LoaderIcon className="animate-spin h-4 w-4 mr-2" />
+                  Creating...
+                </Button>
               ) : (
                 <button
                   onClick={() => createRoom()}
