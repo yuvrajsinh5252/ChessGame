@@ -14,21 +14,23 @@ import { Matchmaking } from "./matchMaking";
 import { useStore } from "zustand";
 import useMatchStore from "@/store/useMatchStore";
 import { FindingMatch } from "./findMatch";
+import { signIn, useSession } from "next-auth/react";
+import { CheckGame } from "@/lib/db/room/check-game";
 
 export default function Room() {
   const { setRoomId: setRoomChatId } = useChatStore((state) => state);
-  const { isMatchmaking, setPlayerId: setMyplayerId } = useStore(
-    useMatchStore,
-    (state) => state
-  );
+  const { isMatchmaking } = useStore(useMatchStore, (state) => state);
 
   const router = useRouter();
   const [id, setId] = useState<string>("");
   const [roomid, setRoomid] = useState<string>("");
-  const [playerId, setPlayerId] = useState<string>("");
   const [joinLoading, setJoinLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [roomEnterLoading, setRoomEnterLoading] = useState<boolean>(false);
+  const [checkingGame, setCheckingGame] = useState<boolean>(true);
+
+  const { data: session, status } = useSession();
+  const playerId = session?.user?.id;
 
   useEffect(() => {
     if (!roomid || !playerId) return;
@@ -47,16 +49,76 @@ export default function Room() {
     };
   }, [roomid, playerId, router, setRoomChatId]);
 
+  useEffect(() => {
+    const checkExistingGame = async () => {
+      if (!playerId) {
+        setCheckingGame(false);
+        return;
+      }
+
+      try {
+        setCheckingGame(true);
+        const game = await CheckGame(playerId);
+
+        if (game && game.roomId) {
+          setRoomChatId(game.roomId);
+          router.push(
+            `/online-multiplayer/room/${game.roomId}?playerId=${playerId}`
+          );
+        }
+      } catch (error) {
+        console.error("Failed to check existing game:", error);
+      } finally {
+        setCheckingGame(false);
+      }
+    };
+
+    checkExistingGame();
+  }, [playerId, router, setRoomChatId]);
+
+  if (status === "loading" || (status === "authenticated" && checkingGame)) {
+    return (
+      <div className="w-full max-w-md mx-auto p-8">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <LoaderIcon className="animate-spin h-6 w-6 text-gray-900 dark:text-gray-100" />
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Checking existing games...
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (status !== "authenticated") {
+    return (
+      <div className="w-full max-w-md mx-auto p-8">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              You need to be signed in to create or join a room
+            </span>
+            <Button
+              onClick={() => signIn()}
+              className="w-full h-12 font-medium rounded-lg transition-all duration-200"
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const createRoom = async () => {
     try {
       setLoading(true);
-      const data = await CreateRoom();
+      const data = await CreateRoom(playerId!);
       const roomId = data.roomId;
-      const CurrentplayerId = data.playerId;
 
-      if (roomId && CurrentplayerId) {
+      if (roomId) {
         setRoomid(roomId);
-        setPlayerId(CurrentplayerId);
       } else {
         throw new Error("Failed to create room");
       }
@@ -74,28 +136,17 @@ export default function Room() {
 
     try {
       setJoinLoading(true);
-      if (playerId) {
-        alert("You are already in a room");
-        setJoinLoading(false);
-        return;
-      }
-
-      const data = await JoinGame({ roomId });
+      const data = await JoinGame({ roomId, playerId: playerId! });
       if (data === "Error") {
-        alert("Room not found or is full");
+        alert("Room not found, full, or you are already in a room");
         setRoomid("Error");
         setJoinLoading(false);
         return;
       }
 
-      const OtherplayerId = data?.playerId;
-      if (data?.playerId) {
-        setRoomChatId(roomId);
-        setRoomEnterLoading(true);
-        router.push(
-          `/online-multiplayer/room/${roomId}?playerId=${OtherplayerId}`
-        );
-      }
+      setRoomChatId(roomId);
+      setRoomEnterLoading(true);
+      router.push(`/online-multiplayer/room/${roomId}?playerId=${playerId}`);
     } catch (error) {
       alert("Failed to join room");
       setJoinLoading(false);

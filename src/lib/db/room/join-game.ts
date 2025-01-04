@@ -3,7 +3,13 @@
 import { pusherServer } from "@/lib/pusher";
 import { prisma } from "../../prisma";
 
-export async function JoinGame({ roomId }: { roomId: string }) {
+export async function JoinGame({
+  roomId,
+  playerId,
+}: {
+  roomId: string;
+  playerId: string;
+}) {
   try {
     if (!roomId) throw new Error("Room ID is required");
 
@@ -16,8 +22,15 @@ export async function JoinGame({ roomId }: { roomId: string }) {
     if (room.length === 2) throw new Error("Room is full");
     if (room.length === 0) throw new Error("Room not found");
     if (room.length === 1) {
-      const newPlayer = await prisma.player.create({
+      const existingPlayer = await prisma.player.findUnique({
+        where: { id: playerId },
+      });
+
+      if (existingPlayer) throw new Error("Player already exists in a game");
+
+      await prisma.player.create({
         data: {
+          id: playerId,
           gameId: roomId,
           color: room[0].color === "white" ? "black" : "white",
         },
@@ -27,7 +40,7 @@ export async function JoinGame({ roomId }: { roomId: string }) {
         where: { roomId: roomId },
         data: {
           players: {
-            connect: { id: newPlayer.id },
+            connect: { id: playerId },
           },
         },
       });
@@ -36,7 +49,7 @@ export async function JoinGame({ roomId }: { roomId: string }) {
         message: "A new player has joined the room",
       });
 
-      return { playerId: newPlayer.id };
+      return { success: true };
     }
   } catch (error) {
     return "Error";

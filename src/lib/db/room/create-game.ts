@@ -7,7 +7,7 @@ import {
 } from "@/utils/initialSetup";
 import { prisma } from "../../prisma";
 
-export async function CreateRoom() {
+export async function CreateRoom(playerId: string) {
   const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
   await prisma.player.deleteMany({
     where: {
@@ -39,8 +39,9 @@ export async function CreateRoom() {
     },
   });
 
-  const player = await prisma.player.create({
+  await prisma.player.create({
     data: {
+      id: playerId,
       color: "white",
       game: {
         connect: { roomId: createdRoom.roomId },
@@ -65,5 +66,5 @@ export async function CreateRoom() {
     });
   }
 
-  return { roomId: createdRoom.roomId, playerId: player.id };
+  return { roomId: createdRoom.roomId };
 }

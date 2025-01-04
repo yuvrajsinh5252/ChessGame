@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { OnlineBoard } from "@/Components/online-mode/onlineboard";
 import MaxWidthWrapper from "@/Components/common/MaxWidthWrapper";
 import { Black } from "@/Components/online-mode/black";
@@ -15,6 +14,7 @@ import { DrawRequest } from "@/Components/online-mode/drawRequest";
 import { Suspense } from "react";
 import useChatStore from "@/store/useChatStore";
 import ChatSidebar from "@/Components/online-mode/chat/chatBar";
+import { useSession } from "next-auth/react";
 
 interface PageProps {
   params: Promise<{
@@ -25,13 +25,10 @@ interface PageProps {
 function PageContent({ params }: PageProps) {
   const { isOpen: chatBoxOpen } = useChatStore((state) => state);
   const [color, setColor] = useState<"white" | "black" | null>(null);
-  const searchParams = useSearchParams();
-  const [playerId, setPlayerId] = useState<string | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
 
-  useEffect(() => {
-    setPlayerId(searchParams.get("playerId"));
-  }, [searchParams]);
+  const { data: session, status } = useSession();
+  const playerId = session?.user?.id;
 
   useEffect(() => {
     async function fetchRoomId() {
@@ -53,9 +50,9 @@ function PageContent({ params }: PageProps) {
     fetchPlayerColor();
   }, [playerId, roomId]);
 
-  if (!playerId || !roomId) return <div>Invalid URL</div>;
+  if (status === "loading") return null;
 
-  if (!color)
+  if (!color || !playerId || !roomId)
     return (
       <div className="h-screen flex flex-col items-center justify-center">
         <Loader2 className="animate-spin mb-4" size={50} strokeWidth={3} />

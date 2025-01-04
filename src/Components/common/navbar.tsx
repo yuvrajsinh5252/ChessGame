@@ -15,7 +15,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 export function Navbar() {
   const pathname = usePathname();
   const roomID = pathname?.split("/").pop() || "";
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">
@@ -32,13 +32,11 @@ export function Navbar() {
           )}
           <ChessTheme />
           <ThemeToggle />
-          {session ? (
+          {status === "loading" ? (
+            <div className="w-16 h-9 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+          ) : session ? (
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="flex items-center gap-2"
-                onClick={() => signOut()}
-              >
+              <Button variant="ghost" onClick={() => signOut()}>
                 <Image
                   src={session.user?.image || "/default-avatar.png"}
                   width={32}
@@ -50,8 +48,8 @@ export function Navbar() {
             </div>
           ) : (
             <Button
-              variant="outline"
-              className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+              variant="ghost"
+              className="flex items-center gap-2"
               onClick={() => signIn("github")}
             >
               <GitHubLogoIcon className="w-4 h-4" />
