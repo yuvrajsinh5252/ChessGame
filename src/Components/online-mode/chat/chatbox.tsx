@@ -10,14 +10,13 @@ import { sendMessage } from "@/lib/db/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
 import { Button } from "@/Components/ui/button";
+import { useSearchParams } from "next/navigation";
 
-export default function Chat({
-  playerId,
-  roomId,
-}: {
-  playerId: string;
-  roomId: string;
-}) {
+function Chat({ roomId }: { roomId: string }) {
+  const searchParams = useSearchParams();
+
+  const playerId = searchParams?.get("playerId") || "";
+
   const [message, setMessage] = useState("");
   const chatStore = useStore(useChatStore, (state) => state);
   const { isOpen, setIsOpen } = useChatStore((state) => state);
@@ -27,12 +26,21 @@ export default function Chat({
     messages,
     addMessage,
     setRoomId,
-    roomId: chatRoomid,
+    roomId: chatRoomId,
+    clearMessages,
   } = chatStore! || {
     messages: [],
     setRoomId() {},
     addMessage: () => {},
+    clearMessages: () => {},
   };
+
+  // Add cleanup logic when room changes
+  useEffect(() => {
+    if (chatRoomId && chatRoomId !== roomId) {
+      clearMessages();
+    }
+  }, [chatRoomId, roomId, clearMessages]);
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`${roomId}`);
@@ -44,7 +52,7 @@ export default function Chat({
         timestamp: new Date(),
       };
 
-      if (!chatRoomid) setRoomId(roomId);
+      if (!chatRoomId) setRoomId(roomId);
 
       if (data.playerId !== playerId && isOpen) {
         setMessageSeen([messageSeen[0] + 1, messages.length]);
@@ -161,3 +169,15 @@ export default function Chat({
     </>
   );
 }
+
+import { Suspense } from "react";
+
+function ChatWrapper({ roomId }: { roomId: string }) {
+  return (
+    <Suspense fallback={<div>Loading chat...</div>}>
+      <Chat roomId={roomId} />
+    </Suspense>
+  );
+}
+
+export default ChatWrapper;

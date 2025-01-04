@@ -20,11 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <link rel="icon" href="/logo2.png" />
-      <body
-        className={inter.className}
-        data-new-gr-c-s-check-loaded="14.1215.0"
-        data-gr-ext-installed=""
-      >
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

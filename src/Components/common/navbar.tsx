@@ -1,11 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useStore } from "zustand";
-import useChatStore from "@/store/useChatStore";
-import { useEffect } from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Chat from "../online-mode/chat/chatbox";
 import { ChessTheme } from "../themes/chess-theme";
@@ -14,22 +10,7 @@ import Link from "next/link";
 
 export function Navbar() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const playerId = searchParams?.get("playerId") || "";
   const roomID = pathname?.split("/").pop() || "";
-
-  const chatStore = useStore(useChatStore, (state) => state);
-  const { roomId: gameId, clearMessages } = chatStore || {
-    roomId: "",
-    clearMessages: () => {},
-  };
-
-  useEffect(() => {
-    if (gameId && gameId !== roomID) {
-      clearMessages();
-    }
-  }, [gameId, roomID, clearMessages]);
 
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">
@@ -42,7 +23,7 @@ export function Navbar() {
         </div>
         <div className="flex gap-2 justify-center items-center">
           {pathname?.startsWith("/online-multiplayer/room/") && (
-            <Chat playerId={playerId} roomId={roomID} />
+            <Chat roomId={roomID} />
           )}
           <ChessTheme />
           <ThemeToggle />
