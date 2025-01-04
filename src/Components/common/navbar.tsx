@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useStore } from "zustand";
 import useChatStore from "@/store/useChatStore";
-import { useEffect, Suspense } from "react";
+import { useEffect } from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Chat from "../online-mode/chat/chatbox";
 import { ChessTheme } from "../themes/chess-theme";

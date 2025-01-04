@@ -31,8 +31,9 @@ const ChatSidebar = ({
   };
 
   useEffect(() => {
-    const channel = pusherClient.subscribe(`${roomId}`);
-    channel.bind("chat", (data: { message: string; playerId: string }) => {
+    if (!roomId) return;
+
+    const messageHandler = (data: { message: string; playerId: string }) => {
       const newMessage = {
         id: roomId,
         user: data.playerId,
@@ -51,13 +52,23 @@ const ChatSidebar = ({
         });
       }
       addMessage(newMessage);
-    });
+    };
+
+    const channel = pusherClient.subscribe(`${roomId}`);
+    channel.bind("chat", messageHandler);
 
     return () => {
-      channel.unbind("chat");
+      channel.unbind("chat", messageHandler);
       pusherClient.unsubscribe(`${roomId}`);
     };
-  }, [roomId, addMessage, playerId, setMessageSeen]);
+  }, [
+    roomId,
+    addMessage,
+    playerId,
+    chatRoomid,
+    messages.length,
+    setMessageSeen,
+  ]);
 
   return (
     <div className="fixed right-[-50px] top-1/2 -translate-y-1/2 mt-4 w-80 bg-white/80 dark:bg-gray-900/80 text-gray-800 dark:text-white flex flex-col backdrop-blur-md max-sm:hidden h-[38rem] rounded-xl border border-gray-200/50 dark:border-gray-700/30 transition-all duration-300 hover:shadow-blue-500/10">
