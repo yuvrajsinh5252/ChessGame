@@ -7,7 +7,6 @@ import { createGame } from "../room/create-global-game";
 const QUEUE_KEY = "matchmaking_queue";
 
 export async function joinQueue(queueId: string) {
-  console.log("joinQueue", queueId);
   try {
     const existing = await redis.zscore(QUEUE_KEY, queueId);
     if (existing) {
@@ -19,13 +18,7 @@ export async function joinQueue(queueId: string) {
       member: queueId,
     });
 
-    const queueMembers = await redis.zrange(
-      QUEUE_KEY,
-      0,
-      Number.POSITIVE_INFINITY
-    );
-    console.log("queueMembers", queueMembers);
-
+    const queueMembers = await redis.zrange(QUEUE_KEY, 0, -1);
     const availableOpponents = queueMembers.filter((id) => id !== queueId);
 
     if (availableOpponents.length > 0) {
@@ -47,7 +40,7 @@ export async function joinQueue(queueId: string) {
           return { success: false, error };
         }
 
-        const res = await pusherServer.trigger(
+        await pusherServer.trigger(
           [`user-${queueId}`, `user-${opponent}`],
           "match-found",
           {
@@ -64,27 +57,6 @@ export async function joinQueue(queueId: string) {
     return { success: true, matched: false };
   } catch (error) {
     await redis.zrem(QUEUE_KEY, queueId);
-    return { success: false, error };
-  }
-}
-
-export async function leaveQueue(queueId: string) {
-  try {
-    await redis.zrem(QUEUE_KEY, queueId);
-    await pusherServer.trigger("queue", "player-left", {
-      playerId: queueId,
-    });
-    return { success: true };
-  } catch (error) {
-    return { success: false, error };
-  }
-}
-
-export async function ClearQueue() {
-  try {
-    await redis.del(QUEUE_KEY);
-    return { success: true };
-  } catch (error) {
     return { success: false, error };
   }
 }

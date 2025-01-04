@@ -1,9 +1,9 @@
 "use client";
 
-import { joinQueue } from "@/lib/db/online-players/search";
 import useMatchStore from "@/store/useMatchStore";
 import { useStore } from "zustand";
 import { useSession } from "next-auth/react";
+import { joinQueue } from "@/lib/db/online-players/join-queue";
 
 export function Matchmaking() {
   const { setMatchMaking } = useStore(useMatchStore, (state) => state);

@@ -21,19 +21,15 @@ export async function createGame(player1: string, player2: string) {
           {
             id: player1,
             color: "white",
-            drawRequest: false,
           },
           {
             id: player2,
             color: "black",
-            drawRequest: false,
           },
         ],
       },
     },
-    include: {
-      players: true,
-    },
   });
+
   return game;
 }

@@ -1,5 +1,5 @@
 import { Button } from "@/Components/ui/button";
-import { leaveQueue } from "@/lib/db/online-players/search";
+import { leaveQueue } from "@/lib/db/online-players/leave-queue";
 import { pusherClient } from "@/lib/pusher";
 import useMatchStore from "@/store/useMatchStore";
 import { LoaderIcon } from "lucide-react";
