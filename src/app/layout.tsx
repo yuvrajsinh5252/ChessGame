@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/Components/themes/theme-provider";
 import { Toaster } from "@/Components/ui/sonner";
 import { Navbar } from "@/Components/common/navbar";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,8 +28,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <Navbar /> */}
-          {children}
+          <SessionProvider>
+            <Navbar />
+            {children}
+          </SessionProvider>
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

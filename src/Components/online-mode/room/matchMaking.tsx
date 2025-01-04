@@ -16,9 +16,13 @@ export function Matchmaking() {
 
   const handleSearch = async () => {
     setMatchMaking(true);
-    setPlayerId(playerIdRef.current);
-    if (!playerId) await new Promise((resolve) => setTimeout(resolve, 1000));
-    await joinQueue(playerId);
+    if (!playerId) setPlayerId(playerIdRef.current);
+    const result = await joinQueue(playerId);
+    if (!result.success) {
+      console.error(result.error);
+      setMatchMaking(false);
+    }
+    return result;
   };
 
   return (

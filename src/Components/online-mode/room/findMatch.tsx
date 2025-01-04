@@ -11,16 +11,33 @@ export function FindingMatch() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!playerId) return;
     const channel = pusherClient.subscribe(`user-${playerId}`);
-    channel.bind(
-      "match-found",
-      async (data: { player1: string; player2: string; roomId: string }) => {
+
+    const handleMatchFound = async (data: {
+      player1: string;
+      player2: string;
+      roomId: string;
+    }) => {
+      try {
+        setMatchMaking(false);
         router.push(
           `/online-multiplayer/room/${data.roomId}?playerId=${playerId}`
         );
+      } catch (error) {
+        console.error("Error creating game:", error);
+        setMatchMaking(false);
       }
-    );
-  }, [router]);
+    };
+
+    const handleQueueTimeout = (data: { message: string }) => {
+      setMatchMaking(false);
+      console.log(data.message);
+    };
+
+    channel.bind("match-found", handleMatchFound);
+    channel.bind("queue-timeout", handleQueueTimeout);
+  }, [playerId, router, setMatchMaking]);
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm space-y-6">
