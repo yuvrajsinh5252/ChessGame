@@ -4,8 +4,26 @@ import { MatchHistoryCard } from "@/Components/profile/match-history-card";
 import { QuickStats } from "@/Components/profile/quickStats";
 import Image from "next/image";
 import { Trophy } from "lucide-react";
+import { AchievementsList } from "@/Components/profile/achievements";
 
-async function getUserProfile(email: string) {
+async function getUserProfile(email: string, playerId: string) {
+  const userStats = await prisma.userStats.findUnique({
+    where: { userId: playerId },
+  });
+
+  if (!userStats) {
+    await prisma.userStats.create({
+      data: {
+        userId: playerId,
+        wins: 0,
+        losses: 0,
+        draws: 0,
+        gamesPlayed: 1,
+        winStreak: 0,
+      },
+    });
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
     include: {
@@ -20,7 +38,7 @@ async function getUserProfile(email: string) {
 export default async function Page() {
   const session = await auth();
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id || !session.user.email) {
     return (
       <div className="h-screen flex items-center justify-center">
         <p>Not authenticated</p>
@@ -28,13 +46,11 @@ export default async function Page() {
     );
   }
 
-  const userProfile = await getUserProfile(session.user.email);
+  const userProfile = await getUserProfile(session.user.email, session.user.id);
 
   if (!userProfile) {
     return <div>User profile not found</div>;
   }
-
-  const Achievements = ["First Win", "Win Streak", "10 Games"];
 
   return (
     <div className="min-h-screen pt-24 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -46,10 +62,6 @@ export default async function Page() {
               {userProfile.userStats?.rating || 1200}
             </div>
           </div>
-          {/* <div className="relative">
-            <UserCircle className="w-32 h-32 text-gray-600 dark:text-gray-300" />
-            <div className="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-white dark:border-gray-800"></div>
-          </div> */}
           <Image
             src={userProfile.image!}
             alt="User Avatar"
@@ -75,25 +87,7 @@ export default async function Page() {
               <Trophy className="w-5 h-5 mr-2 text-yellow-500" />
               Achievements
             </h2>
-            <div className="grid grid-cols-3 gap-4">
-              {Achievements ? (
-                Achievements.map((achievement) => (
-                  <div
-                    key={achievement}
-                    className="flex flex-col items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  >
-                    <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mb-2">
-                      <Trophy className="w-4 h-4 text-yellow-500" />
-                    </div>
-                    <span className="text-xs text-center">{achievement}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-gray-500 dark:text-gray-400">
-                  No achievements yet
-                </div>
-              )}
-            </div>
+            <AchievementsList userProfile={userProfile.userStats!} />
           </div>
         </div>
       </div>

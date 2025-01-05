@@ -9,7 +9,7 @@ export function MatchHistoryCard({ userProfile }: { userProfile: UserStats }) {
         Recent Performance
       </h2>
       <div className="flex space-x-2 mb-4">
-        {[...Array(10)].map((_, i) => {
+        {[...Array(Math.min(20, userProfile.gamesPlayed))].map((_, i) => {
           const gameResult =
             i < userProfile.gamesPlayed % 10
               ? i < userProfile.wins % 10

@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import { HamburgerMenu } from "./HamburgerMenu";
+import { HamBurger, HamburgerMenu } from "./HamburgerMenu";
 import {
   Dialog,
   DialogContent,
@@ -49,11 +49,8 @@ export function Navbar() {
           </div>
         </div>
 
-        <div
-          className={`${
-            isMobileMenuOpen ? "flex" : "hidden"
-          } md:flex flex-col md:flex-row gap-4 md:gap-2 items-center mt-4 md:mt-0 transition-all duration-200 ease-in-out z-50`}
-        >
+        {/* Desktop menu */}
+        <div className="hidden md:flex items-center gap-2">
           <ChessTheme />
           <ThemeToggle />
           {status === "loading" ? (
@@ -127,6 +124,14 @@ export function Navbar() {
             </Button>
           )}
         </div>
+
+        <HamBurger
+          isMobileMenuOpen={isMobileMenuOpen}
+          status={status}
+          session={session}
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+        />
       </MaxWidthWrapper>
     </div>
   );
