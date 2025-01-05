@@ -9,6 +9,7 @@ import { CheckEnpassant } from "@/utils/enpassant";
 import { isCheckMate, isKingInCheck } from "@/utils/kingCheck";
 import { isMovePossible } from "@/utils/possibleMove";
 import { promotePawn } from "@/utils/promotePawn";
+import { updateUserStats } from "../analytic/stats";
 
 export async function handlePlayerMove(
   gameId: string,
@@ -202,6 +203,30 @@ export async function handlePlayerMove(
           },
         },
       });
+    }
+
+    const player1 = await prisma.player.findFirst({
+      where: {
+        gameId: gameId,
+        color: "white",
+      },
+    });
+
+    const player2 = await prisma.player.findFirst({
+      where: {
+        gameId: gameId,
+        color: "black",
+      },
+    });
+
+    if (winner !== "none" && winner !== null && player1?.id && player2?.id) {
+      if (winner === "white" || winner === "black") {
+        updateUserStats(player1.id, winner === "white" ? "win" : "loss");
+        updateUserStats(player2.id, winner === "black" ? "win" : "loss");
+      } else if (winner === "draw" || winner === "stalemate") {
+        updateUserStats(player1.id, "draw");
+        updateUserStats(player2.id, "draw");
+      }
     }
 
     await prisma.game.update({

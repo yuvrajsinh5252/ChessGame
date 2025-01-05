@@ -6,12 +6,15 @@ import Image from "next/image";
 import { Trophy } from "lucide-react";
 
 async function getUserProfile(email: string) {
-  return await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email },
     include: {
       userStats: true,
     },
   });
+
+  if (!user) return null;
+  return user;
 }
 
 export default async function Page() {
