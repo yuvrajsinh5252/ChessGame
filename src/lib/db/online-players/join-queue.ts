@@ -2,7 +2,7 @@
 
 import { pusherServer } from "@/lib/pusher";
 import { redis } from "@/lib/redis";
-import { createGame } from "../room/create-global-game";
+import { createGame } from "../room/crud-game";
 
 const QUEUE_KEY = "matchmaking_queue";
 

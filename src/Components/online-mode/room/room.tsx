@@ -15,7 +15,7 @@ import useMatchStore from "@/store/useMatchStore";
 import { FindingMatch } from "./findMatch";
 import { signIn, useSession } from "next-auth/react";
 import { CheckGame } from "@/lib/db/room/check-game";
-import { CreateRoom } from "@/lib/db/room/create-game";
+import { CreateRoom, DeleteRoom } from "@/lib/db/room/crud-game";
 
 export default function Room() {
   const { setRoomId: setRoomChatId } = useChatStore((state) => state);
@@ -83,7 +83,7 @@ export default function Room() {
     checkExistingGame();
   }, [playerId, router, setRoomChatId]);
 
-  if (isGame && roomid) {
+  if (isGame && roomid && !isLoading.check) {
     return (
       <div className="w-full max-w-md mx-auto p-8">
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
@@ -186,10 +186,15 @@ export default function Room() {
     }
   };
 
+  const handleDelete = async () => {
+    await DeleteRoom(roomid);
+    setRoomid("");
+  };
+
   return (
     <div className="w-full max-w-md mx-auto p-8">
       {isMatchmaking ? (
-        <FindingMatch />
+        <FindingMatch setIsLoading={setIsLoading} />
       ) : !isLoading.enter ? (
         <div className="space-y-8">
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
@@ -211,7 +216,7 @@ export default function Room() {
               ) : (
                 <Button
                   onClick={() => joinRoom(id)}
-                  disabled={roomid !== ""}
+                  disabled={roomid !== "" && roomid !== "Error"}
                   className="w-full h-12 font-medium rounded-lg transition-all duration-200"
                 >
                   Join Room
@@ -225,7 +230,7 @@ export default function Room() {
               ) : (
                 <button
                   onClick={() => createRoom()}
-                  disabled={roomid !== ""}
+                  disabled={roomid !== "" && roomid !== "Error"}
                   className="w-full h-12 border border-gray-900 dark:border-gray-100 rounded-lg text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-900 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-900 transition-all duration-200"
                 >
                   Create Room
@@ -237,7 +242,7 @@ export default function Room() {
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
             <div className="text-center">
               {roomid ? (
-                <ShareLink roomid={roomid} />
+                <ShareLink onDelete={handleDelete} roomid={roomid} />
               ) : (
                 <div className="text-center space-y-4">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -248,7 +253,7 @@ export default function Room() {
               )}
             </div>
           </div>
-          <Matchmaking />
+          <Matchmaking playerId={playerId!} />
         </div>
       ) : (
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">

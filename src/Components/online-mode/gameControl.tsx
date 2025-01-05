@@ -23,9 +23,9 @@ export function GameControl({
   return (
     <div className="absolute bottom-5 flex gap-2">
       <Button
-        onClick={() => {
+        onClick={async () => {
           if (window.confirm("Are you sure you want to resign?")) {
-            handlePlayerResign(roomId, playerId);
+            await handlePlayerResign(roomId, playerId);
             window.location.href = "/";
           }
         }}
@@ -34,9 +34,9 @@ export function GameControl({
       </Button>
       <Button
         variant={"destructive"}
-        onClick={() => {
+        onClick={async () => {
           if (window.confirm("Are you sure you want to leave the game?")) {
-            handlePlayerResign(roomId, playerId);
+            await handlePlayerResign(roomId, playerId);
             window.location.href = "/";
           }
         }}

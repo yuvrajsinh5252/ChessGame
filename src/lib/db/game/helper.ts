@@ -5,6 +5,7 @@ import { pusherServer } from "@/lib/pusher";
 import { Board } from "@/store/useChessStore";
 import { GameState, winner } from "@/types/onlineChess";
 import { isKingInCheck } from "@/utils/kingCheck";
+import { updateUserStats } from "../analytic/stats";
 
 //  This function is used to get the game state from the database
 export async function getGameState(gameId: string) {
@@ -77,25 +78,32 @@ export async function serverPawnPromote(
 }
 
 export async function handlePlayerResign(gameId: string, playerId: string) {
-  const game = await prisma.game.findUnique({ where: { roomId: gameId } });
+  const game = await prisma.game.findUnique({
+    where: { roomId: gameId },
+    include: { players: true },
+  });
   if (!game) throw new Error("Game not found");
 
-  const players = await prisma.player.findMany({ where: { gameId } });
+  const resigningPlayer = game.players.find((p) => p.id === playerId);
+  const winningPlayer = game.players.find((p) => p.id !== playerId);
 
-  const winner = players.find((player) => player.id === playerId)
-    ?.color as winner;
+  if (!resigningPlayer || !winningPlayer) throw new Error("Players not found");
+
+  await updateUserStats(resigningPlayer.id, "loss");
+  await updateUserStats(winningPlayer.id, "win");
 
   await prisma.game.update({
     where: { roomId: gameId },
     data: {
-      winner,
+      winner: winningPlayer.color,
     },
   });
 
   await pusherServer.trigger(`room-${gameId}`, "resign", {
-    winner,
+    winner: winningPlayer.color,
     status: "resigned",
   });
+
   return "Player resigned";
 }
 

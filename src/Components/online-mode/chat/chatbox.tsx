@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { CircleX, MessageSquare } from "lucide-react";
 import { Input } from "@/Components/ui/input";
-import useStore from "@/lib/hooks/useStore";
 import useChatStore from "@/store/useChatStore";
 import { pusherClient } from "@/lib/pusher";
 import { getMessages, sendMessage } from "@/lib/db/chat/chat-server";
@@ -119,10 +118,8 @@ function Chat({ roomId }: { roomId: string }) {
         </Button>
         <div
           className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 ${
-            isOpen
-              ? "-translate-y-20"
-              : "translate-y-[120%] max-sm:translate-y-[100%]"
-          } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-xl rounded-lg transition-all duration-300 border border-gray-200 dark:border-gray-700`}
+            isOpen ? "-translate-y-20" : "translate-y-full" // Changed from translate-y-[120%] and max-sm:translate-y-[100%]
+          } bg-white dark:bg-gray-800 w-[340px] sm:w-[600px] shadow-xl rounded-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 z-[60]`} // Added z-[60]
         >
           <div className="p-4 border-b dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-t-lg">
             <div className="flex items-center gap-2">

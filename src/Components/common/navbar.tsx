@@ -26,6 +26,7 @@ export function Navbar() {
   const roomID = pathname?.split("/").pop() || "";
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="w-full fixed pt-2 backdrop-blur-md z-50">
@@ -37,26 +38,28 @@ export function Navbar() {
               ChessMate
             </Link>
           </div>
-          <HamburgerMenu
-            isOpen={isMobileMenuOpen}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          />
+          <div className="flex items-center gap-2">
+            {pathname?.startsWith("/online-multiplayer/room/") && (
+              <Chat roomId={roomID} />
+            )}
+            <HamburgerMenu
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </div>
         </div>
 
         <div
           className={`${
             isMobileMenuOpen ? "flex" : "hidden"
-          } md:flex flex-col md:flex-row gap-4 md:gap-2 items-center mt-4 md:mt-0 transition-all duration-200 ease-in-out`}
+          } md:flex flex-col md:flex-row gap-4 md:gap-2 items-center mt-4 md:mt-0 transition-all duration-200 ease-in-out z-50`}
         >
-          {pathname?.startsWith("/online-multiplayer/room/") && (
-            <Chat roomId={roomID} />
-          )}
           <ChessTheme />
           <ThemeToggle />
           {status === "loading" ? (
             <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-500 animate-pulse" />
           ) : session ? (
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger>
                 <div className="flex items-center gap-2">
                   <Image
@@ -68,27 +71,46 @@ export function Navbar() {
                   />
                 </div>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
                 <DialogHeader>
-                  <DialogTitle>Profile</DialogTitle>
+                  <DialogTitle></DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={session.user?.image || "/default-avatar.png"}
-                      width={50}
-                      height={50}
-                      className="rounded-full"
-                      alt="Profile"
-                    />
-                    <div>
-                      <p className="font-medium">{session.user?.name}</p>
-                      <p className="text-sm text-gray-500">
-                        {session.user?.email}
-                      </p>
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-2">
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src={session.user?.image || "/default-avatar.png"}
+                        width={50}
+                        height={50}
+                        className="rounded-full"
+                        alt="Profile"
+                      />
+                      <div>
+                        <p className="font-medium line-clamp-1">
+                          {session.user?.name}
+                        </p>
+                        <p className="text-sm text-gray-500 line-clamp-1">
+                          {session.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="self-start sm:self-center">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-2"
+                          onClick={() => setIsDialogOpen(false)}
+                        >
+                          View Profile
+                        </Link>
+                      </Button>
                     </div>
                   </div>
-                  <Button variant="destructive" onClick={() => signOut()}>
+                  <Button
+                    className="w-full"
+                    variant="destructive"
+                    onClick={() => signOut()}
+                  >
                     Sign Out
                   </Button>
                 </div>

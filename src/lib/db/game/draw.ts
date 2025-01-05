@@ -2,6 +2,7 @@
 
 import { pusherServer } from "@/lib/pusher";
 import { prisma } from "../../prisma";
+import { updateUserStats } from "../analytic/stats";
 
 export async function handlePlayerDraw(gameId: string, playerId: string) {
   try {
@@ -28,21 +29,20 @@ export async function handlePlayerDraw(gameId: string, playerId: string) {
 }
 
 export async function drawAccepted(gameId: string) {
-  const game = await prisma.game.findUnique({ where: { roomId: gameId } });
+  const game = await prisma.game.findUnique({
+    where: { roomId: gameId },
+    include: { players: true },
+  });
   if (!game) throw new Error("Game not found");
+
+  await Promise.all(
+    game.players.map((player) => updateUserStats(player.id, "draw"))
+  );
 
   await prisma.game.update({
     where: { roomId: gameId },
     data: {
       winner: "draw",
-    },
-  });
-
-  await prisma.stats.updateMany({
-    data: {
-      draws: {
-        increment: 1,
-      },
     },
   });
 

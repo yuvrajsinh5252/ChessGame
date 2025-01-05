@@ -7,7 +7,18 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export function FindingMatch() {
+export function FindingMatch({
+  setIsLoading,
+}: {
+  setIsLoading: React.Dispatch<
+    React.SetStateAction<{
+      join: boolean;
+      create: boolean;
+      check: boolean;
+      enter: boolean;
+    }>
+  >;
+}) {
   const { setMatchMaking } = useMatchStore((state) => state);
   const router = useRouter();
   const { data: session } = useSession();
@@ -23,10 +34,11 @@ export function FindingMatch() {
       roomId: string;
     }) => {
       try {
-        setMatchMaking(false);
+        setIsLoading((prev) => ({ ...prev, enter: true }));
         router.push(
           `/online-multiplayer/room/${data.roomId}?playerId=${session.user?.name}`
         );
+        setMatchMaking(false);
       } catch (error) {
         console.error("Error creating game:", error);
         setMatchMaking(false);
@@ -35,12 +47,16 @@ export function FindingMatch() {
 
     const handleQueueTimeout = (data: { message: string }) => {
       setMatchMaking(false);
-      console.log(data.message);
     };
 
     channel.bind("match-found", handleMatchFound);
     channel.bind("queue-timeout", handleQueueTimeout);
-  }, [playerId, router, setMatchMaking]);
+
+    return () => {
+      channel.unbind("match-found", handleMatchFound);
+      channel.unbind("queue-timeout", handleQueueTimeout);
+    };
+  }, [playerId, router, session?.user?.name, setMatchMaking]);
 
   if (!playerId) return null;
 

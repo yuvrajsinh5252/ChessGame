@@ -61,13 +61,14 @@ model stats {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  userStats     UserStats?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,4 +111,23 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model UserStats {
+  id          String @id @default(cuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wins        Int    @default(0)
+  losses      Int    @default(0)
+  draws       Int    @default(0)
+  rating      Int    @default(1200)
+  gamesPlayed Int    @default(0)
+  winStreak   Int    @default(0)
+  bestRating  Int    @default(1200)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([rating])
+  @@index([userId])
 }

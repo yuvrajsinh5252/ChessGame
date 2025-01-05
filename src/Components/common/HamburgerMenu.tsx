@@ -13,7 +13,7 @@ export function HamburgerMenu({ isOpen, onClick }: HamburgerMenuProps) {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5">
         <span
           className={`absolute top-0.5 block h-0.5 w-5 rounded-full bg-current transform transition-all duration-300 ease-in-out ${
-            isOpen ? "rotate-45 translate-y-2" : ""
+            isOpen ? "rotate-45 translate-y-1" : ""
           }`}
         />
         <span

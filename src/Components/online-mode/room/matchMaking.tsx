@@ -2,14 +2,10 @@
 
 import useMatchStore from "@/store/useMatchStore";
 import { useStore } from "zustand";
-import { useSession } from "next-auth/react";
 import { joinQueue } from "@/lib/db/online-players/join-queue";
 
-export function Matchmaking() {
+export function Matchmaking({ playerId }: { playerId: string }) {
   const { setMatchMaking } = useStore(useMatchStore, (state) => state);
-
-  const { data } = useSession();
-  const playerId = data?.user?.id;
 
   const handleSearch = async () => {
     if (!playerId) return console.error("No player id found");
