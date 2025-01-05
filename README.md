@@ -6,6 +6,7 @@ A simple multiplayer chess game. A simple implementation of the classic chess ga
 
 - Real-time multiplayer gameplay
 - Online multiplayer mode with chat functionality
+- Player profile with statistics
 - Two-player mode
 - Single-player mode against AI
 
@@ -23,7 +24,13 @@ git clone https://github.com/yourusername/chess-game.git
 cd chess-game
 ```
 
-3. Install dependencies:
+3. Create a `.env.local` file in the root directory of the project and add the following environment variables:
+
+```sh
+cp .env.example .env.local
+```
+
+4. Install dependencies:
 
 ```sh
 bun install
