@@ -18,7 +18,7 @@ async function getUserProfile(email: string, playerId: string) {
         wins: 0,
         losses: 0,
         draws: 0,
-        gamesPlayed: 1,
+        gamesPlayed: 0,
         winStreak: 0,
       },
     });

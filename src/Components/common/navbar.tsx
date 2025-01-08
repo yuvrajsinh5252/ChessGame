@@ -20,6 +20,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { FriendsList } from "../friends/FriendsList";
+import { UserSearch } from "../friends/UserSearch";
+import { UserPlus } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -53,6 +56,25 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <ChessTheme />
           <ThemeToggle />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Friends
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
+              <DialogHeader>
+                <DialogTitle>Friends</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-6">
+                <UserSearch />
+                <div className="border-t pt-4">
+                  <FriendsList />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           {status === "loading" ? (
             <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-500 animate-pulse" />
           ) : session ? (
@@ -70,46 +92,13 @@ export function Navbar() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
                 <DialogHeader>
-                  <DialogTitle></DialogTitle>
+                  <DialogTitle>Friends</DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-2">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={session.user?.image || "/default-avatar.png"}
-                        width={50}
-                        height={50}
-                        className="rounded-full"
-                        alt="Profile"
-                      />
-                      <div>
-                        <p className="font-medium line-clamp-1">
-                          {session.user?.name}
-                        </p>
-                        <p className="text-sm text-gray-500 line-clamp-1">
-                          {session.user?.email}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="self-start sm:self-center">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link
-                          href="/profile"
-                          className="flex items-center gap-2"
-                          onClick={() => setIsDialogOpen(false)}
-                        >
-                          View Profile
-                        </Link>
-                      </Button>
-                    </div>
+                <div className="space-y-6">
+                  <UserSearch />
+                  <div className="border-t pt-4">
+                    <FriendsList />
                   </div>
-                  <Button
-                    className="w-full"
-                    variant="destructive"
-                    onClick={() => signOut()}
-                  >
-                    Sign Out
-                  </Button>
                 </div>
               </DialogContent>
             </Dialog>

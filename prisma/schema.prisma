@@ -70,8 +70,12 @@ model User {
   sessions      Session[]
   userStats     UserStats?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  gameHistory         gameHistory[]
+  sentFriendships     Friendship[]  @relation("SentFriendRequests")
+  receivedFriendships Friendship[]  @relation("ReceivedFriendRequests")
+  friendships         Friendship[]
 }
 
 model Account {
@@ -130,4 +134,47 @@ model UserStats {
 
   @@index([rating])
   @@index([userId])
+}
+
+model gameHistory {
+  id          String   @id @default(cuid())
+  playerId    String
+  playerColor String
+  opponentId  String
+  result      String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [playerId], references: [id])
+
+  @@index([playerId])
+}
+
+model Friendship {
+  id         String           @id @default(cuid())
+  senderId   String
+  sender     User             @relation("SentFriendRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User             @relation("ReceivedFriendRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     FriendshipStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  User       User?            @relation(fields: [userId], references: [id])
+  userId     String?
+
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  IN_GAME
 }

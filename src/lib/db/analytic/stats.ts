@@ -38,6 +38,37 @@ export async function updateUserStats(
     });
   }
 
+  // Creating the gameHistory record
+  const player = await prisma.player.findFirst({
+    where: { id: userId },
+    include: {
+      game: {
+        include: {
+          players: true,
+        },
+      },
+    },
+  });
+
+  if (player && player.game) {
+    const opponent = player.game.players.find((p) => p.id !== userId);
+    if (opponent) {
+      await prisma.gameHistory.create({
+        data: {
+          playerId: userId,
+          playerColor: player.color,
+          opponentId: opponent.id,
+          result:
+            gameResult === "win"
+              ? player.color
+              : gameResult === "loss"
+              ? opponent.color
+              : "draw",
+        },
+      });
+    }
+  }
+
   return await prisma.userStats.update({
     where: { userId },
     data: {
