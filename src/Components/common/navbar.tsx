@@ -23,6 +23,7 @@ import {
 import { FriendsList } from "../friends/FriendsList";
 import { UserSearch } from "../friends/UserSearch";
 import { UserPlus } from "lucide-react";
+import { ErrorBoundary } from "../friends/ErrorBoundary";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -58,9 +59,8 @@ export function Navbar() {
           <ThemeToggle />
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Friends
+              <Button variant={"ghost"} size="sm" className="mr-2">
+                <UserPlus className="w-6 h-6" />
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
@@ -68,10 +68,12 @@ export function Navbar() {
                 <DialogTitle>Friends</DialogTitle>
               </DialogHeader>
               <div className="space-y-6">
-                <UserSearch />
-                <div className="border-t pt-4">
-                  <FriendsList />
-                </div>
+                <ErrorBoundary>
+                  <UserSearch />
+                  <div className="border-t pt-4">
+                    <FriendsList />
+                  </div>
+                </ErrorBoundary>
               </div>
             </DialogContent>
           </Dialog>
@@ -90,17 +92,6 @@ export function Navbar() {
                   />
                 </div>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
-                <DialogHeader>
-                  <DialogTitle>Friends</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-6">
-                  <UserSearch />
-                  <div className="border-t pt-4">
-                    <FriendsList />
-                  </div>
-                </div>
-              </DialogContent>
             </Dialog>
           ) : (
             <Button

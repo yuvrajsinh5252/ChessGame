@@ -6,12 +6,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { UserPlus, UserMinus, Check, X } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import {
+  getFriends,
+  getPendingRequests,
+  handleFriendRequest,
+} from "@/lib/actions/friend.actions";
 
 interface Friend {
   id: string;
-  name: string;
-  image: string;
-  status: "ONLINE" | "OFFLINE" | "IN_GAME";
+  name: string | null;
+  image: string | null;
+  status?: "ONLINE" | "OFFLINE" | "IN_GAME";
+}
+
+interface FriendRequest {
+  id: string;
+  sender: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
 }
 
 const DEFAULT_AVATAR = "/default-avatar.png";
@@ -25,18 +39,18 @@ export function FriendsList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [friendsRes, requestsRes] = await Promise.all([
-          fetch("/api/friends?action=friends"),
-          fetch("/api/friends?action=pending"),
-        ]);
-
         const [friendsData, requestsData] = await Promise.all([
-          friendsRes.json(),
-          requestsRes.json(),
+          getFriends(),
+          getPendingRequests(),
         ]);
-
         setFriends(friendsData);
-        setPendingRequests(requestsData);
+        setPendingRequests(
+          requestsData.map((request) => ({
+            id: request.sender.id,
+            name: request.sender.name,
+            image: request.sender.image,
+          }))
+        );
       } catch (error) {
         console.error("Error fetching friends data:", error);
       } finally {
@@ -47,33 +61,24 @@ export function FriendsList() {
     fetchData();
   }, []);
 
-  const handleFriendRequest = async (action: string, userId: string) => {
+  const handleFriendAction = async (action: string, userId: string) => {
     setIsActionLoading(userId);
     try {
-      await fetch("/api/friends", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action,
-          targetUserId: userId,
-        }),
-      });
+      await handleFriendRequest(action, userId);
 
       // Refresh the lists
-      const [friendsRes, requestsRes] = await Promise.all([
-        fetch("/api/friends?action=friends"),
-        fetch("/api/friends?action=pending"),
-      ]);
-
       const [friendsData, requestsData] = await Promise.all([
-        friendsRes.json(),
-        requestsRes.json(),
+        getFriends(),
+        getPendingRequests(),
       ]);
-
       setFriends(friendsData);
-      setPendingRequests(requestsData);
+      setPendingRequests(
+        requestsData.map((request) => ({
+          id: request.sender.id,
+          name: request.sender.name,
+          image: request.sender.image,
+        }))
+      );
     } catch (error) {
       console.error("Error handling friend request:", error);
     } finally {
@@ -130,13 +135,15 @@ export function FriendsList() {
                     height={40}
                     className="rounded-full"
                   />
-                  <span className="font-medium">{request.name}</span>
+                  <span className="font-medium">
+                    {request.name || "Unknown User"}
+                  </span>
                 </div>
                 <div className="flex space-x-2">
                   <Button
                     size="sm"
                     onClick={() =>
-                      handleFriendRequest("accept-request", request.id)
+                      handleFriendAction("accept-request", request.id)
                     }
                     disabled={isActionLoading === request.id}
                   >
@@ -150,7 +157,7 @@ export function FriendsList() {
                     size="sm"
                     variant="destructive"
                     onClick={() =>
-                      handleFriendRequest("decline-request", request.id)
+                      handleFriendAction("decline-request", request.id)
                     }
                     disabled={isActionLoading === request.id}
                   >
@@ -209,7 +216,7 @@ export function FriendsList() {
               <Button
                 size="sm"
                 variant="destructive"
-                onClick={() => handleFriendRequest("remove-friend", friend.id)}
+                onClick={() => handleFriendAction("remove-friend", friend.id)}
                 disabled={isActionLoading === friend.id}
               >
                 {isActionLoading === friend.id ? (

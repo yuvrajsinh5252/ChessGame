@@ -7,11 +7,13 @@ import { Search, UserPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
+import { searchUsers } from "@/lib/actions/user.actions";
+import { handleFriendRequest } from "@/lib/actions/friend.actions";
 
 interface UserSearchResult {
   id: string;
-  name: string;
-  image: string;
+  name: string | null;
+  image: string | null;
   isFriend: boolean;
 }
 
@@ -21,21 +23,35 @@ export function UserSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState<string | null>(null);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `/api/users/search?q=${encodeURIComponent(searchQuery)}`
-      );
-      const data = await res.json();
-      setSearchResults(data);
+      const results = await searchUsers(searchQuery);
+      setSearchResults(results);
     } catch (error) {
       console.error("Error searching users:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAddFriend = async (userId: string) => {
+    setIsActionLoading(userId);
+    try {
+      await handleFriendRequest("send-request", userId);
+      setSearchResults((prev) =>
+        prev.map((user) =>
+          user.id === userId ? { ...user, isFriend: true } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error adding friend:", error);
+    } finally {
+      setIsActionLoading(null);
     }
   };
 
@@ -95,9 +111,20 @@ export function UserSearch() {
                   <span className="font-medium">{user.name}</span>
                 </Link>
                 {!user.isFriend && (
-                  <Button size="sm" variant="outline">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Add Friend
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAddFriend(user.id)}
+                    disabled={isActionLoading === user.id}
+                  >
+                    {isActionLoading === user.id ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    ) : (
+                      <>
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Add Friend
+                      </>
+                    )}
                   </Button>
                 )}
               </div>
