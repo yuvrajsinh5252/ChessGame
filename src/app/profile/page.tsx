@@ -35,7 +35,7 @@ async function getUserProfile(email: string, playerId: string) {
   return user;
 }
 
-export async function MathcHistory(userId: string) {
+async function MatchHistory(userId: string) {
   return await prisma.gameHistory.findMany({
     where: {
       playerId: userId,
@@ -55,7 +55,7 @@ export default async function Page() {
   }
 
   const userProfile = await getUserProfile(session.user.email, session.user.id);
-  const matchHistory = await MathcHistory(session.user.id);
+  const matchHistory = await MatchHistory(session.user.id);
 
   if (!userProfile) {
     return <div>User profile not found</div>;

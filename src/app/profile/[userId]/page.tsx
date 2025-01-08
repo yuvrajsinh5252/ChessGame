@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
@@ -5,12 +7,26 @@ import { notFound } from "next/navigation";
 import { FriendRequestButton } from "@/Components/friends/FriendRequestButton";
 import { QuickStats } from "@/Components/profile/quickStats";
 import Link from "next/link";
+import { Metadata } from "next";
 
-export default async function UserProfile({
-  params: { userId },
-}: {
-  params: { userId: string };
-}) {
+type Params = Promise<{
+  userId: string;
+}>;
+
+export async function generateMetadata(props: {
+  params: Params;
+}): Promise<Metadata> {
+  const user = await prisma.user.findUnique({
+    where: { id: (await props.params).userId },
+  });
+
+  return {
+    title: user ? `${user.name}'s Profile - ChessMate` : "Profile Not Found",
+  };
+}
+
+export default async function Page(props: { params: Params }) {
+  const { userId } = await props.params;
   const session = await auth();
   const currentUserId = session?.user?.id;
 
@@ -18,6 +34,12 @@ export default async function UserProfile({
     where: { id: userId },
     include: {
       userStats: true,
+      gameHistory: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 10,
+      },
     },
   });
 
