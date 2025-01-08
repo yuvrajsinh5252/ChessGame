@@ -32,7 +32,6 @@ export async function searchUsers(query: string) {
     take: 10, // Limit results
   });
 
-  // Check if each user is already a friend
   const usersWithFriendStatus = await Promise.all(
     users.map(async (user) => {
       const friendship = await prisma.friendship.findFirst({
