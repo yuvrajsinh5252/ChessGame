@@ -6,8 +6,6 @@ import { FriendRequestButton } from "@/Components/friends/FriendRequestButton";
 import { QuickStats } from "@/Components/profile/quickStats";
 import Link from "next/link";
 
-const DEFAULT_AVATAR = "/default-avatar.png";
-
 export default async function UserProfile({
   params: { userId },
 }: {
@@ -83,7 +81,7 @@ export default async function UserProfile({
           </div>
 
           <Image
-            src={user.image || DEFAULT_AVATAR}
+            src={user.image || "/default-avatar.png"}
             alt={user.name || "User"}
             width={128}
             height={128}
@@ -122,7 +120,7 @@ export default async function UserProfile({
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     <Image
-                      src={friend.image || DEFAULT_AVATAR}
+                      src={friend.image || "/default-avatar.png"}
                       alt={friend.name || "User"}
                       width={40}
                       height={40}
@@ -135,8 +133,6 @@ export default async function UserProfile({
             </div>
           </div>
         )}
-
-        {/* Add more sections as needed */}
       </div>
     </div>
   );

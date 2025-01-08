@@ -27,33 +27,32 @@ export async function searchUsers(query: string) {
       id: true,
       name: true,
       image: true,
+      sentFriendRequests: {
+        where: {
+          receiverId: session.user.id,
+        },
+        select: {
+          status: true,
+        },
+      },
+      receivedFriendRequests: {
+        where: {
+          senderId: session.user.id,
+        },
+        select: {
+          status: true,
+        },
+      },
     },
-    take: 10,
   });
 
-  const usersWithFriendStatus = await Promise.all(
-    users.map(async (user) => {
-      const friendship = await prisma.friendship.findFirst({
-        where: {
-          OR: [
-            {
-              senderId: session.user?.id,
-              receiverId: user.id,
-            },
-            {
-              senderId: user.id,
-              receiverId: session.user?.id,
-            },
-          ],
-        },
-      });
-
-      return {
-        ...user,
-        isFriend: !!friendship && friendship.status === "ACCEPTED",
-      };
-    })
-  );
-
-  return usersWithFriendStatus;
+  return users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    image: user.image,
+    friendshipStatus:
+      user.receivedFriendRequests[0]?.status ||
+      user.sentFriendRequests[0]?.status ||
+      null,
+  }));
 }

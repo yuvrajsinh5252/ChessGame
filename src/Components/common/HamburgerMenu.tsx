@@ -16,6 +16,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { FriendsList } from "../friends/FriendsList";
+import { UserSearch } from "../friends/UserSearch";
+import { UserPlus } from "lucide-react";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -75,63 +78,83 @@ export function HamBurger({
         {status === "loading" ? (
           <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-500 animate-pulse" />
         ) : session ? (
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger>
-              <div className="flex items-center gap-2">
-                <Image
-                  src={session.user?.image || "/default-avatar.png"}
-                  width={36}
-                  height={36}
-                  className="rounded-full"
-                  alt="Profile"
-                />
-              </div>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
-              <DialogHeader>
-                <DialogTitle></DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-2">
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={session.user?.image || "/default-avatar.png"}
-                      width={50}
-                      height={50}
-                      className="rounded-full"
-                      alt="Profile"
-                    />
-                    <div>
-                      <p className="font-medium line-clamp-1">
-                        {session.user?.name}
-                      </p>
-                      <p className="text-sm text-gray-500 line-clamp-1">
-                        {session.user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="self-start sm:self-center">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link
-                        href="/profile"
-                        className="flex items-center gap-2"
-                        onClick={() => setIsDialogOpen(false)}
-                      >
-                        View Profile
-                      </Link>
-                    </Button>
+          <div className="flex items-center gap-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant={"ghost"} size="sm" className="mr-2">
+                  <UserPlus className="w-6 h-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
+                <DialogHeader>
+                  <DialogTitle>Find Friends</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-6">
+                  <UserSearch />
+                  <div className="border-t pt-4">
+                    <FriendsList />
                   </div>
                 </div>
-                <Button
-                  className="w-full"
-                  variant="destructive"
-                  onClick={() => signOut()}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger>
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={session.user?.image || "/default-avatar.png"}
+                    width={36}
+                    height={36}
+                    className="rounded-full"
+                    alt="Profile"
+                  />
+                </div>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
+                <DialogHeader>
+                  <DialogTitle></DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-2">
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src={session.user?.image || "/default-avatar.png"}
+                        width={50}
+                        height={50}
+                        className="rounded-full"
+                        alt="Profile"
+                      />
+                      <div>
+                        <p className="font-medium line-clamp-1">
+                          {session.user?.name}
+                        </p>
+                        <p className="text-sm text-gray-500 line-clamp-1">
+                          {session.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="self-start sm:self-center">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-2"
+                          onClick={() => setIsDialogOpen(false)}
+                        >
+                          View Profile
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    variant="destructive"
+                    onClick={() => signOut()}
+                  >
+                    Sign Out
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         ) : (
           <Button
             variant="ghost"

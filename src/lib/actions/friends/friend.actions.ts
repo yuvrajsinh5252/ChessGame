@@ -49,38 +49,6 @@ export async function getFriends() {
   });
 }
 
-export async function getPendingRequests() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
-
-  const requests = await prisma.friendship.findMany({
-    where: {
-      receiverId: session.user.id,
-      status: "PENDING",
-    },
-    include: {
-      sender: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-  });
-
-  return requests.map((request) => ({
-    id: request.id,
-    sender: {
-      id: request.sender.id,
-      name: request.sender.name,
-      image: request.sender.image,
-    },
-  }));
-}
-
 export async function handleFriendRequest(
   action: string,
   targetUserId: string
@@ -90,58 +58,41 @@ export async function handleFriendRequest(
     throw new Error("Unauthorized");
   }
 
+  const existingFriendship = await prisma.friendship.findFirst({
+    where: {
+      OR: [
+        {
+          senderId: session.user.id,
+          receiverId: targetUserId,
+        },
+        {
+          senderId: targetUserId,
+          receiverId: session.user.id,
+        },
+      ],
+    },
+  });
+
   switch (action) {
-    case "send-request":
+    case "add-friend":
+      if (existingFriendship) {
+        throw new Error("Already friends");
+      }
       await prisma.friendship.create({
         data: {
           senderId: session.user.id,
           receiverId: targetUserId,
-        },
-      });
-      break;
-
-    case "accept-request":
-      await prisma.friendship.update({
-        where: {
-          senderId_receiverId: {
-            senderId: targetUserId,
-            receiverId: session.user.id,
-          },
-        },
-        data: {
           status: "ACCEPTED",
         },
       });
       break;
 
-    case "decline-request":
-      await prisma.friendship.update({
-        where: {
-          senderId_receiverId: {
-            senderId: targetUserId,
-            receiverId: session.user.id,
-          },
-        },
-        data: {
-          status: "DECLINED",
-        },
-      });
-      break;
-
     case "remove-friend":
-      await prisma.friendship.deleteMany({
-        where: {
-          OR: [
-            {
-              senderId: session.user.id,
-              receiverId: targetUserId,
-            },
-            {
-              senderId: targetUserId,
-              receiverId: session.user.id,
-            },
-          ],
-        },
+      if (!existingFriendship) {
+        throw new Error("Friendship does not exist");
+      }
+      await prisma.friendship.delete({
+        where: { id: existingFriendship.id },
       });
       break;
 

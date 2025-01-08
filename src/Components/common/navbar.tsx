@@ -23,7 +23,6 @@ import {
 import { FriendsList } from "../friends/FriendsList";
 import { UserSearch } from "../friends/UserSearch";
 import { UserPlus } from "lucide-react";
-import { ErrorBoundary } from "../friends/ErrorBoundary";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -57,42 +56,42 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <ChessTheme />
           <ThemeToggle />
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant={"ghost"} size="sm" className="mr-2">
-                <UserPlus className="w-6 h-6" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
-              <DialogHeader>
-                <DialogTitle>Friends</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-6">
-                <ErrorBoundary>
-                  <UserSearch />
-                  <div className="border-t pt-4">
-                    <FriendsList />
-                  </div>
-                </ErrorBoundary>
-              </div>
-            </DialogContent>
-          </Dialog>
           {status === "loading" ? (
             <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-500 animate-pulse" />
           ) : session ? (
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger>
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={session.user?.image || "/default-avatar.png"}
-                    width={36}
-                    height={36}
-                    className="rounded-full"
-                    alt="Profile"
-                  />
-                </div>
-              </DialogTrigger>
-            </Dialog>
+            <div className="flex items-center gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant={"ghost"} size="sm" className="mr-2">
+                    <UserPlus className="w-6 h-6" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] max-sm:w-[300px] rounded-lg">
+                  <DialogHeader>
+                    <DialogTitle>Find Friends</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6">
+                    <UserSearch />
+                    <div className="border-t pt-4">
+                      <FriendsList />
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger>
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={session.user?.image || "/default-avatar.png"}
+                      width={36}
+                      height={36}
+                      className="rounded-full"
+                      alt="Profile"
+                    />
+                  </div>
+                </DialogTrigger>
+              </Dialog>
+            </div>
           ) : (
             <Button
               variant="ghost"

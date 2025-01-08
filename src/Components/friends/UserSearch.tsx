@@ -28,7 +28,12 @@ export function UserSearch() {
     setIsLoading(true);
     try {
       const results = await searchUsers(searchQuery);
-      setSearchResults(results);
+      setSearchResults(
+        results.map((user) => ({
+          ...user,
+          isFriend: user.friendshipStatus === "ACCEPTED",
+        }))
+      );
     } catch (error) {
       console.error("Error searching users:", error);
     } finally {
@@ -39,7 +44,7 @@ export function UserSearch() {
   const handleAddFriend = async (userId: string) => {
     setIsActionLoading(userId);
     try {
-      await handleFriendRequest("send-request", userId);
+      await handleFriendRequest("add-friend", userId);
       setSearchResults((prev) =>
         prev.map((user) =>
           user.id === userId ? { ...user, isFriend: true } : user
@@ -103,7 +108,7 @@ export function UserSearch() {
                   />
                   <span className="font-medium">{user.name}</span>
                 </Link>
-                {!user.isFriend && (
+                {!user.isFriend ? (
                   <Button
                     size="sm"
                     variant="outline"
@@ -119,6 +124,8 @@ export function UserSearch() {
                       </>
                     )}
                   </Button>
+                ) : (
+                  <span className="text-sm text-gray-500">Friends</span>
                 )}
               </div>
             ))}
