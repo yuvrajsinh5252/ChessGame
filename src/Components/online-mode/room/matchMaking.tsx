@@ -2,7 +2,7 @@
 
 import useMatchStore from "@/store/useMatchStore";
 import { useStore } from "zustand";
-import { joinQueue } from "@/lib/db/online-players/join-queue";
+import { joinQueue } from "@/lib/actions/online-players/join-queue";
 
 export function Matchmaking({ playerId }: { playerId: string }) {
   const { setMatchMaking } = useStore(useMatchStore, (state) => state);

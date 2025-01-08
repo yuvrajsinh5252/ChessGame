@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { deleteGame } from "@/lib/db/game/helper";
+import { deleteGame } from "@/lib/actions/game/helper";
 import { useEffect, useState } from "react";
 import JSConfetti from "js-confetti";
 import { Button } from "../ui/button";

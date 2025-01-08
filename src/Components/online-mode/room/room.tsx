@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { LoaderIcon } from "lucide-react";
 import { ShareLink } from "./shareLink";
-import { JoinGame } from "@/lib/db/room/join-game";
+import { JoinGame } from "@/lib/actions/room/join-game";
 import useChatStore from "@/store/useChatStore";
 import { Button } from "@/Components/ui/button";
 import { Matchmaking } from "./matchMaking";
@@ -14,8 +14,8 @@ import { useStore } from "zustand";
 import useMatchStore from "@/store/useMatchStore";
 import { FindingMatch } from "./findMatch";
 import { signIn, useSession } from "next-auth/react";
-import { CheckGame } from "@/lib/db/room/check-game";
-import { CreateRoom, DeleteRoom } from "@/lib/db/room/crud-game";
+import { CheckGame } from "@/lib/actions/room/check-game";
+import { CreateRoom, DeleteRoom } from "@/lib/actions/room/crud-game";
 
 export default function Room() {
   const { setRoomId: setRoomChatId } = useChatStore((state) => state);

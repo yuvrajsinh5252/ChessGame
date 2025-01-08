@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/Components/ui/dialog";
-import { drawAccepted, drawDeclined } from "@/lib/db/game/draw";
+import { drawAccepted, drawDeclined } from "@/lib/actions/game/draw";
 import { Button } from "../ui/button";
 
 export function DrawRequest({

@@ -5,7 +5,7 @@ import { CircleX, MessageSquare } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import useChatStore from "@/store/useChatStore";
 import { pusherClient } from "@/lib/pusher";
-import { getMessages, sendMessage } from "@/lib/db/chat/chat-server";
+import { getMessages, sendMessage } from "@/lib/actions/chat/chat-server";
 import { ChatMessage } from "./message";
 import { toast } from "sonner";
 import { Button } from "@/Components/ui/button";

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { UserPlus, UserMinus, Clock } from "lucide-react";
+import { handleFriendRequest } from "@/lib/actions/friends/friend.actions";
 
 export function FriendRequestButton({
   targetUserId,
@@ -13,22 +14,13 @@ export function FriendRequestButton({
 }) {
   const [status, setStatus] = useState(initialStatus);
 
-  const handleFriendRequest = async () => {
+  const handleRequest = async () => {
     try {
-      const res = await fetch("/api/friends", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: status === "ACCEPTED" ? "remove-friend" : "send-request",
-          targetUserId,
-        }),
-      });
-
-      if (res.ok) {
-        setStatus(status === "ACCEPTED" ? null : "PENDING");
-      }
+      await handleFriendRequest(
+        status === "ACCEPTED" ? "remove-friend" : "send-request",
+        targetUserId
+      );
+      setStatus(status === "ACCEPTED" ? null : "PENDING");
     } catch (error) {
       console.error("Error handling friend request:", error);
     }
@@ -44,7 +36,7 @@ export function FriendRequestButton({
   }
 
   return (
-    <Button onClick={handleFriendRequest}>
+    <Button onClick={handleRequest}>
       {status === "ACCEPTED" ? (
         <>
           <UserMinus className="w-4 h-4 mr-2" />

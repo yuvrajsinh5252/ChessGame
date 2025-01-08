@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/Components/ui/dialog";
 import useOnlineChessStore from "@/store/useOnlineChessStore";
-import { serverPawnPromote } from "@/lib/db/game/helper";
+import { serverPawnPromote } from "@/lib/actions/game/helper";
 import Image from "next/image";
 import { useThemeStore } from "@/store/useThemeStore";
 

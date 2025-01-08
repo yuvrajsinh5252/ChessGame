@@ -13,7 +13,6 @@ export async function searchUsers(query: string) {
     throw new Error("Query parameter required");
   }
 
-  // Find users matching the search query
   const users = await prisma.user.findMany({
     where: {
       OR: [
@@ -21,7 +20,7 @@ export async function searchUsers(query: string) {
         { email: { contains: query, mode: "insensitive" } },
       ],
       NOT: {
-        id: session.user.id, // Exclude current user
+        id: session.user.id,
       },
     },
     select: {
@@ -29,7 +28,7 @@ export async function searchUsers(query: string) {
       name: true,
       image: true,
     },
-    take: 10, // Limit results
+    take: 10,
   });
 
   const usersWithFriendStatus = await Promise.all(

@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { UserPlus, UserMinus, Check, X } from "lucide-react";
-import { Skeleton } from "../ui/skeleton";
+import { UserMinus, Check, X } from "lucide-react";
 import {
   getFriends,
   getPendingRequests,
   handleFriendRequest,
-} from "@/lib/actions/friend.actions";
+} from "@/lib/actions/friends/friend.actions";
 
 interface Friend {
   id: string;
@@ -89,25 +88,13 @@ export function FriendsList() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="h-6 w-32" />
-            <div className="space-y-2">
-              {[...Array(2)].map((_, j) => (
-                <div
-                  key={j}
-                  className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="space-y-1">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-3 w-16" />
-                    </div>
-                  </div>
-                  <Skeleton className="h-8 w-8" />
-                </div>
-              ))}
+        {[...Array(2)].map((_, j) => (
+          <div
+            key={j}
+            className="flex items-center justify-between p-3 py-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="space-y-1"></div>
             </div>
           </div>
         ))}
@@ -117,7 +104,6 @@ export function FriendsList() {
 
   return (
     <div className="space-y-6">
-      {/* Pending Requests */}
       {pendingRequests.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Friend Requests</h3>

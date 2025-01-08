@@ -6,9 +6,8 @@ import { Button } from "../ui/button";
 import { Search, UserPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Skeleton } from "../ui/skeleton";
-import { searchUsers } from "@/lib/actions/user.actions";
-import { handleFriendRequest } from "@/lib/actions/friend.actions";
+import { searchUsers } from "@/lib/actions/friends/user.actions";
+import { handleFriendRequest } from "@/lib/actions/friends/friend.actions";
 
 interface UserSearchResult {
   id: string;
@@ -16,8 +15,6 @@ interface UserSearchResult {
   image: string | null;
   isFriend: boolean;
 }
-
-const DEFAULT_AVATAR = "/default-avatar.png";
 
 export function UserSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,16 +73,12 @@ export function UserSearch() {
 
       {isLoading ? (
         <div className="space-y-2">
-          {[...Array(3)].map((_, i) => (
+          {[...Array(2)].map((_, i) => (
             <div
               key={i}
-              className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+              className="flex items-center justify-between p-3 py-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             >
-              <div className="flex items-center space-x-3">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-              <Skeleton className="h-8 w-24" />
+              <div className="flex items-center space-x-3"></div>
             </div>
           ))}
         </div>
@@ -102,7 +95,7 @@ export function UserSearch() {
                   className="flex items-center space-x-3"
                 >
                   <Image
-                    src={user.image || DEFAULT_AVATAR}
+                    src={user.image || "/default-avatar.png"}
                     alt={user.name || "User"}
                     width={40}
                     height={40}
