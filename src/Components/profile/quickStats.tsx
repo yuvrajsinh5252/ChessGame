@@ -10,7 +10,7 @@ export async function QuickStats({ userProfile }: { userProfile: UserStats }) {
           <FaChessKnight className="w-6 h-6 text-blue-500" />
           <h3 className="text-lg font-semibold">Games Played</h3>
         </div>
-        <p className="text-3xl font-bold text-gray-800 dark:text-white">
+        <p className="text-3xl font-bold text-gray-800 dark:text-white max-sm:text-center">
           {userProfile?.gamesPlayed || 0}
         </p>
       </div>
@@ -20,7 +20,7 @@ export async function QuickStats({ userProfile }: { userProfile: UserStats }) {
           <Trophy className="w-6 h-6 text-yellow-500" />
           <h3 className="text-lg font-semibold">Wins</h3>
         </div>
-        <p className="text-3xl font-bold text-gray-800 dark:text-white">
+        <p className="text-3xl font-bold text-gray-800 dark:text-white max-sm:text-center">
           {userProfile?.wins || 0}
         </p>
       </div>
@@ -30,7 +30,7 @@ export async function QuickStats({ userProfile }: { userProfile: UserStats }) {
           <Target className="w-6 h-6 text-red-500" />
           <h3 className="text-lg font-semibold">Losses</h3>
         </div>
-        <p className="text-3xl font-bold text-gray-800 dark:text-white">
+        <p className="text-3xl font-bold text-gray-800 dark:text-white max-sm:text-center">
           {userProfile?.losses || 0}
         </p>
       </div>
@@ -40,7 +40,7 @@ export async function QuickStats({ userProfile }: { userProfile: UserStats }) {
           <Activity className="w-6 h-6 text-green-500" />
           <h3 className="text-lg font-semibold">Win Rate</h3>
         </div>
-        <p className="text-3xl font-bold text-gray-800 dark:text-white">
+        <p className="text-3xl font-bold text-gray-800 dark:text-white max-sm:text-center">
           {userProfile
             ? ((userProfile.wins / userProfile.gamesPlayed) * 100).toFixed(1) +
               "%"

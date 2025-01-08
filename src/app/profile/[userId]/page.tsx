@@ -25,52 +25,49 @@ export default async function UserProfile({
     notFound();
   }
 
-  const friendship = null;
-  const mutualFriends = null;
+  const friendship = currentUserId
+    ? await prisma.friendship.findFirst({
+        where: {
+          OR: [
+            { senderId: currentUserId, receiverId: userId },
+            { senderId: userId, receiverId: currentUserId },
+          ],
+        },
+      })
+    : null;
 
-  // const friendship = currentUserId
-  //   ? await prisma.friendship.findFirst({
-  //       where: {
-  //         OR: [
-  //           { senderId: currentUserId, receiverId: userId },
-  //           { senderId: userId, receiverId: currentUserId },
-  //         ],
-  //       },
-  //     })
-  //   : null;
-
-  // const mutualFriends = currentUserId
-  //   ? await prisma.friendship.findMany({
-  //       where: {
-  // AND: [
-  //   {
-  //     OR: [{ senderId: currentUserId }, { receiverId: currentUserId }],
-  //     status: "ACCEPTED",
-  //   },
-  //   {
-  //     OR: [{ senderId: userId }, { receiverId: userId }],
-  //     status: "ACCEPTED",
-  //   },
-  // ],
-  // },
-  // include: {
-  //   sender: {
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //       image: true,
-  //     },
-  //   },
-  //   receiver: {
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //       image: true,
-  //     },
-  //   },
-  // },
-  // })
-  // : [];
+  const mutualFriends = currentUserId
+    ? await prisma.friendship.findMany({
+        where: {
+          AND: [
+            {
+              OR: [{ senderId: currentUserId }, { receiverId: currentUserId }],
+              status: "ACCEPTED",
+            },
+            {
+              OR: [{ senderId: userId }, { receiverId: userId }],
+              status: "ACCEPTED",
+            },
+          ],
+        },
+        include: {
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          receiver: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      })
+    : [];
 
   return (
     <div className="min-h-screen pt-24 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -99,7 +96,9 @@ export default async function UserProfile({
             <div className="mt-4">
               <FriendRequestButton
                 targetUserId={userId}
-                initialStatus={friendship?.status}
+                initialStatus={
+                  friendship?.status as "PENDING" | "ACCEPTED" | null
+                }
               />
             </div>
           )}
@@ -129,7 +128,7 @@ export default async function UserProfile({
                       height={40}
                       className="rounded-full"
                     />
-                    <span className="font-medium truncate">{friend.name}</span>
+                    <span className="font-medium">{friend.name}</span>
                   </Link>
                 );
               })}

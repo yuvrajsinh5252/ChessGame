@@ -27,7 +27,7 @@ export async function searchUsers(query: string) {
       id: true,
       name: true,
       image: true,
-      sentFriendRequests: {
+      sentFriendships: {
         where: {
           receiverId: session.user.id,
         },
@@ -35,7 +35,7 @@ export async function searchUsers(query: string) {
           status: true,
         },
       },
-      receivedFriendRequests: {
+      receivedFriendships: {
         where: {
           senderId: session.user.id,
         },
@@ -51,8 +51,8 @@ export async function searchUsers(query: string) {
     name: user.name,
     image: user.image,
     friendshipStatus:
-      user.receivedFriendRequests[0]?.status ||
-      user.sentFriendRequests[0]?.status ||
+      user.receivedFriendships[0]?.status ||
+      user.sentFriendships[0]?.status ||
       null,
   }));
 }
