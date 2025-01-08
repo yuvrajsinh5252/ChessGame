@@ -36,16 +36,11 @@ async function getUserProfile(email: string, playerId: string) {
 }
 
 export async function MathcHistory(userId: string) {
-  const games = await prisma.gameHistory.findMany({
+  return await prisma.gameHistory.findMany({
     where: {
-      OR: [{ playerId: userId }, { opponentId: userId }],
+      playerId: userId,
     },
   });
-
-  return games.map((game) => ({
-    ...game,
-    isOpponent: game.opponentId === userId,
-  }));
 }
 
 export default async function Page() {

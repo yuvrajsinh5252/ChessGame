@@ -2,21 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 
-const K_FACTOR = 32; // ELO rating constant
-
-export async function calculateNewRating(
-  winnerRating: number,
-  loserRating: number
-) {
-  const expectedScore =
-    1 / (1 + Math.pow(10, (loserRating - winnerRating) / 400));
-  const ratingChange = Math.round(K_FACTOR * (1 - expectedScore));
-  return {
-    winnerNewRating: winnerRating + ratingChange,
-    loserNewRating: loserRating - ratingChange,
-  };
-}
-
 export async function updateUserStats(
   userId: string,
   gameResult: "win" | "loss" | "draw"

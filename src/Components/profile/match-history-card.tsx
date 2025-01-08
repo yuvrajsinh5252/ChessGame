@@ -55,7 +55,7 @@ export function MatchHistoryCard({
             </p>
           </div>
         ) : (
-          matchHistory.map((match: any) => (
+          matchHistory.map((match) => (
             <Link
               href={`/profile/${match.opponentId}`}
               key={match.id}
@@ -65,13 +65,7 @@ export function MatchHistoryCard({
                 <div className="flex items-center space-x-4">
                   <div
                     className={`w-2 h-8 rounded-full ${
-                      match.isOpponent
-                        ? match.result !== match.playerColor
-                          ? "bg-green-500"
-                          : match.result !== "draw"
-                          ? "bg-red-500"
-                          : "bg-yellow-500"
-                        : match.result === match.playerColor
+                      match.result === match.playerColor
                         ? "bg-green-500"
                         : match.result !== "draw"
                         ? "bg-red-500"
@@ -85,13 +79,7 @@ export function MatchHistoryCard({
                       </p>
                       <span
                         className={`px-2 py-0.5 text-xs rounded-full ${
-                          match.isOpponent
-                            ? match.result !== match.playerColor
-                              ? "bg-green-500"
-                              : match.result !== "draw"
-                              ? "bg-red-500"
-                              : "bg-yellow-500"
-                            : match.result === match.playerColor
+                          match.result === match.playerColor
                             ? "bg-green-500"
                             : match.result !== "draw"
                             ? "bg-red-500"
@@ -102,14 +90,7 @@ export function MatchHistoryCard({
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      <span>
-                        Played as{" "}
-                        {match.isOpponent
-                          ? match.playerColor == "white"
-                            ? "black"
-                            : "white"
-                          : match.playerColor}
-                      </span>
+                      <span>Played as {match.playerColor}</span>
                       <span>•</span>
                       <span className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />

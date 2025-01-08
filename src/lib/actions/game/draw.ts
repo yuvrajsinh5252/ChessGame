@@ -2,7 +2,7 @@
 
 import { pusherServer } from "@/lib/pusher";
 import { prisma } from "../../prisma";
-import { updateUserStats } from "../analytic/stats";
+import { updateGameResults } from "./rating";
 
 export async function handlePlayerDraw(gameId: string, playerId: string) {
   try {
@@ -35,8 +35,12 @@ export async function drawAccepted(gameId: string) {
   });
   if (!game) throw new Error("Game not found");
 
-  await Promise.all(
-    game.players.map((player) => updateUserStats(player.id, "draw"))
+  await updateGameResults(
+    null,
+    game.players[0].id,
+    game.players[1].id,
+    true,
+    gameId
   );
 
   await prisma.game.update({

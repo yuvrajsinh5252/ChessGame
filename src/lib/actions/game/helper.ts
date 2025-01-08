@@ -5,7 +5,7 @@ import { pusherServer } from "@/lib/pusher";
 import { Board } from "@/store/useChessStore";
 import { GameState, winner } from "@/types/onlineChess";
 import { isKingInCheck } from "@/utils/kingCheck";
-import { updateUserStats } from "../analytic/stats";
+import { updateGameResults } from "./rating";
 
 //  This function is used to get the game state from the database
 export async function getGameState(gameId: string) {
@@ -89,8 +89,13 @@ export async function handlePlayerResign(gameId: string, playerId: string) {
 
   if (!resigningPlayer || !winningPlayer) throw new Error("Players not found");
 
-  await updateUserStats(resigningPlayer.id, "loss");
-  await updateUserStats(winningPlayer.id, "win");
+  await updateGameResults(
+    winningPlayer.id,
+    resigningPlayer.id,
+    winningPlayer.id,
+    false,
+    gameId
+  );
 
   await prisma.game.update({
     where: { roomId: gameId },
