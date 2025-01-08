@@ -25,49 +25,52 @@ export default async function UserProfile({
     notFound();
   }
 
-  const friendship = currentUserId
-    ? await prisma.friendship.findFirst({
-        where: {
-          OR: [
-            { senderId: currentUserId, receiverId: userId },
-            { senderId: userId, receiverId: currentUserId },
-          ],
-        },
-      })
-    : null;
+  const friendship = null;
+  const mutualFriends = null;
 
-  const mutualFriends = currentUserId
-    ? await prisma.friendship.findMany({
-        where: {
-          AND: [
-            {
-              OR: [{ senderId: currentUserId }, { receiverId: currentUserId }],
-              status: "ACCEPTED",
-            },
-            {
-              OR: [{ senderId: userId }, { receiverId: userId }],
-              status: "ACCEPTED",
-            },
-          ],
-        },
-        include: {
-          sender: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-          receiver: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      })
-    : [];
+  // const friendship = currentUserId
+  //   ? await prisma.friendship.findFirst({
+  //       where: {
+  //         OR: [
+  //           { senderId: currentUserId, receiverId: userId },
+  //           { senderId: userId, receiverId: currentUserId },
+  //         ],
+  //       },
+  //     })
+  //   : null;
+
+  // const mutualFriends = currentUserId
+  //   ? await prisma.friendship.findMany({
+  //       where: {
+  // AND: [
+  //   {
+  //     OR: [{ senderId: currentUserId }, { receiverId: currentUserId }],
+  //     status: "ACCEPTED",
+  //   },
+  //   {
+  //     OR: [{ senderId: userId }, { receiverId: userId }],
+  //     status: "ACCEPTED",
+  //   },
+  // ],
+  // },
+  // include: {
+  //   sender: {
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       image: true,
+  //     },
+  //   },
+  //   receiver: {
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       image: true,
+  //     },
+  //   },
+  // },
+  // })
+  // : [];
 
   return (
     <div className="min-h-screen pt-24 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -104,7 +107,7 @@ export default async function UserProfile({
 
         <QuickStats userProfile={user.userStats!} />
 
-        {mutualFriends.length > 0 && (
+        {mutualFriends && mutualFriends.length > 0 && (
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4">Mutual Friends</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

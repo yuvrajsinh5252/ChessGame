@@ -1,42 +1,119 @@
-import { UserStats } from "@prisma/client";
-import { Clock } from "lucide-react";
+"use client";
 
-export function MatchHistoryCard({ userProfile }: { userProfile: UserStats }) {
+import { Trophy, MinusCircle, XCircle, Calendar } from "lucide-react";
+import { gameHistory } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { getUser } from "@/lib/actions/friends/user.actions";
+import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
+
+export function MatchHistoryCard({
+  matchHistory,
+}: {
+  matchHistory: gameHistory[];
+}) {
+  const [opponentNames, setOpponentNames] = useState<{ [key: string]: string }>(
+    {}
+  );
+
+  useEffect(() => {
+    const fetchOpponentNames = async () => {
+      const names: { [key: string]: string } = {};
+      for (const match of matchHistory) {
+        try {
+          const response = await getUser(match.opponentId);
+          names[match.opponentId] = response?.name || `Unknown Player`;
+        } catch (error) {
+          console.error("Error fetching opponent name:", error);
+          names[match.opponentId] = `Unknown Player`;
+        }
+      }
+      setOpponentNames(names);
+    };
+
+    fetchOpponentNames();
+  }, [matchHistory]);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-      <h2 className="text-xl font-semibold mb-6 flex items-center">
-        <Clock className="w-5 h-5 mr-2 text-green-500" />
-        Recent Performance
-      </h2>
-      <div className="flex space-x-2 mb-4">
-        {[...Array(Math.min(20, userProfile.gamesPlayed))].map((_, i) => {
-          const gameResult =
-            i < userProfile.gamesPlayed % 10
-              ? i < userProfile.wins % 10
-                ? "win"
-                : i < (userProfile.wins + userProfile.draws) % 10
-                ? "draw"
-                : "loss"
-              : "none";
-
-          return (
-            <div
-              key={i}
-              className={`h-2 w-full rounded-full ${
-                gameResult === "win"
-                  ? "bg-green-500"
-                  : gameResult === "draw"
-                  ? "bg-yellow-500"
-                  : gameResult === "loss"
-                  ? "bg-red-500"
-                  : "bg-gray-300"
-              }`}
-            />
-          );
-        })}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold flex items-center">
+          <Trophy className="w-5 h-5 mr-2 text-yellow-500" />
+          Match History
+        </h2>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {matchHistory.length} matches played
+        </span>
       </div>
-      <div className="text-sm text-gray-500 dark:text-gray-400">
-        {userProfile.gamesPlayed} games played
+
+      <div className="space-y-3">
+        {matchHistory.length === 0 ? (
+          <div className="text-center py-8">
+            <Trophy className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
+            <p className="text-gray-500 dark:text-gray-400">
+              No matches played yet
+            </p>
+          </div>
+        ) : (
+          matchHistory.map((match) => (
+            <Link
+              href={`/profile/${match.opponentId}`}
+              key={match.id}
+              className="block hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <div className="flex items-center justify-between p-4 bg-gray-50/50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600">
+                <div className="flex items-center space-x-4">
+                  <div
+                    className={`w-2 h-8 rounded-full ${
+                      match.result === "win"
+                        ? "bg-green-500"
+                        : match.result === "loss"
+                        ? "bg-red-500"
+                        : "bg-yellow-500"
+                    }`}
+                  />
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <p className="font-medium dark:text-gray-200">
+                        vs {opponentNames[match.opponentId] || `Loading...`}
+                      </p>
+                      <span
+                        className={`px-2 py-0.5 text-xs rounded-full ${
+                          match.result === "win"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                            : match.result === "loss"
+                            ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                        }`}
+                      >
+                        {match.result.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      <span>Played as {match.playerColor}</span>
+                      <span>•</span>
+                      <span className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        {formatDistanceToNow(new Date(match.createdAt))} ago
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  {match.result === "win" && (
+                    <Trophy className="w-5 h-5 text-green-500" />
+                  )}
+                  {match.result === "loss" && (
+                    <XCircle className="w-5 h-5 text-red-500" />
+                  )}
+                  {match.result === "draw" && (
+                    <MinusCircle className="w-5 h-5 text-yellow-500" />
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );

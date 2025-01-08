@@ -35,6 +35,14 @@ async function getUserProfile(email: string, playerId: string) {
   return user;
 }
 
+export async function MathcHistory(userId: string) {
+  return await prisma.gameHistory.findMany({
+    where: {
+      playerId: userId,
+    },
+  });
+}
+
 export default async function Page() {
   const session = await auth();
 
@@ -47,6 +55,7 @@ export default async function Page() {
   }
 
   const userProfile = await getUserProfile(session.user.email, session.user.id);
+  const matchHistory = await MathcHistory(session.user.id);
 
   if (!userProfile) {
     return <div>User profile not found</div>;
@@ -80,7 +89,7 @@ export default async function Page() {
 
         <QuickStats userProfile={userProfile.userStats!} />
         <div className="flex gap-8 flex-col">
-          <MatchHistoryCard userProfile={userProfile.userStats!} />
+          <MatchHistoryCard matchHistory={matchHistory} />
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-6 flex items-center">

@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "game" ALTER COLUMN "canPawnPromote" DROP DEFAULT,
-ALTER COLUMN "canPawnPromote" SET DATA TYPE TEXT;

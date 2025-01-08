@@ -21,6 +21,7 @@
     "@upstash/redis": "^1.34.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "idb": "^8.0.1",
     "js-confetti": "^0.12.0",
     "keytar": "^7.9.0",
