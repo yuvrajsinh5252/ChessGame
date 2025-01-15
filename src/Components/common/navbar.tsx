@@ -1,6 +1,7 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { RiLoginCircleLine } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import MaxWidthWrapper from "./MaxWidthWrapper";
@@ -10,7 +11,6 @@ import ThemeToggle from "../themes/theme-toggle";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { HamBurger, HamburgerMenu } from "./HamburgerMenu";
 import {
@@ -96,10 +96,10 @@ export function Navbar() {
             <Button
               variant="ghost"
               className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 w-full md:w-auto justify-center"
-              onClick={() => signIn("github")}
+              onClick={() => signIn()}
             >
-              <GitHubLogoIcon className="w-4 h-4" />
-              <span className="text-sm font-medium">Sign In with GitHub</span>
+              <RiLoginCircleLine className="w-6 h-6" />
+              <span>Sign In</span>
             </Button>
           )}
         </div>

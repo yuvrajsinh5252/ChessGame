@@ -19,6 +19,7 @@ import {
 import { FriendsList } from "../friends/FriendsList";
 import { UserSearch } from "../friends/UserSearch";
 import { UserPlus } from "lucide-react";
+import { RiLoginCircleLine } from "react-icons/ri";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -159,10 +160,10 @@ export function HamBurger({
           <Button
             variant="ghost"
             className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 w-full md:w-auto justify-center"
-            onClick={() => signIn("github")}
+            onClick={() => signIn()}
           >
-            <GitHubLogoIcon className="w-4 h-4" />
-            <span className="text-sm font-medium">Sign In with GitHub</span>
+            <RiLoginCircleLine className="w-6 h-6" />
+            <span>Sign In</span>
           </Button>
         )}
       </div>
