@@ -3,7 +3,7 @@
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { EliminatedPieces } from "../common/eliminated";
 
-export function White() {
+export function White({ playerName }: { playerName: string }) {
   const { gameState } = useOnlineChessStore((state) => state);
   const { currentPlayer, eliminatedPieces } = gameState;
 
@@ -16,7 +16,7 @@ export function White() {
     >
       <div className="flex items-center justify-center">
         <span className="inline-block w-4 h-4 bg-white rounded-full mr-2"></span>
-        <span>White</span>
+        <span>{playerName}</span>
       </div>
       <div>
         <EliminatedPieces

@@ -3,7 +3,7 @@
 import useOnlineChessStore from "@/store/useOnlineChessStore";
 import { EliminatedPieces } from "../common/eliminated";
 
-export function Black() {
+export function Black({ playerName }: { playerName: string }) {
   const { gameState } = useOnlineChessStore((state) => state);
   const { currentPlayer, eliminatedPieces, status } = gameState;
 
@@ -16,7 +16,7 @@ export function Black() {
     >
       <div className="flex items-center justify-center relative group">
         <span className="inline-block w-4 h-4 bg-black rounded-full mr-2"></span>
-        <span>Black</span>
+        <span>{playerName}</span>
         {status === "promote" && currentPlayer === "black" && (
           <div className="absolute left-20 p-2 z-20 w-32 opacity-50 bg-white rounded-lg shadow-lg">
             <span className="text-[12px] text-gray-900">Promoting pawn...</span>

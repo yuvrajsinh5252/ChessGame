@@ -24,6 +24,18 @@ export async function getPlayerColor(playerId: string) {
   return player?.color as "white" | "black" | null;
 }
 
+export async function getOpponentPlayerName(gameId: string, playerId: string) {
+  const players = await prisma.player.findMany({
+    where: { gameId, NOT: { id: playerId } },
+  });
+
+  const opponent = await prisma.user.findUnique({
+    where: { id: players[0].id },
+  });
+
+  return opponent?.name!;
+}
+
 export async function serverPawnPromote(
   gameId: string,
   { row, col, piece }: { row: number; col: number; piece: string }

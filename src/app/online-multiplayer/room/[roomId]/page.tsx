@@ -5,7 +5,10 @@ import MaxWidthWrapper from "@/Components/common/MaxWidthWrapper";
 import { Black } from "@/Components/online-mode/black";
 import { White } from "@/Components/online-mode/white";
 import { useEffect, useState } from "react";
-import { getPlayerColor } from "@/lib/actions/game/helper";
+import {
+  getOpponentPlayerName,
+  getPlayerColor,
+} from "@/lib/actions/game/helper";
 import { Loader2 } from "lucide-react";
 import { Winner } from "@/Components/online-mode/winner";
 import { Promote } from "@/Components/online-mode/promote";
@@ -26,6 +29,7 @@ function PageContent({ params }: PageProps) {
   const { isOpen: chatBoxOpen } = useChatStore((state) => state);
   const [color, setColor] = useState<"white" | "black" | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [opponentName, setOpponentName] = useState<string | null>(null);
 
   const { data: session, status } = useSession();
   const playerId = session?.user?.id;
@@ -48,7 +52,13 @@ function PageContent({ params }: PageProps) {
       setColor(playerColor);
     };
 
+    const fetchOpponentPlayerName = async () => {
+      let opponentPlayerName = await getOpponentPlayerName(roomId, playerId);
+      setOpponentName(opponentPlayerName);
+    };
+
     fetchPlayerColor();
+    fetchOpponentPlayerName();
   }, [playerId, roomId]);
 
   if (status === "loading") return null;
@@ -76,15 +86,15 @@ function PageContent({ params }: PageProps) {
           <DrawRequest roomId={roomId} playerId={playerId} />
           {color === "white" ? (
             <>
-              <Black />
+              <Black playerName={opponentName!} />
               <OnlineBoard roomId={roomId} playerId={playerId!} />
-              <White />
+              <White playerName={playerName} />
             </>
           ) : (
             <>
-              <White />
+              <White playerName={opponentName!} />
               <OnlineBoard roomId={roomId} playerId={playerId!} />
-              <Black />
+              <Black playerName={playerName} />
             </>
           )}
           <ChatSidebar
