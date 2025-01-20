@@ -46,7 +46,7 @@ export function MatchHistoryCard({
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 overflow-y-scroll max-h-96 no-scrollbar">
         {matchHistory.length === 0 ? (
           <div className="text-center py-8">
             <Trophy className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />

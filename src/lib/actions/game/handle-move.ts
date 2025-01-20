@@ -223,9 +223,9 @@ export async function handlePlayerMove(
       const isDraw = winner === "draw" || winner === "stalemate";
       const winnerId =
         winner === "white"
-          ? player1.id
-          : winner === "black"
           ? player2.id
+          : winner === "black"
+          ? player1.id
           : null;
 
       await updateGameResults(winnerId, player1.id, player2.id, isDraw, gameId);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { UserMinus, Check, X, Loader } from "lucide-react";
+import { UserMinus } from "lucide-react";
 import {
   getFriends,
   handleFriendRequest,
@@ -72,7 +72,7 @@ export function FriendsList() {
     <div className="space-y-6">
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Friends</h3>
-        <div className="space-y-2">
+        <div className="space-y-2 overflow-y-scroll no-scrollbar max-h-44">
           {friends.map((friend) => (
             <div
               key={friend.id}
@@ -102,7 +102,9 @@ export function FriendsList() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-medium">{friend.name}</span>
+                  <span className="font-medium truncate max-sm:max-w-[80px]">
+                    {friend.name}
+                  </span>
                   <span className="text-sm text-gray-500">
                     {friend.status === "ONLINE"
                       ? "Online"

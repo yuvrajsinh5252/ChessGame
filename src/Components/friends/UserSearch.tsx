@@ -89,7 +89,7 @@ export function UserSearch() {
         </div>
       ) : (
         searchResults.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2 overflow-y-scroll no-scrollbar max-h-44 ">
             {searchResults.map((user) => (
               <div
                 key={user.id}
@@ -106,7 +106,9 @@ export function UserSearch() {
                     height={40}
                     className="rounded-full"
                   />
-                  <span className="font-medium">{user.name}</span>
+                  <span className="font-medium truncate max-sm:max-w-[80px]">
+                    {user.name}
+                  </span>
                 </Link>
                 {!user.isFriend ? (
                   <Button
@@ -119,8 +121,8 @@ export function UserSearch() {
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                     ) : (
                       <>
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Add Friend
+                        <UserPlus className="w-4 h-4 mr-2 max-sm:mr-0" />
+                        <span className="max-sm:hidden">Add Friend</span>
                       </>
                     )}
                   </Button>
