@@ -1,5 +1,15 @@
 import { GameModeCard } from "@/Components/common/gameCard";
 import Image from "next/image";
+import type { Metadata } from "next";
+import { generatePageSEO } from "@/lib/seo";
+
+export const metadata: Metadata = generatePageSEO({
+  title: "Chess Game",
+  description:
+    "Welcome to Chessmate - Your ultimate chess platform! Play online against global players, challenge smart AI opponents, or enjoy local matches with friends. Free to play, real-time multiplayer chess.",
+  image: "chess.png",
+  path: "",
+});
 
 export default function Page() {
   return (
