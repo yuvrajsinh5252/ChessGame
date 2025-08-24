@@ -48,12 +48,4 @@ bun dev
 
 2. Open your web browser and navigate to `http://localhost:3000` to play the game.
 
-## SEO
-
-This project includes a simple SEO implementation with centralized configuration. For detailed setup instructions, see [SEO-README.md](./SEO-README.md).
-
-### Quick Setup
-
-1. Update your domain in `src/lib/seo-constants.ts`
-2. Use the `generatePageSEO` function for new pages
-3. Check SEO-README.md for detailed instructions
+Enjoy playing!
