@@ -1,14 +1,16 @@
-# Chess Game
+# Chessmate - Online Chess Game
 
-A simple multiplayer chess game. A simple implementation of the classic chess game using Next.js and TypeScript.
+A multiplayer chess platform built with Next.js and TypeScript. Play chess online against global players, challenge AI opponents, or enjoy local matches with friends.
 
 ## Features
 
-- Real-time multiplayer gameplay
-- Online multiplayer mode with chat functionality
-- Player profile with statistics
-- Two-player mode
-- Single-player mode against AI
+- **Real-time Multiplayer Gameplay** - Play against players worldwide with live matchmaking
+- **Online Multiplayer Mode** - Complete with chat functionality and room system
+- **Player Profile System** - Track statistics, achievements, and match history
+- **Two-Player Local Mode** - Perfect for in-person matches
+- **AI Opponent Mode** - Challenge computer opponents with multiple difficulty levels
+- **Multiple Chess Themes** - Customize your playing experience
+- **Responsive Design** - Works seamlessly on desktop and mobile devices
 
 ## Installation
 
@@ -45,3 +47,13 @@ bun dev
 ```
 
 2. Open your web browser and navigate to `http://localhost:3000` to play the game.
+
+## SEO
+
+This project includes a simple SEO implementation with centralized configuration. For detailed setup instructions, see [SEO-README.md](./SEO-README.md).
+
+### Quick Setup
+
+1. Update your domain in `src/lib/seo-constants.ts`
+2. Use the `generatePageSEO` function for new pages
+3. Check SEO-README.md for detailed instructions

@@ -5,6 +5,16 @@ import { QuickStats } from "@/Components/profile/quickStats";
 import Image from "next/image";
 import { Trophy } from "lucide-react";
 import { AchievementsList } from "@/Components/profile/achievements";
+import type { Metadata } from "next";
+import { generatePageSEO } from "@/lib/seo";
+
+export const metadata: Metadata = generatePageSEO({
+  title: "Player Profile",
+  description:
+    "View your chess statistics, achievements, match history, and rankings. Track your progress and compete with players worldwide.",
+  image: "chess.png",
+  path: "profile",
+});
 
 async function getUserProfile(email: string, playerId: string) {
   const userStats = await prisma.userStats.findUnique({

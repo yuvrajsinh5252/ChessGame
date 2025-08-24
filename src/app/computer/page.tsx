@@ -6,6 +6,16 @@ import ChessBoard from "@/Components/two-player/chessboard";
 import { ChoosePiece } from "@/Components/two-player/choose-piece";
 import { Controls } from "@/Components/two-player/controls";
 import { WhitePlayer } from "@/Components/two-player/whitePlayer";
+import type { Metadata } from "next";
+import { generatePageSEO } from "@/lib/seo";
+
+export const metadata: Metadata = generatePageSEO({
+  title: "Play Chess Against AI",
+  description:
+    "Challenge yourself against intelligent AI opponents! Play chess against computer with multiple difficulty levels. Perfect for practicing chess strategies, tactics, and improving your game.",
+  image: "computer.png",
+  path: "computer",
+});
 
 export default function Page() {
   return (

@@ -8,6 +8,7 @@ import { FriendRequestButton } from "@/Components/friends/FriendRequestButton";
 import { QuickStats } from "@/Components/profile/quickStats";
 import Link from "next/link";
 import { Metadata } from "next";
+import { generatePageSEO } from "@/lib/seo";
 
 type Params = Promise<{
   userId: string;
@@ -18,11 +19,33 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
   const user = await prisma.user.findUnique({
     where: { id: (await props.params).userId },
+    include: {
+      userStats: true,
+    },
   });
 
-  return {
-    title: user ? `${user.name}'s Profile - ChessMate` : "Profile Not Found",
-  };
+  if (!user) {
+    return generatePageSEO({
+      title: "Profile Not Found",
+      description: "The requested user profile could not be found.",
+      image: "chess.png",
+      path: "profile",
+    });
+  }
+
+  const rating = user.userStats?.rating || 1200;
+  const gamesPlayed = user.userStats?.gamesPlayed || 0;
+  const wins = user.userStats?.wins || 0;
+  const losses = user.userStats?.losses || 0;
+
+  const description = `${user.name} is a Chessmate player with ${gamesPlayed} games played. Rating: ${rating}. Win/Loss: ${wins}/${losses}. View their achievements and match history.`;
+
+  return generatePageSEO({
+    title: `${user.name}'s Profile`,
+    description: description,
+    image: user.image || "chess.png",
+    path: `profile/${user.id}`,
+  });
 }
 
 export default async function Page(props: { params: Params }) {
