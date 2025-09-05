@@ -1,7 +1,7 @@
 export const SEO_CONFIG = {
   site: {
     name: "Chessmate",
-    baseUrl: "https://chessmate-ym.vercel.app",
+    baseUrl: "https://chess.yuvrajsinh.dev",
     description:
       "Play chess online against global players, challenge AI opponents, or enjoy local matches with friends. Real-time multiplayer chess with smart AI, beautiful themes, and competitive matchmaking.",
     locale: "en_US",
