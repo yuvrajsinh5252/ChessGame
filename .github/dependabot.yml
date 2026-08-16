@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "all"
+    labels:
+      - "dependencies"
+      - "dependabot"
+    # Optionally enable automerging for low-risk updates (uncomment to enable)
+    # automerging: true

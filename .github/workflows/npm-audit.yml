@@ -1,0 +1,33 @@
+name: npm audit
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 3 * * 1' # weekly run (UTC) — Mondays at 03:00
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Run npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # adjust if you target a different Node version
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Run npm audit (fail on high)
+        run: |
+          # Fail the job for vulnerabilities with severity >= high.
+          # Change --audit-level to 'moderate' or 'low' if you want stricter blocking.
+          npm audit --audit-level=high
