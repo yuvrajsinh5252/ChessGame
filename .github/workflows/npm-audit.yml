@@ -8,6 +8,9 @@ on:
     - cron: '0 3 * * 1' # weekly run (UTC) — Mondays at 03:00
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   audit:
     name: Run npm audit
